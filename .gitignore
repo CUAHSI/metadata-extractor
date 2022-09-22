@@ -1,4 +1,4 @@
-tests/test-files/
+tests/test_files/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

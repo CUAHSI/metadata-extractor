@@ -14,12 +14,14 @@ TITLE_MAX_LENGTH=300
 def extract_metadata_and_files(feature_path):
     shape_files, xml_file, shp_file = get_all_related_shp_files(feature_path)
     meta_dict = extract_metadata(feature_path)
-    meta_dict["url"] = shp_file.public_url
-    meta_dict["id"] = hashlib.md5(bytes(shp_file.public_url, 'utf-8')).hexdigest()
+    #meta_dict["url"] = shp_file.public_url
+    #meta_dict["id"] = hashlib.md5(bytes(shp_file.public_url, 'utf-8')).hexdigest()
+    meta_dict["url"] = shp_file
+    meta_dict["id"] = hashlib.md5(bytes(shp_file, 'utf-8')).hexdigest()
     meta_dict = add_metadata(meta_dict, xml_file)
     files = []
     for f in shape_files:
-        files.append(f.public_url)
+        files.append(f)
     meta_dict["files"] = files
     return meta_dict
 
@@ -30,14 +32,14 @@ def get_all_related_shp_files(feature_path):
     dir_path = os.path.dirname(feature_path)
     for f in os.listdir(dir_path):
         f_path = Path(f)
-        if str(f_path.suffix).lower() == '.xml' and not str(f.name).lower().endswith('.shp.xml'):
+        if str(f_path.suffix).lower() == '.xml' and not str(f_path.name).lower().endswith('.shp.xml'):
             continue
         if str(f_path.suffix).lower() in [".shp", ".shx", ".dbf", ".prj", ".sbx", ".sbn", ".cpg", ".xml", ".fbn", ".fbx", ".ain", ".aih", ".atx", ".ixs", ".mxs"]:
-            shape_res_files.append(f)
+            shape_res_files.append(os.path.join(dir_path, f))
         if str(f_path.suffix).lower() == ".xml":
-            xml_file = f
+            xml_file = os.path.join(dir_path, f)
         if str(f_path.suffix).lower() == ".shp":
-            shp_file = f
+            shp_file = os.path.join(dir_path, f)
     return shape_res_files, xml_file, shp_file
 
 
@@ -285,7 +287,8 @@ def parse_shp_xml(xml_file):
     :return: a list of metadata dict
     """
     metadata = []
-    xml_file_str = xml_file.download_as_text()
+    with open(xml_file, "r") as f:
+        xml_file_str = f.read()
     xml_dict = xmltodict.parse(xml_file_str)
     if 'dataIdInfo' in xml_dict['metadata']:
         dataIdInfo_dict = xml_dict['metadata']['dataIdInfo']

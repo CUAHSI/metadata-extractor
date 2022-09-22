@@ -1,0 +1,111 @@
+{
+    "coverage": {
+      "type": "box",
+      "value": {
+        "westlimit": 41.847326492578134,
+        "northlimit": -111.79812580632708,
+        "eastlimit": 41.46101782271448,
+        "southlimit": -111.40051926333076,
+        "projection": "WGS 84 EPSG:4326",
+        "units": "Decimal degrees"
+      }
+    },
+    "originalcoverage": {
+      "originalcoverage": {
+        "northlimit": 4633133.170079696,
+        "southlimit": 4590013.875646103,
+        "westlimit": 433743.11484404095,
+        "eastlimit": 466551.48032255494,
+        "projection_string": "PROJCS[\"NAD83 / UTM zone 12N\",\n    GEOGCS[\"NAD83\",\n        DATUM[\"North_American_Datum_1983\",\n            SPHEROID[\"GRS 1980\",6378137,298.257222101,\n                AUTHORITY[\"EPSG\",\"7019\"]],\n            AUTHORITY[\"EPSG\",\"6269\"]],\n        PRIMEM[\"Greenwich\",0,\n            AUTHORITY[\"EPSG\",\"8901\"]],\n        UNIT[\"degree\",0.0174532925199433,\n            AUTHORITY[\"EPSG\",\"9122\"]],\n        AUTHORITY[\"EPSG\",\"4269\"]],\n    PROJECTION[\"Transverse_Mercator\"],\n    PARAMETER[\"latitude_of_origin\",0],\n    PARAMETER[\"central_meridian\",-111],\n    PARAMETER[\"scale_factor\",0.9996],\n    PARAMETER[\"false_easting\",500000],\n    PARAMETER[\"false_northing\",0],\n    UNIT[\"metre\",1,\n        AUTHORITY[\"EPSG\",\"9001\"]],\n    AXIS[\"Easting\",EAST],\n    AXIS[\"Northing\",NORTH],\n    AUTHORITY[\"EPSG\",\"26912\"]]",
+        "projection_name": "NAD83 / UTM zone 12N",
+        "datum": "North_American_Datum_1983",
+        "unit": "metre"
+      }
+    },
+    "geometryinformation": {
+      "featureCount": 5,
+      "geometryType": "POLYGON"
+    },
+    "url": "tests/test_files/watersheds/watersheds.shp",
+    "id": "cda113beb8567a200bdf625db05db69b",
+    "originalcoveragegeofeature": {
+      "northlimit": 4633133.170079696,
+      "southlimit": 4590013.875646103,
+      "westlimit": 433743.11484404095,
+      "eastlimit": 466551.48032255494,
+      "projection_string": "PROJCS[\"NAD83 / UTM zone 12N\",\n    GEOGCS[\"NAD83\",\n        DATUM[\"North_American_Datum_1983\",\n            SPHEROID[\"GRS 1980\",6378137,298.257222101,\n                AUTHORITY[\"EPSG\",\"7019\"]],\n            AUTHORITY[\"EPSG\",\"6269\"]],\n        PRIMEM[\"Greenwich\",0,\n            AUTHORITY[\"EPSG\",\"8901\"]],\n        UNIT[\"degree\",0.0174532925199433,\n            AUTHORITY[\"EPSG\",\"9122\"]],\n        AUTHORITY[\"EPSG\",\"4269\"]],\n    PROJECTION[\"Transverse_Mercator\"],\n    PARAMETER[\"latitude_of_origin\",0],\n    PARAMETER[\"central_meridian\",-111],\n    PARAMETER[\"scale_factor\",0.9996],\n    PARAMETER[\"false_easting\",500000],\n    PARAMETER[\"false_northing\",0],\n    UNIT[\"metre\",1,\n        AUTHORITY[\"EPSG\",\"9001\"]],\n    AXIS[\"Easting\",EAST],\n    AXIS[\"Northing\",NORTH],\n    AUTHORITY[\"EPSG\",\"26912\"]]",
+      "projection_name": "NAD83 / UTM zone 12N",
+      "datum": "North_American_Datum_1983",
+      "unit": "metre"
+    },
+    "fieldinformations": [
+      {
+        "fieldinformation": {
+          "fieldName": "OBJECTID",
+          "fieldTypeCode": 12,
+          "fieldType": "Integer64",
+          "fieldWidth": 10,
+          "fieldPrecision": 0
+        }
+      },
+      {
+        "fieldinformation": {
+          "fieldName": "Id",
+          "fieldTypeCode": 12,
+          "fieldType": "Integer64",
+          "fieldWidth": 10,
+          "fieldPrecision": 0
+        }
+      },
+      {
+        "fieldinformation": {
+          "fieldName": "gridcode",
+          "fieldTypeCode": 12,
+          "fieldType": "Integer64",
+          "fieldWidth": 10,
+          "fieldPrecision": 0
+        }
+      },
+      {
+        "fieldinformation": {
+          "fieldName": "Shape_Leng",
+          "fieldTypeCode": 2,
+          "fieldType": "Real",
+          "fieldWidth": 19,
+          "fieldPrecision": 11
+        }
+      },
+      {
+        "fieldinformation": {
+          "fieldName": "Shape_Area",
+          "fieldTypeCode": 2,
+          "fieldType": "Real",
+          "fieldWidth": 19,
+          "fieldPrecision": 11
+        }
+      },
+      {
+        "fieldinformation": {
+          "fieldName": "Area_km2",
+          "fieldTypeCode": 2,
+          "fieldType": "Real",
+          "fieldWidth": 19,
+          "fieldPrecision": 11
+        }
+      }
+    ],
+    "geometryinformations": {
+      "featureCount": 5,
+      "geometryType": "POLYGON"
+    },
+    "files": [
+      "tests/test_files/watersheds/watersheds.cpg",
+      "tests/test_files/watersheds/watersheds.dbf",
+      "tests/test_files/watersheds/watersheds.prj",
+      "tests/test_files/watersheds/watersheds.sbn",
+      "tests/test_files/watersheds/watersheds.sbx",
+      "tests/test_files/watersheds/watersheds.shp",
+      "tests/test_files/watersheds/watersheds.shp.xml",
+      "tests/test_files/watersheds/watersheds.shx"
+    ]
+  }
