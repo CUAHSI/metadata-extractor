@@ -5,4 +5,7 @@ services:
     image: hsextract
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
+    volumes:
+      - ./hsextract:/app/hsextract
+      - ./tests:/app/tests
