@@ -1,0 +1,8 @@
+pymongo
+xmltodict
+GDAL
+dnspython
+beautifulsoup4
+turfpy
+geojson
+typer[all]
