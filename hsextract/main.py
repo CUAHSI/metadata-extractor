@@ -2,6 +2,7 @@ import typer
 import json
 
 from hsextract.feature.utils import extract_metadata_and_files
+from hsextract.raster.utils import extract_from_tif_file
 
 app = typer.Typer()
 
@@ -13,7 +14,8 @@ def feature(path: str):
 
 @app.command()
 def raster(path: str):
-    print(f"Hello {path}")
+    metadata_dict = extract_from_tif_file(path)
+    print(json.dumps(metadata_dict, indent=2))
 
 
 if __name__ == "__main__":
