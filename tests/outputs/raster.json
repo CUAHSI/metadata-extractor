@@ -4,8 +4,8 @@
     "value": {
       "northlimit": -111.57737502643897,
       "southlimit": -111.65768822411246,
-      "eastlimit": 42.05002878577161,
-      "westlimit": 41.98745777903125,
+      "eastlimit": 42.0500287857716,
+      "westlimit": 41.98745777903126,
       "units": "Decimal degrees",
       "projection": "WGS 84 EPSG:4326"
     }

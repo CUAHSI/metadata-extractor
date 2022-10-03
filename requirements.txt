@@ -8,3 +8,4 @@ geojson
 typer[all]
 PyCRS
 dnspython
+pyproj

@@ -6,4 +6,5 @@ gsutil -m cp -r \
   "gs://demo_hydroshare_resource/readme.txt" \
   "gs://demo_hydroshare_resource/states" \
   "gs://demo_hydroshare_resource/watersheds" \
+  "gs://demo_hydroshare_resource/netcdf" \
   test_files/
