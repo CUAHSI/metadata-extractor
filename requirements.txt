@@ -9,3 +9,5 @@ typer[all]
 PyCRS
 dnspython
 pyproj
+jsonschema
+python-dateutil

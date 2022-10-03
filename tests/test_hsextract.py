@@ -4,6 +4,7 @@ import json
 from hsextract.feature.utils import extract_metadata_and_files
 from hsextract.raster.utils import extract_from_tif_file
 from hsextract.netcdf.utils import get_nc_meta_dict
+from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
 
 
 def test_features_watersheds_extraction():
@@ -46,3 +47,12 @@ def test_netcdf_extraction():
         expected_json = json.loads(expected_str)
 
     assert all_metadata_json == expected_json
+
+def test_reftimeseries_extraction():
+    ref_timeseries_json = extract_referenced_timeseries_metadata("tests/test_files/reftimeseries/multi_sites_formatted_version1.0.refts.json")
+
+    with open("tests/outputs/reftimeseries.json", "r") as f:
+        expected_str = f.read()
+        expected_json = json.loads(expected_str)
+
+    assert ref_timeseries_json == expected_json
