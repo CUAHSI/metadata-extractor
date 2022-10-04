@@ -5,7 +5,7 @@ from hsextract.feature.utils import extract_metadata_and_files
 from hsextract.raster.utils import extract_from_tif_file
 from hsextract.netcdf.utils import get_nc_meta_dict
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
-from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata
+from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata, extract_metadata_csv
 
 
 def test_features_watersheds_extraction():
@@ -58,10 +58,19 @@ def test_reftimeseries_extraction():
 
     assert ref_timeseries_json == expected_json
 
-def test_timeseries_extraction():
+def test_timeseries_sqlite_extraction():
     timeseries_json = extract_timeseries_metadata("tests/test_files/timeseries/ODM2_Multi_Site_One_Variable.sqlite")
 
     with open("tests/outputs/timeseries.json", "r") as f:
+        expected_str = f.read()
+        expected_json = json.loads(expected_str)
+
+    assert timeseries_json == expected_json
+
+def test_timeseries_csv_extraction():
+    timeseries_json = extract_metadata_csv("tests/test_files/timeseries/ODM2_Multi_Site_One_Variable_Test.csv")
+
+    with open("tests/outputs/timeseries-csv.json", "r") as f:
         expected_str = f.read()
         expected_json = json.loads(expected_str)
 

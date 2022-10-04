@@ -159,7 +159,7 @@ def create_cv_lookup_models(sql_cur):
         for row in table_rows:
             rows.append({"Term": row['Term'], "Name": row["Name"]})
         term_names.append({table_name: rows})
-    return term_names
+    return term_names    
 
 
 def extract_metadata(sqlite_file_name):
@@ -545,3 +545,31 @@ def _extract_coverage_metadata(cur):
     coverage.update({"type": "period", "value": {"start": begin_date, "end": end_date}})
 
     return coverage
+
+def extract_metadata_csv(csv_file_name):
+    """Extracts CV metadata from a csv file"""
+
+    metadata_dict = []
+    with open(csv_file_name, 'r') as fl_obj:
+        csv_reader = csv.reader(fl_obj, delimiter=',')
+        # read the first row - header
+        header = next(csv_reader)
+        # read the 1st data row
+        start_date_str = next(csv_reader)[0]
+        last_row = None
+        data_row_count = 1
+        for row in csv_reader:
+            last_row = row
+            data_row_count += 1
+        end_date_str = last_row[0]
+
+        # save the series names along with number of data points for each series
+        # columns starting with the 2nd column are data series names
+        value_counts = {}
+        for data_col_name in header[1:]:
+            value_counts[data_col_name] = str(data_row_count)
+
+        metadata_dict.append({"value_counts": value_counts})
+        metadata_dict.append({"coverage": {"type": 'period', "value": {'start': start_date_str, 'end': end_date_str}}})
+    
+    return metadata_dict
