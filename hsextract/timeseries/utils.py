@@ -1,16 +1,8 @@
 import csv
 import logging
-import os
-import shutil
 import sqlite3
-import tempfile
-import time
 
 from dateutil import parser
-
-
-_SQLITE_FILE_NAME = 'ODM2.sqlite'
-_ODM2_SQLITE_FILE_PATH = f'hs_file_types/files/{_SQLITE_FILE_NAME}'
 
 
 def validate_odm2_db_file(sqlite_file_path):
@@ -158,7 +150,7 @@ def create_cv_lookup_models(sql_cur):
                                     'CV_Status',
                                     'CV_Medium',
                                     'CV_AggregationStatistic']
-    term_names = {}
+    term_names = []
     
     for table_name in table_names:
         sql_cur.execute("SELECT Term, Name FROM {}".format(table_name))

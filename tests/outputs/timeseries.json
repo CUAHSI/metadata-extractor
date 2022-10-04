@@ -1,0 +1,5189 @@
+{
+  "term_names": [
+    {
+      "CV_VariableType": [
+        {
+          "Term": "Unknown",
+          "Name": "Unknown"
+        },
+        {
+          "Term": "Chemistry",
+          "Name": "Chemistry"
+        },
+        {
+          "Term": "WaterQuality",
+          "Name": "Water quality"
+        },
+        {
+          "Term": "Climate",
+          "Name": "Climate"
+        },
+        {
+          "Term": "Soil",
+          "Name": "Soil"
+        },
+        {
+          "Term": "Instrumentation",
+          "Name": "Instrumentation"
+        },
+        {
+          "Term": "Biota",
+          "Name": "Biota"
+        },
+        {
+          "Term": "stableIsotopes",
+          "Name": "Stable isotopes"
+        },
+        {
+          "Term": "rareEarthElement",
+          "Name": "Rare earth element"
+        },
+        {
+          "Term": "modelData",
+          "Name": "Model data"
+        },
+        {
+          "Term": "uraniumSeries",
+          "Name": "Uranium series"
+        },
+        {
+          "Term": "age",
+          "Name": "Age"
+        },
+        {
+          "Term": "speciationRatio",
+          "Name": "Speciation ratio"
+        },
+        {
+          "Term": "endMember",
+          "Name": "End-Member"
+        },
+        {
+          "Term": "rockMode",
+          "Name": "Rock mode"
+        },
+        {
+          "Term": "Geology",
+          "Name": "Geology"
+        },
+        {
+          "Term": "ratio",
+          "Name": "Ratio"
+        },
+        {
+          "Term": "Hydrology",
+          "Name": "Hydrology"
+        },
+        {
+          "Term": "traceElement",
+          "Name": "Trace element"
+        },
+        {
+          "Term": "volatile",
+          "Name": "Volatile"
+        },
+        {
+          "Term": "majorOxideElement",
+          "Name": "Major oxide or element"
+        },
+        {
+          "Term": "radiogenicIsotopes",
+          "Name": "Radiogenic isotopes"
+        },
+        {
+          "Term": "nobleGas",
+          "Name": "Noble gas"
+        }
+      ]
+    },
+    {
+      "CV_VariableName": [
+        {
+          "Term": "thorium_232",
+          "Name": "Thorium-232"
+        },
+        {
+          "Term": "seleniumTotal",
+          "Name": "Selenium, total"
+        },
+        {
+          "Term": "radiationNet",
+          "Name": "Radiation, net"
+        },
+        {
+          "Term": "methylTert_ButylEther_MTBE",
+          "Name": "Methyl tert-butyl ether (MTBE)"
+        },
+        {
+          "Term": "TSI",
+          "Name": "TSI"
+        },
+        {
+          "Term": "chlorophyll_a",
+          "Name": "Chlorophyll a"
+        },
+        {
+          "Term": "trans_1_3_Dichloropropene",
+          "Name": "trans-1,3-Dichloropropene"
+        },
+        {
+          "Term": "coliformTotal",
+          "Name": "Coliform, total"
+        },
+        {
+          "Term": "sulfideDissolved",
+          "Name": "Sulfide, dissolved"
+        },
+        {
+          "Term": "diethyleneGlycol",
+          "Name": "Diethylene glycol"
+        },
+        {
+          "Term": "blue_GreenAlgae_Cyanobacteria_Phycocyanin",
+          "Name": "Blue-green algae (cyanobacteria), phycocyanin"
+        },
+        {
+          "Term": "trichloroethene",
+          "Name": "Trichloroethene"
+        },
+        {
+          "Term": "ethane",
+          "Name": "Ethane"
+        },
+        {
+          "Term": "zeaxanthin",
+          "Name": "Zeaxanthin"
+        },
+        {
+          "Term": "1_4_5_Trimethylnaphthalene",
+          "Name": "1,4,5-Trimethylnaphthalene"
+        },
+        {
+          "Term": "phosphorusOrthophosphateTotal",
+          "Name": "Phosphorus, orthophosphate total"
+        },
+        {
+          "Term": "turbidity",
+          "Name": "Turbidity"
+        },
+        {
+          "Term": "1_4_Dimethylnaphthalene",
+          "Name": "1,4-Dimethylnaphthalene"
+        },
+        {
+          "Term": "tetraethyleneGlycol",
+          "Name": "Tetraethylene glycol"
+        },
+        {
+          "Term": "cobaltDissolved",
+          "Name": "Cobalt, dissolved"
+        },
+        {
+          "Term": "sodiumTotal",
+          "Name": "Sodium, total"
+        },
+        {
+          "Term": "zincTotal",
+          "Name": "Zinc, total"
+        },
+        {
+          "Term": "fluorineDissolved",
+          "Name": "Fluorine, dissolved"
+        },
+        {
+          "Term": "sodiumAdsorptionRatio",
+          "Name": "Sodium adsorption ratio"
+        },
+        {
+          "Term": "sulfurDioxide",
+          "Name": "Sulfur dioxide"
+        },
+        {
+          "Term": "cesiumTotal",
+          "Name": "Cesium, total"
+        },
+        {
+          "Term": "phosphorusPhosphate_PO4",
+          "Name": "Phosphorus, phosphate (PO4)"
+        },
+        {
+          "Term": "phosphorusDissolved",
+          "Name": "Phosphorus, dissolved"
+        },
+        {
+          "Term": "carbonParticulateOrganic",
+          "Name": "Carbon, particulate organic"
+        },
+        {
+          "Term": "absorbance",
+          "Name": "Absorbance"
+        },
+        {
+          "Term": "n_Alkane_C23",
+          "Name": "n-alkane, C23"
+        },
+        {
+          "Term": "alloxanthin",
+          "Name": "Alloxanthin"
+        },
+        {
+          "Term": "taxaCount",
+          "Name": "Taxa count"
+        },
+        {
+          "Term": "n_Alkane_C30",
+          "Name": "n-alkane, C30"
+        },
+        {
+          "Term": "salinity",
+          "Name": "Salinity"
+        },
+        {
+          "Term": "delta_DOfCH4",
+          "Name": "delta-D of CH4"
+        },
+        {
+          "Term": "netHeatFlux",
+          "Name": "Net heat flux"
+        },
+        {
+          "Term": "oxygenDissolvedTransducerSignal",
+          "Name": "Oxygen, dissolved, transducer signal"
+        },
+        {
+          "Term": "precipitation",
+          "Name": "Precipitation"
+        },
+        {
+          "Term": "chrysene",
+          "Name": "Chrysene"
+        },
+        {
+          "Term": "argonDissolved",
+          "Name": "Argon, dissolved"
+        },
+        {
+          "Term": "sulfurPyritic",
+          "Name": "Sulfur, pyritic"
+        },
+        {
+          "Term": "manganeseTotal",
+          "Name": "Manganese, total"
+        },
+        {
+          "Term": "19_Hexanoyloxyfucoxanthin",
+          "Name": "19-Hexanoyloxyfucoxanthin"
+        },
+        {
+          "Term": "suaedaLinearisCoverage",
+          "Name": "Suaeda linearis coverage"
+        },
+        {
+          "Term": "aluminum",
+          "Name": "Aluminum"
+        },
+        {
+          "Term": "ruthenium_106",
+          "Name": "Ruthenium-106"
+        },
+        {
+          "Term": "offset",
+          "Name": "Offset"
+        },
+        {
+          "Term": "calciumTotal",
+          "Name": "Calcium, total"
+        },
+        {
+          "Term": "radiationIncomingPAR",
+          "Name": "Radiation, incoming PAR"
+        },
+        {
+          "Term": "betaGlucosidase",
+          "Name": "Beta-glucosidase"
+        },
+        {
+          "Term": "temperature",
+          "Name": "Temperature"
+        },
+        {
+          "Term": "diethylPhthalate",
+          "Name": "Diethyl phthalate"
+        },
+        {
+          "Term": "dimethylPhthalate",
+          "Name": "Dimethyl Phthalate"
+        },
+        {
+          "Term": "endrinAldehyde",
+          "Name": "Endrin aldehyde"
+        },
+        {
+          "Term": "4_4_Methylenebis_2_Chloroaniline",
+          "Name": "4,4-Methylenebis(2-chloroaniline)"
+        },
+        {
+          "Term": "chlorideTotal",
+          "Name": "Chloride, total"
+        },
+        {
+          "Term": "speedOfSound",
+          "Name": "Speed of sound"
+        },
+        {
+          "Term": "chlorophyllFluorescence",
+          "Name": "Chlorophyll fluorescence"
+        },
+        {
+          "Term": "copperDistributionCoefficient",
+          "Name": "Copper, distribution coefficient"
+        },
+        {
+          "Term": "squalene",
+          "Name": "Squalene"
+        },
+        {
+          "Term": "nitrogenTotalDissolved",
+          "Name": "Nitrogen, total dissolved"
+        },
+        {
+          "Term": "acidityMineralAcidity",
+          "Name": "Acidity, mineral acidity"
+        },
+        {
+          "Term": "carbon_13StableIsotopeRatioDelta",
+          "Name": "Carbon-13, stable isotope ratio delta"
+        },
+        {
+          "Term": "chlorophyll_b",
+          "Name": "Chlorophyll b"
+        },
+        {
+          "Term": "carbonToNitrogenMolarRatio",
+          "Name": "Carbon to nitrogen molar ratio"
+        },
+        {
+          "Term": "waterContent",
+          "Name": "Water Content"
+        },
+        {
+          "Term": "magnesiumDissolved",
+          "Name": "Magnesium, dissolved"
+        },
+        {
+          "Term": "endosulfan_I_Alpha",
+          "Name": "Endosulfan I (alpha)"
+        },
+        {
+          "Term": "wrackCoverage",
+          "Name": "Wrack coverage"
+        },
+        {
+          "Term": "timeStamp",
+          "Name": "Time Stamp"
+        },
+        {
+          "Term": "NDVI",
+          "Name": "NDVI"
+        },
+        {
+          "Term": "arsenicDistributionCoefficient",
+          "Name": "Arsenic, distribution coefficient"
+        },
+        {
+          "Term": "endosulfan_II_Beta",
+          "Name": "Endosulfan II (beta)"
+        },
+        {
+          "Term": "waterVaporConcentration",
+          "Name": "Water vapor concentration"
+        },
+        {
+          "Term": "phosphorusOrthophosphateDissolved",
+          "Name": "Phosphorus, orthophosphate dissolved"
+        },
+        {
+          "Term": "triethyleneGlycol",
+          "Name": "Triethylene glycol"
+        },
+        {
+          "Term": "nitrogenOrganicKjeldahl",
+          "Name": "Nitrogen, organic kjeldahl"
+        },
+        {
+          "Term": "temperatureTransducerSignal",
+          "Name": "Temperature, transducer signal"
+        },
+        {
+          "Term": "radiationNetPAR",
+          "Name": "Radiation, net PAR"
+        },
+        {
+          "Term": "bromine",
+          "Name": "Bromine"
+        },
+        {
+          "Term": "d_Limonene",
+          "Name": "d-Limonene"
+        },
+        {
+          "Term": "windDirection",
+          "Name": "Wind direction"
+        },
+        {
+          "Term": "parameter",
+          "Name": "Parameter"
+        },
+        {
+          "Term": "vanadiumParticulate",
+          "Name": "Vanadium, particulate"
+        },
+        {
+          "Term": "tideStage",
+          "Name": "Tide stage"
+        },
+        {
+          "Term": "tetrahydrofuran",
+          "Name": "Tetrahydrofuran"
+        },
+        {
+          "Term": "delta_13COfDIC",
+          "Name": "delta-13C of DIC"
+        },
+        {
+          "Term": "carbonDioxideDissolved",
+          "Name": "Carbon Dioxide, dissolved"
+        },
+        {
+          "Term": "ethylene",
+          "Name": "Ethylene"
+        },
+        {
+          "Term": "acidPhosphatase",
+          "Name": "Acid phosphatase"
+        },
+        {
+          "Term": "n_AlkaneLongChain",
+          "Name": "n-alkane, long-chain"
+        },
+        {
+          "Term": "bromoform",
+          "Name": "Bromoform"
+        },
+        {
+          "Term": "nitrogenNH3_NH4",
+          "Name": "Nitrogen, NH3 + NH4"
+        },
+        {
+          "Term": "monanthochloeLittoralisCoverage",
+          "Name": "Monanthochloe littoralis Coverage"
+        },
+        {
+          "Term": "bromideDissolved",
+          "Name": "Bromide, dissolved"
+        },
+        {
+          "Term": "silicicAcid",
+          "Name": "Silicic acid"
+        },
+        {
+          "Term": "bulkDensity",
+          "Name": "Bulk density"
+        },
+        {
+          "Term": "dataShuttleAttached",
+          "Name": "Data shuttle attached"
+        },
+        {
+          "Term": "oilAndGrease",
+          "Name": "Oil and grease"
+        },
+        {
+          "Term": "uranium",
+          "Name": "Uranium"
+        },
+        {
+          "Term": "radium_228",
+          "Name": "Radium-228"
+        },
+        {
+          "Term": "pressureGauge",
+          "Name": "Pressure, gauge"
+        },
+        {
+          "Term": "4_ChlorophenylphenylEther",
+          "Name": "4-Chlorophenylphenyl ether"
+        },
+        {
+          "Term": "COD",
+          "Name": "COD"
+        },
+        {
+          "Term": "nitrogen_NH4",
+          "Name": "Nitrogen, NH4"
+        },
+        {
+          "Term": "diallate_CisOrTrans",
+          "Name": "Diallate (cis or trans)"
+        },
+        {
+          "Term": "recorderCode",
+          "Name": "Recorder code"
+        },
+        {
+          "Term": "isobutyricAcid",
+          "Name": "Isobutyric acid"
+        },
+        {
+          "Term": "sequenceNumber",
+          "Name": "Sequence number"
+        },
+        {
+          "Term": "secchiDepth",
+          "Name": "Secchi depth"
+        },
+        {
+          "Term": "methoxychlor",
+          "Name": "Methoxychlor"
+        },
+        {
+          "Term": "glutaraldehyde",
+          "Name": "Glutaraldehyde"
+        },
+        {
+          "Term": "chloroethane",
+          "Name": "Chloroethane"
+        },
+        {
+          "Term": "windGustSpeed",
+          "Name": "Wind gust speed"
+        },
+        {
+          "Term": "loggerStopped",
+          "Name": "Logger stopped"
+        },
+        {
+          "Term": "globalRadiation",
+          "Name": "Global Radiation"
+        },
+        {
+          "Term": "ironFerrous",
+          "Name": "Iron, ferrous"
+        },
+        {
+          "Term": "biphenyl",
+          "Name": "Biphenyl"
+        },
+        {
+          "Term": "osmoticPressure",
+          "Name": "Osmotic pressure"
+        },
+        {
+          "Term": "waterUsePublicSupply",
+          "Name": "Water Use, Public Supply"
+        },
+        {
+          "Term": "hydrogenDissolved",
+          "Name": "Hydrogen, dissolved"
+        },
+        {
+          "Term": "tetramethylnaphthalene",
+          "Name": "Tetramethylnaphthalene"
+        },
+        {
+          "Term": "antimonyTotal",
+          "Name": "Antimony, total"
+        },
+        {
+          "Term": "lowBatteryCount",
+          "Name": "Low battery count"
+        },
+        {
+          "Term": "1_4_Dinitrobenzene",
+          "Name": "1,4-Dinitrobenzene"
+        },
+        {
+          "Term": "methyleneChloride_Dichloromethane",
+          "Name": "Methylene chloride (Dichloromethane)"
+        },
+        {
+          "Term": "flashMemoryErrorCount",
+          "Name": "Flash memory error count"
+        },
+        {
+          "Term": "hexachlorobutadiene",
+          "Name": "Hexachlorobutadiene"
+        },
+        {
+          "Term": "electricEnergy",
+          "Name": "Electric Energy"
+        },
+        {
+          "Term": "sodiumFractionOfCations",
+          "Name": "Sodium, fraction of cations"
+        },
+        {
+          "Term": "specificConductance",
+          "Name": "Specific conductance"
+        },
+        {
+          "Term": "mass",
+          "Name": "Mass"
+        },
+        {
+          "Term": "carbonSuspendedInorganic",
+          "Name": "Carbon, suspended inorganic"
+        },
+        {
+          "Term": "solidsTotalDissolved",
+          "Name": "Solids, total dissolved"
+        },
+        {
+          "Term": "radiationOutgoingPAR",
+          "Name": "Radiation, outgoing PAR"
+        },
+        {
+          "Term": "benz_a_anthracene",
+          "Name": "Benz(a)anthracene"
+        },
+        {
+          "Term": "chlorobenzene",
+          "Name": "Chlorobenzene"
+        },
+        {
+          "Term": "mercuryDissolved",
+          "Name": "Mercury, dissolved"
+        },
+        {
+          "Term": "sigma_t",
+          "Name": "Sigma-t"
+        },
+        {
+          "Term": "heptachlor",
+          "Name": "Heptachlor"
+        },
+        {
+          "Term": "2_4_Dichlorophenol",
+          "Name": "2,4-Dichlorophenol"
+        },
+        {
+          "Term": "N_Nitrosodiphenylamine",
+          "Name": "N-Nitrosodiphenylamine"
+        },
+        {
+          "Term": "zincDistributionCoefficient",
+          "Name": "Zinc, distribution coefficient"
+        },
+        {
+          "Term": "tinTotal",
+          "Name": "Tin, total"
+        },
+        {
+          "Term": "bromodichloromethane",
+          "Name": "Bromodichloromethane"
+        },
+        {
+          "Term": "peridinin",
+          "Name": "Peridinin"
+        },
+        {
+          "Term": "THWIndex",
+          "Name": "THW Index"
+        },
+        {
+          "Term": "ethoxyresorufin_O_DeethylaseActivity",
+          "Name": "Ethoxyresorufin O-deethylase, activity"
+        },
+        {
+          "Term": "pentachlorobenzene",
+          "Name": "Pentachlorobenzene"
+        },
+        {
+          "Term": "frequencyOfRotation",
+          "Name": "Frequency of Rotation"
+        },
+        {
+          "Term": "n_Alkane_C31",
+          "Name": "n-alkane, C31"
+        },
+        {
+          "Term": "nitrogenDissolvedOrganic",
+          "Name": "Nitrogen, dissolved organic"
+        },
+        {
+          "Term": "seleniumParticulate",
+          "Name": "Selenium, particulate"
+        },
+        {
+          "Term": "phosphorusTotalDissolved",
+          "Name": "Phosphorus, total dissolved"
+        },
+        {
+          "Term": "indeno_1_2_3_cd_Pyrene",
+          "Name": "Indeno(1,2,3-cd)pyrene"
+        },
+        {
+          "Term": "nitrogenNitrite_NO2",
+          "Name": "Nitrogen, nitrite (NO2)"
+        },
+        {
+          "Term": "manganeseDissolved",
+          "Name": "Manganese, dissolved"
+        },
+        {
+          "Term": "aluminumParticulate",
+          "Name": "Aluminum, particulate"
+        },
+        {
+          "Term": "cis_1_3_Dichloropropene",
+          "Name": "cis-1,3-Dichloropropene"
+        },
+        {
+          "Term": "manganese",
+          "Name": "Manganese"
+        },
+        {
+          "Term": "toluene",
+          "Name": "Toluene"
+        },
+        {
+          "Term": "nickelParticulate",
+          "Name": "Nickel, particulate"
+        },
+        {
+          "Term": "baseflow",
+          "Name": "Baseflow"
+        },
+        {
+          "Term": "mevinphos",
+          "Name": "Mevinphos"
+        },
+        {
+          "Term": "bicarbonate",
+          "Name": "Bicarbonate"
+        },
+        {
+          "Term": "thalliumParticulate",
+          "Name": "Thallium, particulate"
+        },
+        {
+          "Term": "zirconium_95",
+          "Name": "Zirconium-95"
+        },
+        {
+          "Term": "nitrogenGas",
+          "Name": "Nitrogen, gas"
+        },
+        {
+          "Term": "2_4_5_Trichlorophenol",
+          "Name": "2,4,5-Trichlorophenol"
+        },
+        {
+          "Term": "tetrachloroethene",
+          "Name": "Tetrachloroethene"
+        },
+        {
+          "Term": "waterUseRecreation",
+          "Name": "Water Use, Recreation"
+        },
+        {
+          "Term": "carbonate",
+          "Name": "Carbonate"
+        },
+        {
+          "Term": "radiationOutgoingLongwave",
+          "Name": "Radiation, outgoing longwave"
+        },
+        {
+          "Term": "oxygen_18_StableIsotopeRatioDelta",
+          "Name": "Oxygen-18, stable isotope ratio delta"
+        },
+        {
+          "Term": "voltage",
+          "Name": "Voltage"
+        },
+        {
+          "Term": "temperatureChange",
+          "Name": "Temperature change"
+        },
+        {
+          "Term": "Iron",
+          "Name": "Iron"
+        },
+        {
+          "Term": "abundance",
+          "Name": "Abundance"
+        },
+        {
+          "Term": "copperParticulate",
+          "Name": "Copper, particulate"
+        },
+        {
+          "Term": "thalliumDistributionCoefficient",
+          "Name": "Thallium, distribution coefficient"
+        },
+        {
+          "Term": "seleniumDissolved",
+          "Name": "Selenium, dissolved"
+        },
+        {
+          "Term": "radiationOutgoingShortwave",
+          "Name": "Radiation, outgoing shortwave"
+        },
+        {
+          "Term": "2_3_6_Trimethylnaphthalene",
+          "Name": "2,3,6-Trimethylnaphthalene"
+        },
+        {
+          "Term": "tertiaryButylAlcohol",
+          "Name": "Tertiary Butyl Alcohol"
+        },
+        {
+          "Term": "BOD5Carbonaceous",
+          "Name": "BOD5, carbonaceous"
+        },
+        {
+          "Term": "methylchrysene",
+          "Name": "Methylchrysene"
+        },
+        {
+          "Term": "realDielectricConstant",
+          "Name": "Real dielectric constant"
+        },
+        {
+          "Term": "sulfurOrganic",
+          "Name": "Sulfur, organic"
+        },
+        {
+          "Term": "odor",
+          "Name": "Odor"
+        },
+        {
+          "Term": "zirconDissolved",
+          "Name": "Zircon, dissolved"
+        },
+        {
+          "Term": "ethanol",
+          "Name": "Ethanol"
+        },
+        {
+          "Term": "reductionPotential",
+          "Name": "Reduction potential"
+        },
+        {
+          "Term": "nitrogen_15_StableIsotopeRatioDelta",
+          "Name": "Nitrogen-15, stable isotope ratio delta"
+        },
+        {
+          "Term": "2_3_5_Trimethylnaphthalene",
+          "Name": "2,3,5-Trimethylnaphthalene"
+        },
+        {
+          "Term": "tinDissolved",
+          "Name": "Tin, dissolved"
+        },
+        {
+          "Term": "oxygenDissolvedPercentOfSaturation",
+          "Name": "Oxygen, dissolved percent of saturation"
+        },
+        {
+          "Term": "vaporPressure",
+          "Name": "Vapor pressure"
+        },
+        {
+          "Term": "malathion",
+          "Name": "Malathion"
+        },
+        {
+          "Term": "DNADamageOliveDailMoment",
+          "Name": "DNA damage, olive tail moment"
+        },
+        {
+          "Term": "titanium",
+          "Name": "Titanium"
+        },
+        {
+          "Term": "ethylTert_ButylEther",
+          "Name": "Ethyl tert-Butyl Ether"
+        },
+        {
+          "Term": "uranium_235",
+          "Name": "Uranium-235"
+        },
+        {
+          "Term": "solidsTotalSuspended",
+          "Name": "Solids, total suspended"
+        },
+        {
+          "Term": "nitrogenNitrate_NO3",
+          "Name": "Nitrogen, nitrate (NO3)"
+        },
+        {
+          "Term": "aniline",
+          "Name": "Aniline"
+        },
+        {
+          "Term": "N_Nitrosodi_n_Propylamine",
+          "Name": "N-Nitrosodi-n-propylamine"
+        },
+        {
+          "Term": "streamflow",
+          "Name": "Streamflow"
+        },
+        {
+          "Term": "chromium_III",
+          "Name": "Chromium (III)"
+        },
+        {
+          "Term": "waterLevel",
+          "Name": "Water level"
+        },
+        {
+          "Term": "endOfFile",
+          "Name": "End of file"
+        },
+        {
+          "Term": "threshold",
+          "Name": "Threshold"
+        },
+        {
+          "Term": "snowWaterEquivalent",
+          "Name": "Snow water equivalent"
+        },
+        {
+          "Term": "bariumTotal",
+          "Name": "Barium, total"
+        },
+        {
+          "Term": "carbon_14",
+          "Name": "Carbon-14"
+        },
+        {
+          "Term": "chlorideDissolved",
+          "Name": "Chloride, dissolved"
+        },
+        {
+          "Term": "tableOverrunErrorCount",
+          "Name": "Table overrun error count"
+        },
+        {
+          "Term": "chloroethene",
+          "Name": "Chloroethene"
+        },
+        {
+          "Term": "carbonDioxide",
+          "Name": "Carbon dioxide"
+        },
+        {
+          "Term": "grossAlphaRadionuclides",
+          "Name": "Gross alpha radionuclides"
+        },
+        {
+          "Term": "glutathione_S_TransferaseActivity",
+          "Name": "Glutathione S-transferase, activity"
+        },
+        {
+          "Term": "transpiration",
+          "Name": "Transpiration"
+        },
+        {
+          "Term": "Silt",
+          "Name": "Silt"
+        },
+        {
+          "Term": "hardnessCarbonate",
+          "Name": "Hardness, carbonate"
+        },
+        {
+          "Term": "timeElapsed",
+          "Name": "Time, elapsed"
+        },
+        {
+          "Term": "ironDissolved",
+          "Name": "Iron, dissolved"
+        },
+        {
+          "Term": "rheniumTotal",
+          "Name": "Rhenium, total"
+        },
+        {
+          "Term": "boronTotal",
+          "Name": "Boron, total"
+        },
+        {
+          "Term": "permethrin",
+          "Name": "Permethrin"
+        },
+        {
+          "Term": "streptococciFecal",
+          "Name": "Streptococci, fecal"
+        },
+        {
+          "Term": "di_n_Butylphthalate",
+          "Name": "Di-n-butylphthalate"
+        },
+        {
+          "Term": "berylliumDissolved",
+          "Name": "Beryllium, dissolved"
+        },
+        {
+          "Term": "chloromethane",
+          "Name": "Chloromethane"
+        },
+        {
+          "Term": "silicon",
+          "Name": "Silicon"
+        },
+        {
+          "Term": "waterUseAgriculture",
+          "Name": "Water Use, Agriculture"
+        },
+        {
+          "Term": "1_5_Dimethylnaphthalene",
+          "Name": "1,5-Dimethylnaphthalene"
+        },
+        {
+          "Term": "radiationIncoming",
+          "Name": "Radiation, incoming"
+        },
+        {
+          "Term": "silicate",
+          "Name": "Silicate"
+        },
+        {
+          "Term": "antimonyParticulate",
+          "Name": "Antimony, particulate"
+        },
+        {
+          "Term": "BOD5Nitrogenous",
+          "Name": "BOD5, nitrogenous"
+        },
+        {
+          "Term": "adamantane",
+          "Name": "Adamantane"
+        },
+        {
+          "Term": "4_BromophenylphenylEther",
+          "Name": "4-Bromophenylphenyl ether"
+        },
+        {
+          "Term": "percentFullScale",
+          "Name": "Percent full scale"
+        },
+        {
+          "Term": "leadDistributionCoefficient",
+          "Name": "Lead, distribution coefficient"
+        },
+        {
+          "Term": "cytochromeP450Family1SubfamilyAPolypeptide1DeltaCycleThreshold",
+          "Name": "Cytochrome P450, family 1, subfamily A, polypeptide 1, delta cycle threshold"
+        },
+        {
+          "Term": "respirationNet",
+          "Name": "Respiration, net"
+        },
+        {
+          "Term": "containerNumber",
+          "Name": "Container number"
+        },
+        {
+          "Term": "chlorophyll_a_UncorrectedForPheophytin",
+          "Name": "Chlorophyll a, uncorrected for pheophytin"
+        },
+        {
+          "Term": "permittivity",
+          "Name": "Permittivity"
+        },
+        {
+          "Term": "oxygenFlux",
+          "Name": "Oxygen flux"
+        },
+        {
+          "Term": "Clay",
+          "Name": "Clay"
+        },
+        {
+          "Term": "triphenylene",
+          "Name": "Triphenylene"
+        },
+        {
+          "Term": "benzo_b_fluorene",
+          "Name": "Benzo(b)fluorene"
+        },
+        {
+          "Term": "solidsTotal",
+          "Name": "Solids, total"
+        },
+        {
+          "Term": "volumetricWaterContent",
+          "Name": "Volumetric water content"
+        },
+        {
+          "Term": "radiationIncomingUV_B",
+          "Name": "Radiation, incoming UV-B"
+        },
+        {
+          "Term": "endosulfanSulfate",
+          "Name": "Endosulfan Sulfate"
+        },
+        {
+          "Term": "cadmiumDistributionCoefficient",
+          "Name": "Cadmium, distribution coefficient"
+        },
+        {
+          "Term": "1_2_Dinitrobenzene",
+          "Name": "1,2-Dinitrobenzene"
+        },
+        {
+          "Term": "waterColumnEquivalentHeightBarometric",
+          "Name": "Water column equivalent height, barometric"
+        },
+        {
+          "Term": "manganeseParticulate",
+          "Name": "Manganese, particulate"
+        },
+        {
+          "Term": "sodiumDissolved",
+          "Name": "Sodium, dissolved"
+        },
+        {
+          "Term": "hexane",
+          "Name": "Hexane"
+        },
+        {
+          "Term": "BOD2Carbonaceous",
+          "Name": "BOD2, carbonaceous"
+        },
+        {
+          "Term": "n_Alkane_C26",
+          "Name": "n-alkane, C26"
+        },
+        {
+          "Term": "n_Alkane_C18",
+          "Name": "n-alkane, C18"
+        },
+        {
+          "Term": "cyclohexane",
+          "Name": "Cyclohexane"
+        },
+        {
+          "Term": "benzo_k_fluoranthene",
+          "Name": "Benzo(k)fluoranthene"
+        },
+        {
+          "Term": "naphthalene",
+          "Name": "Naphthalene"
+        },
+        {
+          "Term": "n_Alkane_C24",
+          "Name": "n-alkane, C24"
+        },
+        {
+          "Term": "batteryTemperature",
+          "Name": "Battery temperature"
+        },
+        {
+          "Term": "heptachlorEpoxide",
+          "Name": "Heptachlor epoxide"
+        },
+        {
+          "Term": "sulfideTotal",
+          "Name": "Sulfide, total"
+        },
+        {
+          "Term": "phosphorodithioicAcid",
+          "Name": "Phosphorodithioic acid"
+        },
+        {
+          "Term": "waterFlux",
+          "Name": "Water flux"
+        },
+        {
+          "Term": "shannonDiversityIndex",
+          "Name": "Shannon diversity index"
+        },
+        {
+          "Term": "polycyclicAromaticHydrocarbonParent",
+          "Name": "Polycyclic aromatic hydrocarbon, parent"
+        },
+        {
+          "Term": "parathion_Ethyl",
+          "Name": "Parathion-ethyl"
+        },
+        {
+          "Term": "2_Methylphenanthrene",
+          "Name": "2-Methylphenanthrene"
+        },
+        {
+          "Term": "phytoplankton",
+          "Name": "Phytoplankton"
+        },
+        {
+          "Term": "propyleneGlycol",
+          "Name": "Propylene glycol"
+        },
+        {
+          "Term": "methyleneBlueActiveSubstances",
+          "Name": "Methylene blue active substances"
+        },
+        {
+          "Term": "heliumDissolved",
+          "Name": "Helium, dissolved"
+        },
+        {
+          "Term": "n_Alkane_C22",
+          "Name": "n-alkane, C22"
+        },
+        {
+          "Term": "waterDepth",
+          "Name": "Water depth"
+        },
+        {
+          "Term": "superoxideDismutaseDeltaCycleThreshold",
+          "Name": "Superoxide dismutase, delta cycle threshold"
+        },
+        {
+          "Term": "1_Methylnaphthalene",
+          "Name": "1-Methylnaphthalene"
+        },
+        {
+          "Term": "urea",
+          "Name": "Urea"
+        },
+        {
+          "Term": "silverDissolved",
+          "Name": "Silver, dissolved"
+        },
+        {
+          "Term": "1_2_4_Trimethylbenzene",
+          "Name": "1,2,4-Trimethylbenzene"
+        },
+        {
+          "Term": "2_4_6_Trichlorophenol",
+          "Name": "2,4,6-Trichlorophenol"
+        },
+        {
+          "Term": "bis_2_Chloroethoxy_Methane",
+          "Name": "Bis(2-chloroethoxy)methane"
+        },
+        {
+          "Term": "e_coli",
+          "Name": "E-coli"
+        },
+        {
+          "Term": "zincDissolved",
+          "Name": "Zinc, dissolved"
+        },
+        {
+          "Term": "ethaneDissolved",
+          "Name": "Ethane, dissolved"
+        },
+        {
+          "Term": "pyrene",
+          "Name": "Pyrene"
+        },
+        {
+          "Term": "fluorine",
+          "Name": "Fluorine"
+        },
+        {
+          "Term": "1_8_Dimethylnaphthalene",
+          "Name": "1,8-Dimethylnaphthalene"
+        },
+        {
+          "Term": "magnesiumTotal",
+          "Name": "Magnesium, total"
+        },
+        {
+          "Term": "3_Nitroaniline",
+          "Name": "3-Nitroaniline"
+        },
+        {
+          "Term": "BOD5",
+          "Name": "BOD5"
+        },
+        {
+          "Term": "benzylAlcohol",
+          "Name": "Benzyl alcohol"
+        },
+        {
+          "Term": "intercept",
+          "Name": "Intercept"
+        },
+        {
+          "Term": "solidsVolatileSuspended",
+          "Name": "Solids, volatile suspended"
+        },
+        {
+          "Term": "nitrogenDissolvedInorganic",
+          "Name": "Nitrogen, dissolved inorganic"
+        },
+        {
+          "Term": "watchdogErrorCount",
+          "Name": "Watchdog error count"
+        },
+        {
+          "Term": "carbonDissolvedTotal",
+          "Name": "Carbon, dissolved total"
+        },
+        {
+          "Term": "carbonDioxideFlux",
+          "Name": "Carbon dioxide flux"
+        },
+        {
+          "Term": "piperonylButoxide",
+          "Name": "Piperonyl Butoxide"
+        },
+        {
+          "Term": "mercuryTotal",
+          "Name": "Mercury, total"
+        },
+        {
+          "Term": "respirationEcosystem",
+          "Name": "Respiration, ecosystem"
+        },
+        {
+          "Term": "ethyne",
+          "Name": "Ethyne"
+        },
+        {
+          "Term": "2_4_Dimethylphenol",
+          "Name": "2,4-Dimethylphenol"
+        },
+        {
+          "Term": "ironFerric",
+          "Name": "Iron, ferric"
+        },
+        {
+          "Term": "programSignature",
+          "Name": "Program signature"
+        },
+        {
+          "Term": "2_3_Dimethylnaphthalene",
+          "Name": "2,3-Dimethylnaphthalene"
+        },
+        {
+          "Term": "2_Methyldibenzothiophene",
+          "Name": "2-Methyldibenzothiophene"
+        },
+        {
+          "Term": "hardnessNonCarbonate",
+          "Name": "Hardness, non-carbonate"
+        },
+        {
+          "Term": "salicorniaVirginicaCoverage",
+          "Name": "Salicornia virginica coverage"
+        },
+        {
+          "Term": "dibenzothiophene",
+          "Name": "Dibenzothiophene"
+        },
+        {
+          "Term": "2_Methylphenol",
+          "Name": "2-Methylphenol"
+        },
+        {
+          "Term": "nitrogenDissolvedNitrite_NO2_Nitrate_NO3",
+          "Name": "Nitrogen, dissolved nitrite (NO2) + nitrate (NO3)"
+        },
+        {
+          "Term": "instrumentStatusCode",
+          "Name": "Instrument status code"
+        },
+        {
+          "Term": "hexachlorobenzene",
+          "Name": "Hexachlorobenzene"
+        },
+        {
+          "Term": "windStress",
+          "Name": "Wind stress"
+        },
+        {
+          "Term": "tritium_3H_DeltaTOfH2O",
+          "Name": "Tritium (3H), Delta T of H2O"
+        },
+        {
+          "Term": "heightAboveSeaFloor",
+          "Name": "height, above sea floor"
+        },
+        {
+          "Term": "solidsTotalVolatile",
+          "Name": "Solids, total volatile"
+        },
+        {
+          "Term": "1_4_Dichlorobenzene",
+          "Name": "1,4-Dichlorobenzene"
+        },
+        {
+          "Term": "1_3_Dichlorobenzene",
+          "Name": "1,3-Dichlorobenzene"
+        },
+        {
+          "Term": "oxygen",
+          "Name": "Oxygen"
+        },
+        {
+          "Term": "iodideDissolved",
+          "Name": "Iodide, dissolved"
+        },
+        {
+          "Term": "waterUseDomesticWells",
+          "Name": "Water Use, Domestic wells"
+        },
+        {
+          "Term": "4_6_Dinitro_2_Methylphenol",
+          "Name": "4,6-Dinitro-2-methylphenol"
+        },
+        {
+          "Term": "leadParticulate",
+          "Name": "Lead, particulate"
+        },
+        {
+          "Term": "nitrousOxide",
+          "Name": "Nitrous oxide"
+        },
+        {
+          "Term": "thoriumDissolved",
+          "Name": "Thorium, dissolved"
+        },
+        {
+          "Term": "BODuCarbonaceous",
+          "Name": "BODu, carbonaceous"
+        },
+        {
+          "Term": "wellheadPressure",
+          "Name": "Wellhead pressure"
+        },
+        {
+          "Term": "zooplankton",
+          "Name": "Zooplankton"
+        },
+        {
+          "Term": "silicicAcidFlux",
+          "Name": "Silicic acid flux"
+        },
+        {
+          "Term": "retene",
+          "Name": "Retene"
+        },
+        {
+          "Term": "cyanide",
+          "Name": "Cyanide"
+        },
+        {
+          "Term": "nickelDissolved",
+          "Name": "Nickel, dissolved"
+        },
+        {
+          "Term": "radiationIncomingLongwave",
+          "Name": "Radiation, incoming longwave"
+        },
+        {
+          "Term": "di_n_OctylPhthalate",
+          "Name": "Di-n-octyl phthalate"
+        },
+        {
+          "Term": "benzo_g_h_i_perylene",
+          "Name": "Benzo(g,h,i)perylene"
+        },
+        {
+          "Term": "batteryVoltage",
+          "Name": "Battery voltage"
+        },
+        {
+          "Term": "indicator",
+          "Name": "Indicator"
+        },
+        {
+          "Term": "2_Nitrophenol",
+          "Name": "2-Nitrophenol"
+        },
+        {
+          "Term": "pentane",
+          "Name": "Pentane"
+        },
+        {
+          "Term": "1_2_Dibromo_3_Chloropropane",
+          "Name": "1,2-Dibromo-3-chloropropane"
+        },
+        {
+          "Term": "waterVaporDensity",
+          "Name": "Water vapor density"
+        },
+        {
+          "Term": "dibromochloromethane",
+          "Name": "Dibromochloromethane"
+        },
+        {
+          "Term": "4_Methylchrysene",
+          "Name": "4-Methylchrysene"
+        },
+        {
+          "Term": "n_Alkane_C19",
+          "Name": "n-alkane, C19"
+        },
+        {
+          "Term": "electricCurrent",
+          "Name": "Electric Current"
+        },
+        {
+          "Term": "aceticAcid",
+          "Name": "Acetic Acid"
+        },
+        {
+          "Term": "diatoxanthin",
+          "Name": "Diatoxanthin"
+        },
+        {
+          "Term": "electricPower",
+          "Name": "Electric Power"
+        },
+        {
+          "Term": "acetate",
+          "Name": "Acetate"
+        },
+        {
+          "Term": "9_cis_Neoxanthin",
+          "Name": "9 cis-Neoxanthin"
+        },
+        {
+          "Term": "2_4_Dinitrotoluene",
+          "Name": "2,4-Dinitrotoluene"
+        },
+        {
+          "Term": "uraniumDissolved",
+          "Name": "Uranium, dissolved"
+        },
+        {
+          "Term": "isophorone",
+          "Name": "Isophorone"
+        },
+        {
+          "Term": "radiationIncomingUV_A",
+          "Name": "Radiation, incoming UV-A"
+        },
+        {
+          "Term": "n_Alkane_C28",
+          "Name": "n-alkane, C28"
+        },
+        {
+          "Term": "chlorineDissolved",
+          "Name": "Chlorine, dissolved"
+        },
+        {
+          "Term": "alkalinityCarbonate",
+          "Name": "Alkalinity, carbonate"
+        },
+        {
+          "Term": "BOD1",
+          "Name": "BOD1"
+        },
+        {
+          "Term": "enterococci",
+          "Name": "Enterococci"
+        },
+        {
+          "Term": "pheophytin",
+          "Name": "Pheophytin"
+        },
+        {
+          "Term": "bariumDissolved",
+          "Name": "Barium, dissolved"
+        },
+        {
+          "Term": "1_6_Dimethylnaphthalene",
+          "Name": "1,6-Dimethylnaphthalene"
+        },
+        {
+          "Term": "bromomethane_MethylBromide",
+          "Name": "Bromomethane (Methyl bromide)"
+        },
+        {
+          "Term": "4_Nitrophenol",
+          "Name": "4-Nitrophenol"
+        },
+        {
+          "Term": "chromium_VI",
+          "Name": "Chromium (VI)"
+        },
+        {
+          "Term": "aroclor_1242",
+          "Name": "Aroclor-1242"
+        },
+        {
+          "Term": "canthaxanthin",
+          "Name": "Canthaxanthin"
+        },
+        {
+          "Term": "volume",
+          "Name": "Volume"
+        },
+        {
+          "Term": "carbonTotalInorganic",
+          "Name": "Carbon, total inorganic"
+        },
+        {
+          "Term": "discharge",
+          "Name": "Discharge"
+        },
+        {
+          "Term": "trans_1_2_Dichloroethene",
+          "Name": "trans-1,2-Dichloroethene"
+        },
+        {
+          "Term": "temperatureDatalogger",
+          "Name": "Temperature, datalogger"
+        },
+        {
+          "Term": "n_Alkane_C20",
+          "Name": "n-alkane, C20"
+        },
+        {
+          "Term": "chromiumDissolved",
+          "Name": "Chromium, dissolved"
+        },
+        {
+          "Term": "phosphorusPolyphosphate",
+          "Name": "Phosphorus, polyphosphate"
+        },
+        {
+          "Term": "waterPotential",
+          "Name": "Water potential"
+        },
+        {
+          "Term": "bis_2_Chloroethyl_Ether",
+          "Name": "bis(2-Chloroethyl)ether"
+        },
+        {
+          "Term": "superoxideDismutaseActivity",
+          "Name": "Superoxide dismutase, activity"
+        },
+        {
+          "Term": "pH",
+          "Name": "pH"
+        },
+        {
+          "Term": "imaginaryDielectricConstant",
+          "Name": "Imaginary dielectric constant"
+        },
+        {
+          "Term": "benzo_b_fluoranthene",
+          "Name": "Benzo(b)fluoranthene"
+        },
+        {
+          "Term": "ureaFlux",
+          "Name": "Urea flux"
+        },
+        {
+          "Term": "glutathione_S_TransferaseDeltaCycleThreshold",
+          "Name": "Glutathione S-transferase, delta cycle threshold"
+        },
+        {
+          "Term": "phorate",
+          "Name": "Phorate"
+        },
+        {
+          "Term": "nitrogenInorganic",
+          "Name": "Nitrogen, inorganic"
+        },
+        {
+          "Term": "petroleumHydrocarbonTotal",
+          "Name": "Petroleum hydrocarbon, total"
+        },
+        {
+          "Term": "nitrogenDissolvedNitrite_NO2",
+          "Name": "Nitrogen, dissolved nitrite (NO2)"
+        },
+        {
+          "Term": "disulfoton",
+          "Name": "Disulfoton"
+        },
+        {
+          "Term": "thorium_228",
+          "Name": "Thorium-228"
+        },
+        {
+          "Term": "silverTotal",
+          "Name": "Silver, total"
+        },
+        {
+          "Term": "pronamide",
+          "Name": "Pronamide"
+        },
+        {
+          "Term": "waveHeight",
+          "Name": "Wave height"
+        },
+        {
+          "Term": "counter",
+          "Name": "Counter"
+        },
+        {
+          "Term": "evapotranspiration",
+          "Name": "Evapotranspiration"
+        },
+        {
+          "Term": "LSI",
+          "Name": "LSI"
+        },
+        {
+          "Term": "1_2_Dichlorobenzene",
+          "Name": "1,2-Dichlorobenzene"
+        },
+        {
+          "Term": "aroclor_1016",
+          "Name": "Aroclor-1016"
+        },
+        {
+          "Term": "cesium_137",
+          "Name": "Cesium-137"
+        },
+        {
+          "Term": "coliformFecal",
+          "Name": "Coliform, fecal"
+        },
+        {
+          "Term": "n_Alkane_C27",
+          "Name": "n-alkane, C27"
+        },
+        {
+          "Term": "chromiumTotal",
+          "Name": "Chromium, total"
+        },
+        {
+          "Term": "acetone",
+          "Name": "Acetone"
+        },
+        {
+          "Term": "BOD6Carbonaceous",
+          "Name": "BOD6, carbonaceous"
+        },
+        {
+          "Term": "perylene",
+          "Name": "Perylene"
+        },
+        {
+          "Term": "biomassPhytoplankton",
+          "Name": "Biomass, phytoplankton"
+        },
+        {
+          "Term": "cesiumDissolved",
+          "Name": "Cesium, dissolved"
+        },
+        {
+          "Term": "dibenzofuran",
+          "Name": "Dibenzofuran"
+        },
+        {
+          "Term": "phosphorusDissolvedOrganic",
+          "Name": "Phosphorus, dissolved organic"
+        },
+        {
+          "Term": "oxygenDissolved",
+          "Name": "Oxygen, dissolved"
+        },
+        {
+          "Term": "alkalinityCarbonatePlusBicarbonate",
+          "Name": "Alkalinity, carbonate plus bicarbonate"
+        },
+        {
+          "Term": "benzene",
+          "Name": "Benzene"
+        },
+        {
+          "Term": "arsenicTotal",
+          "Name": "Arsenic, total"
+        },
+        {
+          "Term": "bifenthrin",
+          "Name": "Bifenthrin"
+        },
+        {
+          "Term": "radiationIncomingShortwave",
+          "Name": "Radiation, incoming shortwave"
+        },
+        {
+          "Term": "delta_13COfC3H8",
+          "Name": "delta-13C of C3H8"
+        },
+        {
+          "Term": "1_3_Dimethylnaphthalene",
+          "Name": "1,3-Dimethylnaphthalene"
+        },
+        {
+          "Term": "organicMatter",
+          "Name": "Organic matter"
+        },
+        {
+          "Term": "strontiumTotal",
+          "Name": "Strontium, total"
+        },
+        {
+          "Term": "2_7_Dimethylnaphthalene",
+          "Name": "2,7-Dimethylnaphthalene"
+        },
+        {
+          "Term": "N_Nitrosodi_n_Butylamine",
+          "Name": "N-Nitrosodi-n-butylamine"
+        },
+        {
+          "Term": "pentachlorophenol",
+          "Name": "Pentachlorophenol"
+        },
+        {
+          "Term": "nitrogenDissolved_Free_Ionized_Ammonia_NH3_NH4",
+          "Name": "Nitrogen, dissolved (free+ionized) Ammonia (NH3) + (NH4)"
+        },
+        {
+          "Term": "evaporation",
+          "Name": "Evaporation"
+        },
+        {
+          "Term": "heatIndex",
+          "Name": "Heat index"
+        },
+        {
+          "Term": "solidsTotalFixed",
+          "Name": "Solids, total fixed"
+        },
+        {
+          "Term": "propanoicAcid",
+          "Name": "Propanoic acid"
+        },
+        {
+          "Term": "bariumParticulate",
+          "Name": "Barium, particulate"
+        },
+        {
+          "Term": "grossBetaRadionuclides",
+          "Name": "Gross beta radionuclides"
+        },
+        {
+          "Term": "radiationTotalIncoming",
+          "Name": "Radiation, total incoming"
+        },
+        {
+          "Term": "waterUseCommercialIndustrialPower",
+          "Name": "Water Use, Commercial + Industrial + Power"
+        },
+        {
+          "Term": "alkalinityBicarbonate",
+          "Name": "Alkalinity, bicarbonate"
+        },
+        {
+          "Term": "chlorophyll_a_b_c",
+          "Name": "Chlorophyll (a+b+c)"
+        },
+        {
+          "Term": "n_Alkane_C16",
+          "Name": "n-alkane, C16"
+        },
+        {
+          "Term": "transientSpeciesCoverage",
+          "Name": "Transient species coverage"
+        },
+        {
+          "Term": "windSpeed",
+          "Name": "Wind speed"
+        },
+        {
+          "Term": "phenanthrene",
+          "Name": "Phenanthrene"
+        },
+        {
+          "Term": "potassiumTotal",
+          "Name": "Potassium, total"
+        },
+        {
+          "Term": "albedo",
+          "Name": "Albedo"
+        },
+        {
+          "Term": "primaryProductivity",
+          "Name": "Primary productivity"
+        },
+        {
+          "Term": "N_Nitrosodimethylamine",
+          "Name": "N-Nitrosodimethylamine"
+        },
+        {
+          "Term": "weatherConditions",
+          "Name": "Weather conditions"
+        },
+        {
+          "Term": "carbaryl",
+          "Name": "Carbaryl"
+        },
+        {
+          "Term": "waterColumnEquivalentHeightAbsolute",
+          "Name": "Water column equivalent height, absolute"
+        },
+        {
+          "Term": "antimonyDistributionCoefficient",
+          "Name": "Antimony, distribution coefficient"
+        },
+        {
+          "Term": "cadmiumTotal",
+          "Name": "Cadmium, total"
+        },
+        {
+          "Term": "spartinaAlternifloraCoverage",
+          "Name": "Spartina alterniflora coverage"
+        },
+        {
+          "Term": "benzo_e_pyrene",
+          "Name": "Benzo(e)pyrene"
+        },
+        {
+          "Term": "2_Nitroaniline",
+          "Name": "2-Nitroaniline"
+        },
+        {
+          "Term": "distance",
+          "Name": "Distance"
+        },
+        {
+          "Term": "slope",
+          "Name": "Slope"
+        },
+        {
+          "Term": "ironTotal",
+          "Name": "Iron, total"
+        },
+        {
+          "Term": "ethyleneDissolved",
+          "Name": "Ethylene, dissolved"
+        },
+        {
+          "Term": "carbonTetrachloride",
+          "Name": "Carbon tetrachloride"
+        },
+        {
+          "Term": "tributoxyethylPhosphate",
+          "Name": "Tributoxyethyl phosphate"
+        },
+        {
+          "Term": "delta_DOfH2O",
+          "Name": "delta-D of H2O"
+        },
+        {
+          "Term": "deuterium",
+          "Name": "Deuterium"
+        },
+        {
+          "Term": "nitrogenParticulateOrganic",
+          "Name": "Nitrogen, particulate organic"
+        },
+        {
+          "Term": "cobaltTotal",
+          "Name": "Cobalt, total"
+        },
+        {
+          "Term": "argon",
+          "Name": "Argon"
+        },
+        {
+          "Term": "n_Alkane_C29",
+          "Name": "n-alkane, C29"
+        },
+        {
+          "Term": "fluoranthene",
+          "Name": "Fluoranthene"
+        },
+        {
+          "Term": "4_4_DDT",
+          "Name": "4,4-DDT"
+        },
+        {
+          "Term": "carbonSuspendedOrganic",
+          "Name": "Carbon, suspended organic"
+        },
+        {
+          "Term": "butylbenzylphthalate",
+          "Name": "Butylbenzylphthalate"
+        },
+        {
+          "Term": "cadmiumDissolved",
+          "Name": "Cadmium, dissolved"
+        },
+        {
+          "Term": "waterDepthAveraged",
+          "Name": "Water depth, averaged"
+        },
+        {
+          "Term": "strontiumDissolved",
+          "Name": "Strontium, dissolved"
+        },
+        {
+          "Term": "orientation",
+          "Name": "Orientation"
+        },
+        {
+          "Term": "carbonDissolvedInorganic",
+          "Name": "Carbon, dissolved inorganic"
+        },
+        {
+          "Term": "seleniumDistributionCoefficient",
+          "Name": "Selenium, distribution coefficient"
+        },
+        {
+          "Term": "isopentane",
+          "Name": "Isopentane"
+        },
+        {
+          "Term": "lithiumTotal",
+          "Name": "Lithium, total"
+        },
+        {
+          "Term": "BOD3Carbonaceous",
+          "Name": "BOD3, carbonaceous"
+        },
+        {
+          "Term": "BOD20Carbonaceous",
+          "Name": "BOD20, carbonaceous"
+        },
+        {
+          "Term": "DNADamagePercentTailDNA",
+          "Name": "DNA damage, percent tail DNA"
+        },
+        {
+          "Term": "arsenicDissolved",
+          "Name": "Arsenic, dissolved"
+        },
+        {
+          "Term": "ethylbenzene",
+          "Name": "Ethylbenzene"
+        },
+        {
+          "Term": "fluoride",
+          "Name": "Fluoride"
+        },
+        {
+          "Term": "limoniumNashiiCoverage",
+          "Name": "Limonium nashii Coverage"
+        },
+        {
+          "Term": "isobutane",
+          "Name": "Isobutane"
+        },
+        {
+          "Term": "sedimentSuspended",
+          "Name": "Sediment, suspended"
+        },
+        {
+          "Term": "diisopropylEther",
+          "Name": "Diisopropyl Ether"
+        },
+        {
+          "Term": "aluminumTotal",
+          "Name": "Aluminum, total"
+        },
+        {
+          "Term": "polycyclicAromaticHydrocarbonAlkyl",
+          "Name": "Polycyclic aromatic hydrocarbon, alkyl"
+        },
+        {
+          "Term": "biogenicSilica",
+          "Name": "Biogenic silica"
+        },
+        {
+          "Term": "leadDissolved",
+          "Name": "Lead, dissolved"
+        },
+        {
+          "Term": "berylliumTotal",
+          "Name": "Beryllium, total"
+        },
+        {
+          "Term": "groundHeatFlux",
+          "Name": "Ground heat flux"
+        },
+        {
+          "Term": "2_Butanone_MEK",
+          "Name": "2-Butanone (MEK)"
+        },
+        {
+          "Term": "alkalinityHydroxide",
+          "Name": "Alkalinity, hydroxide"
+        },
+        {
+          "Term": "solidsRixedDissolved",
+          "Name": "Solids, fixed dissolved"
+        },
+        {
+          "Term": "1_2_Dichloropropane",
+          "Name": "1,2-Dichloropropane"
+        },
+        {
+          "Term": "wellFlowRate",
+          "Name": "Well flow rate"
+        },
+        {
+          "Term": "xylosidase",
+          "Name": "Xylosidase"
+        },
+        {
+          "Term": "silicaDissolved",
+          "Name": "Silica, dissolved"
+        },
+        {
+          "Term": "1_4_6_Trimethylnaphthalene",
+          "Name": "1,4,6-Trimethylnaphthalene"
+        },
+        {
+          "Term": "hardnessMagnesium",
+          "Name": "Hardness, Magnesium"
+        },
+        {
+          "Term": "relativeHumidity",
+          "Name": "Relative humidity"
+        },
+        {
+          "Term": "fishDetections",
+          "Name": "Fish detections"
+        },
+        {
+          "Term": "delta_13COfCH4",
+          "Name": "delta-13C of CH4"
+        },
+        {
+          "Term": "1_2_Dimethylnaphthalene",
+          "Name": "1,2-Dimethylnaphthalene"
+        },
+        {
+          "Term": "dimethylphenanthrene",
+          "Name": "Dimethylphenanthrene"
+        },
+        {
+          "Term": "nitrogenDissolvedNitrate_NO3",
+          "Name": "Nitrogen, dissolved nitrate (NO3)"
+        },
+        {
+          "Term": "phosphorusOrganic",
+          "Name": "Phosphorus, organic"
+        },
+        {
+          "Term": "2_3_4_6_Tetrachlorophenol",
+          "Name": "2,3,4,6-Tetrachlorophenol"
+        },
+        {
+          "Term": "titaniumDissolved",
+          "Name": "Titanium, dissolved"
+        },
+        {
+          "Term": "sodiumPlusPotassium",
+          "Name": "Sodium plus potassium"
+        },
+        {
+          "Term": "2_6_Dinitrotoluene",
+          "Name": "2,6-Dinitrotoluene"
+        },
+        {
+          "Term": "nickelTotal",
+          "Name": "Nickel, total"
+        },
+        {
+          "Term": "1_1_2_2_Tetrachloroethane",
+          "Name": "1,1,2,2-Tetrachloroethane"
+        },
+        {
+          "Term": "hosphorusPhosphateFlux",
+          "Name": "Phosphorus, phosphate flux"
+        },
+        {
+          "Term": "nitrogen_NH3",
+          "Name": "Nitrogen, NH3"
+        },
+        {
+          "Term": "styrene",
+          "Name": "Styrene"
+        },
+        {
+          "Term": "thorium",
+          "Name": "Thorium"
+        },
+        {
+          "Term": "cellobiohydrolase",
+          "Name": "Cellobiohydrolase"
+        },
+        {
+          "Term": "fluorene",
+          "Name": "Fluorene"
+        },
+        {
+          "Term": "chlorophyll_a_Allomer",
+          "Name": "Chlorophyll a allomer"
+        },
+        {
+          "Term": "terbufos",
+          "Name": "Terbufos"
+        },
+        {
+          "Term": "bulkElectricalConductivity",
+          "Name": "Bulk electrical conductivity"
+        },
+        {
+          "Term": "N_Nitrosomethylethylamine",
+          "Name": "N-Nitrosomethylethylamine"
+        },
+        {
+          "Term": "sunshineDuration",
+          "Name": "Sunshine duration"
+        },
+        {
+          "Term": "bromineDissolved",
+          "Name": "Bromine, dissolved"
+        },
+        {
+          "Term": "2_Methylanthracene",
+          "Name": "2-Methylanthracene"
+        },
+        {
+          "Term": "aluminumDissolved",
+          "Name": "Aluminum, dissolved"
+        },
+        {
+          "Term": "longitude",
+          "Name": "Longitude"
+        },
+        {
+          "Term": "sulfateDissolved",
+          "Name": "Sulfate, dissolved"
+        },
+        {
+          "Term": "sulfurDissolved",
+          "Name": "Sulfur, dissolved"
+        },
+        {
+          "Term": "1_NaphthalenolMethylcarbamate",
+          "Name": "1-Naphthalenol methylcarbamate"
+        },
+        {
+          "Term": "batisMaritimaCoverage",
+          "Name": "Batis maritima Coverage"
+        },
+        {
+          "Term": "methaneDissolved",
+          "Name": "Methane, dissolved"
+        },
+        {
+          "Term": "silica",
+          "Name": "Silica"
+        },
+        {
+          "Term": "remark",
+          "Name": "Remark"
+        },
+        {
+          "Term": "thalliumTotal",
+          "Name": "Thallium, total"
+        },
+        {
+          "Term": "acidityHot",
+          "Name": "Acidity, hot"
+        },
+        {
+          "Term": "hydrogen_2_StableIsotopeRatioDelta",
+          "Name": "Hydrogen-2, stable isotope ratio delta"
+        },
+        {
+          "Term": "fluorideDissolved",
+          "Name": "Fluoride, dissolved"
+        },
+        {
+          "Term": "noVegetationCoverage",
+          "Name": "No vegetation coverage"
+        },
+        {
+          "Term": "molybdenumTotal",
+          "Name": "Molybdenum, total"
+        },
+        {
+          "Term": "ethyleneGlycol",
+          "Name": "Ethylene glycol"
+        },
+        {
+          "Term": "sedimentPassingSieve",
+          "Name": "Sediment, passing sieve"
+        },
+        {
+          "Term": "carbonSuspendedTotal",
+          "Name": "Carbon, suspended total"
+        },
+        {
+          "Term": "calciumDissolved",
+          "Name": "Calcium, dissolved"
+        },
+        {
+          "Term": "color",
+          "Name": "Color"
+        },
+        {
+          "Term": "1_2_4_Trichlorobenzene",
+          "Name": "1,2,4-Trichlorobenzene"
+        },
+        {
+          "Term": "methane",
+          "Name": "Methane"
+        },
+        {
+          "Term": "endrin",
+          "Name": "Endrin"
+        },
+        {
+          "Term": "sensibleHeatFlux",
+          "Name": "Sensible heat flux"
+        },
+        {
+          "Term": "hardnessTotal",
+          "Name": "Hardness, total"
+        },
+        {
+          "Term": "uranium_234",
+          "Name": "Uranium-234"
+        },
+        {
+          "Term": "chlorophyll_c1_And_c2",
+          "Name": "Chlorophyll c1 and c2"
+        },
+        {
+          "Term": "cis_1_2_Dichloroethene",
+          "Name": "cis-1,2-Dichloroethene"
+        },
+        {
+          "Term": "aldrin",
+          "Name": "Aldrin"
+        },
+        {
+          "Term": "phosphorusParticulateOrganic",
+          "Name": "Phosphorus, particulate organic"
+        },
+        {
+          "Term": "chromiumDistributionCoefficient",
+          "Name": "Chromium, distribution coefficient"
+        },
+        {
+          "Term": "agencyCode",
+          "Name": "Agency code"
+        },
+        {
+          "Term": "aroclor_1260",
+          "Name": "Aroclor-1260"
+        },
+        {
+          "Term": "tetracene",
+          "Name": "Tetracene"
+        },
+        {
+          "Term": "trifluralin",
+          "Name": "Trifluralin"
+        },
+        {
+          "Term": "liverMass",
+          "Name": "Liver, mass"
+        },
+        {
+          "Term": "methylmercury",
+          "Name": "Methylmercury"
+        },
+        {
+          "Term": "solidsFixedSuspended",
+          "Name": "Solids, fixed suspended"
+        },
+        {
+          "Term": "radon_222",
+          "Name": "Radon-222"
+        },
+        {
+          "Term": "propane",
+          "Name": "Propane"
+        },
+        {
+          "Term": "Sand",
+          "Name": "Sand"
+        },
+        {
+          "Term": "carbonDisulfide",
+          "Name": "Carbon disulfide"
+        },
+        {
+          "Term": "diadinoxanthin",
+          "Name": "Diadinoxanthin"
+        },
+        {
+          "Term": "1_6_7_Trimethylnaphthalene",
+          "Name": "1,6,7-Trimethylnaphthalene"
+        },
+        {
+          "Term": "acidityCO2Acidity",
+          "Name": "Acidity, CO2 acidity"
+        },
+        {
+          "Term": "1_1_1_Trichloroethane",
+          "Name": "1,1,1-Trichloroethane"
+        },
+        {
+          "Term": "windGustDirection",
+          "Name": "Wind gust direction"
+        },
+        {
+          "Term": "position",
+          "Name": "Position"
+        },
+        {
+          "Term": "shannonEvennessIndex",
+          "Name": "Shannon evenness index"
+        },
+        {
+          "Term": "lacticAcid",
+          "Name": "Lactic Acid"
+        },
+        {
+          "Term": "hydrogen",
+          "Name": "Hydrogen"
+        },
+        {
+          "Term": "4_Methylphenol",
+          "Name": "4-Methylphenol"
+        },
+        {
+          "Term": "ironParticulate",
+          "Name": "Iron, particulate"
+        },
+        {
+          "Term": "ironSulfide",
+          "Name": "Iron sulfide"
+        },
+        {
+          "Term": "delta_18OOfH2O",
+          "Name": "delta-18O of H2O"
+        },
+        {
+          "Term": "vanadiumDissolved",
+          "Name": "Vanadium, dissolved"
+        },
+        {
+          "Term": "bromideTotal",
+          "Name": "Bromide, total"
+        },
+        {
+          "Term": "BODuNitrogenous",
+          "Name": "BODu, nitrogenous"
+        },
+        {
+          "Term": "leafWetness",
+          "Name": "Leaf wetness"
+        },
+        {
+          "Term": "latentHeatFlux",
+          "Name": "Latent heat flux"
+        },
+        {
+          "Term": "nickelDistributionCoefficient",
+          "Name": "Nickel, distribution coefficient"
+        },
+        {
+          "Term": "nitrobenzene",
+          "Name": "Nitrobenzene"
+        },
+        {
+          "Term": "n_AlkaneTotal",
+          "Name": "n-alkane, total"
+        },
+        {
+          "Term": "bis_2_ChloroisopropylEther",
+          "Name": "bis-2-chloroisopropyl ether"
+        },
+        {
+          "Term": "hardnessCalcium",
+          "Name": "Hardness, Calcium"
+        },
+        {
+          "Term": "carbonTotalOrganic",
+          "Name": "Carbon, total organic"
+        },
+        {
+          "Term": "1_3_Dinitrobenzene",
+          "Name": "1,3-Dinitrobenzene"
+        },
+        {
+          "Term": "n_Alkane_C32",
+          "Name": "n-alkane, C32"
+        },
+        {
+          "Term": "delta_13COfC4H10",
+          "Name": "delta-13C of C4H10"
+        },
+        {
+          "Term": "DNADamageTailLength",
+          "Name": "DNA damage, tail length"
+        },
+        {
+          "Term": "BOD4Carbonaceous",
+          "Name": "BOD4, carbonaceous"
+        },
+        {
+          "Term": "copperTotal",
+          "Name": "Copper, total"
+        },
+        {
+          "Term": "phosphorusOrthophosphate",
+          "Name": "Phosphorus, orthophosphate"
+        },
+        {
+          "Term": "1_4_5_8_Tetramethylnaphthalene",
+          "Name": "1,4,5,8-Tetramethylnaphthalene"
+        },
+        {
+          "Term": "chlorine",
+          "Name": "Chlorine"
+        },
+        {
+          "Term": "temperatureDewPoint",
+          "Name": "Temperature, dew point"
+        },
+        {
+          "Term": "pyridine",
+          "Name": "Pyridine"
+        },
+        {
+          "Term": "1_Methylfluorene",
+          "Name": "1-Methylfluorene"
+        },
+        {
+          "Term": "boreholeLogMaterialClassification",
+          "Name": "Borehole log material classification"
+        },
+        {
+          "Term": "radium_226",
+          "Name": "Radium-226"
+        },
+        {
+          "Term": "delta_13COfC2H6",
+          "Name": "delta-13C of C2H6"
+        },
+        {
+          "Term": "2_2_DichlorovinylDimethylPhosphate",
+          "Name": "2,2-dichlorovinyl dimethyl phosphate"
+        },
+        {
+          "Term": "acenaphthene",
+          "Name": "Acenaphthene"
+        },
+        {
+          "Term": "polycyclicAromaticHydrocarbonTotal",
+          "Name": "Polycyclic aromatic hydrocarbon, total"
+        },
+        {
+          "Term": "suaedaMaritimaCoverage",
+          "Name": "Suaeda maritima coverage"
+        },
+        {
+          "Term": "vanadiumTotal",
+          "Name": "Vanadium, total"
+        },
+        {
+          "Term": "nitrogenTotalNitrite",
+          "Name": "Nitrogen, total nitrite"
+        },
+        {
+          "Term": "benzo_a_pyrene",
+          "Name": "Benzo(a)pyrene"
+        },
+        {
+          "Term": "coloredDissolvedOrganicMatter",
+          "Name": "Colored dissolved organic matter"
+        },
+        {
+          "Term": "dataShuttleDetached",
+          "Name": "Data shuttle detached"
+        },
+        {
+          "Term": "phosphorusInorganic",
+          "Name": "Phosphorus, inorganic"
+        },
+        {
+          "Term": "radiationTotalOutgoing",
+          "Name": "Radiation, total outgoing"
+        },
+        {
+          "Term": "carbonTotal",
+          "Name": "Carbon, total"
+        },
+        {
+          "Term": "chlorophyll_c",
+          "Name": "Chlorophyll c"
+        },
+        {
+          "Term": "THSWIndex",
+          "Name": "THSW Index"
+        },
+        {
+          "Term": "terpineol",
+          "Name": "Terpineol"
+        },
+        {
+          "Term": "1_2_3_Trimethylbenzene",
+          "Name": "1,2,3-Trimethylbenzene"
+        },
+        {
+          "Term": "n_AlkaneShortChain",
+          "Name": "n-alkane, short-chain"
+        },
+        {
+          "Term": "methylfluorene",
+          "Name": "Methylfluorene"
+        },
+        {
+          "Term": "alphaNAcetylglucosaminidase",
+          "Name": "Alpha-N-Acetylglucosaminidase"
+        },
+        {
+          "Term": "siliconDissolved",
+          "Name": "Silicon, dissolved"
+        },
+        {
+          "Term": "snowDepth",
+          "Name": "Snow depth"
+        },
+        {
+          "Term": "windChill",
+          "Name": "Wind chill"
+        },
+        {
+          "Term": "spartinaSpartineaCoverage",
+          "Name": "Spartina spartinea coverage"
+        },
+        {
+          "Term": "TDRWaveformRelativeLength",
+          "Name": "TDR waveform relative length"
+        },
+        {
+          "Term": "copperDissolved",
+          "Name": "Copper, dissolved"
+        },
+        {
+          "Term": "formicAcid",
+          "Name": "Formic acid"
+        },
+        {
+          "Term": "2_Chlorophenol",
+          "Name": "2-Chlorophenol"
+        },
+        {
+          "Term": "hexachlorocyclopentadiene",
+          "Name": "Hexachlorocyclopentadiene"
+        },
+        {
+          "Term": "frictionVelocity",
+          "Name": "Friction velocity"
+        },
+        {
+          "Term": "3_6_Dimethylphenanthrene",
+          "Name": "3,6-Dimethylphenanthrene"
+        },
+        {
+          "Term": "ozone",
+          "Name": "Ozone"
+        },
+        {
+          "Term": "propaneDissolved",
+          "Name": "Propane, dissolved"
+        },
+        {
+          "Term": "1_2_4_5_Tetrachlorobenzene",
+          "Name": "1,2,4,5-tetrachlorobenzene"
+        },
+        {
+          "Term": "n_Alkane_C25",
+          "Name": "n-alkane, C25"
+        },
+        {
+          "Term": "thorium_230",
+          "Name": "Thorium-230"
+        },
+        {
+          "Term": "chlorobenzilate",
+          "Name": "Chlorobenzilate"
+        },
+        {
+          "Term": "BOD20",
+          "Name": "BOD20"
+        },
+        {
+          "Term": "acetophenone",
+          "Name": "Acetophenone"
+        },
+        {
+          "Term": "lithiumDissolved",
+          "Name": "Lithium, dissolved"
+        },
+        {
+          "Term": "phenolicsTotal",
+          "Name": "Phenolics, total"
+        },
+        {
+          "Term": "radiationTotalShortwave",
+          "Name": "Radiation, total shortwave"
+        },
+        {
+          "Term": "1_Methyldibenzothiophene",
+          "Name": "1-Methyldibenzothiophene"
+        },
+        {
+          "Term": "1_1_Dichloroethane",
+          "Name": "1,1-Dichloroethane"
+        },
+        {
+          "Term": "magnesium",
+          "Name": "Magnesium"
+        },
+        {
+          "Term": "4_4_Methylenebis_N_N_Dimethylaniline",
+          "Name": "4,4-Methylenebis(N,N-dimethylaniline)"
+        },
+        {
+          "Term": "reservoirStorage",
+          "Name": "Reservoir storage"
+        },
+        {
+          "Term": "rainfallRate",
+          "Name": "Rainfall rate"
+        },
+        {
+          "Term": "tertAmylMethylEther",
+          "Name": "Tert-Amyl Methyl Ether"
+        },
+        {
+          "Term": "1_Methylphenanthrene",
+          "Name": "1-Methylphenanthrene"
+        },
+        {
+          "Term": "nitrogenOrganic",
+          "Name": "Nitrogen, organic"
+        },
+        {
+          "Term": "leadTotal",
+          "Name": "Lead, total"
+        },
+        {
+          "Term": "benzoicAcid",
+          "Name": "Benzoic acid"
+        },
+        {
+          "Term": "anthracene",
+          "Name": "Anthracene"
+        },
+        {
+          "Term": "dieldrin",
+          "Name": "Dieldrin"
+        },
+        {
+          "Term": "groundwaterDepth",
+          "Name": "Groundwater Depth"
+        },
+        {
+          "Term": "pressureAbsolute",
+          "Name": "Pressure, absolute"
+        },
+        {
+          "Term": "hydrogenSulfide",
+          "Name": "Hydrogen sulfide"
+        },
+        {
+          "Term": "oxygen_18",
+          "Name": "Oxygen-18"
+        },
+        {
+          "Term": "1_3_5_Trimethylbenzene",
+          "Name": "1,3,5-Trimethylbenzene"
+        },
+        {
+          "Term": "xylenesTotal",
+          "Name": "Xylenes, total"
+        },
+        {
+          "Term": "lyciumCarolinianumCoverage",
+          "Name": "Lycium carolinianum Coverage"
+        },
+        {
+          "Term": "hexachloroethane",
+          "Name": "Hexachloroethane"
+        },
+        {
+          "Term": "nitrogenNitrite_NO2_Nitrate_NO3",
+          "Name": "Nitrogen, nitrite (NO2) + nitrate (NO3)"
+        },
+        {
+          "Term": "boronDissolved",
+          "Name": "Boron, dissolved"
+        },
+        {
+          "Term": "primaryProductivityGross",
+          "Name": "Primary productivity, gross"
+        },
+        {
+          "Term": "antimonyDissolved",
+          "Name": "Antimony, dissolved"
+        },
+        {
+          "Term": "1_Chloronaphthalene",
+          "Name": "1-Chloronaphthalene"
+        },
+        {
+          "Term": "carbonDioxideStorageFlux",
+          "Name": "Carbon dioxide storage flux"
+        },
+        {
+          "Term": "density",
+          "Name": "Density"
+        },
+        {
+          "Term": "benthos",
+          "Name": "Benthos"
+        },
+        {
+          "Term": "isopropylAlcohol",
+          "Name": "Isopropyl alcohol"
+        },
+        {
+          "Term": "carbazole",
+          "Name": "Carbazole"
+        },
+        {
+          "Term": "zincParticulate",
+          "Name": "Zinc, particulate"
+        },
+        {
+          "Term": "cytosolicProtein",
+          "Name": "Cytosolic protein"
+        },
+        {
+          "Term": "2_Butoxyethanol",
+          "Name": "2-Butoxyethanol"
+        },
+        {
+          "Term": "acidNeutralizingCapacity",
+          "Name": "Acid neutralizing capacity"
+        },
+        {
+          "Term": "potassiumDissolved",
+          "Name": "Potassium, dissolved"
+        },
+        {
+          "Term": "methylfluoranthene",
+          "Name": "Methylfluoranthene"
+        },
+        {
+          "Term": "alkalinityTotal",
+          "Name": "Alkalinity, total"
+        },
+        {
+          "Term": "1_1_Dichloroethene",
+          "Name": "1,1-Dichloroethene"
+        },
+        {
+          "Term": "nitrogenTotal",
+          "Name": "Nitrogen, total"
+        },
+        {
+          "Term": "acidityExchange",
+          "Name": "Acidity, exchange"
+        },
+        {
+          "Term": "momentumFlux",
+          "Name": "Momentum flux"
+        },
+        {
+          "Term": "evapotranspirationPotential",
+          "Name": "Evapotranspiration, potential"
+        },
+        {
+          "Term": "1_2_Diphenylhydrazine",
+          "Name": "1,2-Diphenylhydrazine"
+        },
+        {
+          "Term": "arsenicParticulate",
+          "Name": "Arsenic, particulate"
+        },
+        {
+          "Term": "electricalConductivity",
+          "Name": "Electrical conductivity"
+        },
+        {
+          "Term": "uranium_238",
+          "Name": "Uranium-238"
+        },
+        {
+          "Term": "nitrogen_15",
+          "Name": "Nitrogen-15"
+        },
+        {
+          "Term": "bis_2_Ethylhexyl_Phthalate",
+          "Name": "Bis-(2-ethylhexyl) phthalate"
+        },
+        {
+          "Term": "vaporPressureDeficit",
+          "Name": "Vapor pressure deficit"
+        },
+        {
+          "Term": "n_Alkane_C15",
+          "Name": "n-alkane, C15"
+        },
+        {
+          "Term": "aroclor_1254",
+          "Name": "Aroclor-1254"
+        },
+        {
+          "Term": "2_Methylnaphthalene",
+          "Name": "2-Methylnaphthalene"
+        },
+        {
+          "Term": "chromium_VI_Dissolved",
+          "Name": "Chromium (VI), dissolved"
+        },
+        {
+          "Term": "formate",
+          "Name": "Formate"
+        },
+        {
+          "Term": "sedimentRetainedOnSieve",
+          "Name": "Sediment, retained on sieve"
+        },
+        {
+          "Term": "luminousFlux",
+          "Name": "Luminous Flux"
+        },
+        {
+          "Term": "nitrogenTotalOrganic",
+          "Name": "Nitrogen, total organic"
+        },
+        {
+          "Term": "2_4_Dinitrophenol",
+          "Name": "2,4-Dinitrophenol"
+        },
+        {
+          "Term": "zirconiumDissolved",
+          "Name": "Zirconium, dissolved"
+        },
+        {
+          "Term": "cobalt_60",
+          "Name": "Cobalt-60"
+        },
+        {
+          "Term": "bodyLength",
+          "Name": "Body length"
+        },
+        {
+          "Term": "biomass",
+          "Name": "Biomass"
+        },
+        {
+          "Term": "4_4_DDE",
+          "Name": "4,4-DDE"
+        },
+        {
+          "Term": "dibenz_a_h_anthracene",
+          "Name": "Dibenz(a,h)anthracene"
+        },
+        {
+          "Term": "methylpyrene",
+          "Name": "Methylpyrene"
+        },
+        {
+          "Term": "carbonDissolvedOrganic",
+          "Name": "Carbon, dissolved organic"
+        },
+        {
+          "Term": "biomassTotal",
+          "Name": "Biomass, total"
+        },
+        {
+          "Term": "borrichiaFrutescensCoverage",
+          "Name": "Borrichia frutescens Coverage"
+        },
+        {
+          "Term": "endrinKetone",
+          "Name": "Endrin Ketone"
+        },
+        {
+          "Term": "nitrogenTotalKjeldahl",
+          "Name": "Nitrogen, total kjeldahl"
+        },
+        {
+          "Term": "temperatureInitial",
+          "Name": "Temperature, initial"
+        },
+        {
+          "Term": "phosphorusParticulate",
+          "Name": "Phosphorus, particulate"
+        },
+        {
+          "Term": "NAlbuminoid",
+          "Name": "N, albuminoid"
+        },
+        {
+          "Term": "isopropylbenzene",
+          "Name": "Isopropylbenzene"
+        },
+        {
+          "Term": "n_Alkane_C33",
+          "Name": "n-alkane, C33"
+        },
+        {
+          "Term": "carbonTotalSolidPhase",
+          "Name": "Carbon, total solid phase"
+        },
+        {
+          "Term": "velocity",
+          "Name": "Velocity"
+        },
+        {
+          "Term": "molbydenumDissolved",
+          "Name": "Molbydenum, dissolved"
+        },
+        {
+          "Term": "carbonMonoxideDissolved",
+          "Name": "Carbon monoxide, dissolved"
+        },
+        {
+          "Term": "microsomalProtein",
+          "Name": "Microsomal protein"
+        },
+        {
+          "Term": "carbonToNitrogenMassRatio",
+          "Name": "Carbon to nitrogen mass ratio"
+        },
+        {
+          "Term": "BOD7Carbonaceous",
+          "Name": "BOD7, carbonaceous"
+        },
+        {
+          "Term": "phosphorusTotal",
+          "Name": "Phosphorus, total"
+        },
+        {
+          "Term": "radiationNetShortwave",
+          "Name": "Radiation, net shortwave"
+        },
+        {
+          "Term": "methanol",
+          "Name": "Methanol"
+        },
+        {
+          "Term": "sulfur",
+          "Name": "Sulfur"
+        },
+        {
+          "Term": "oxygenUptake",
+          "Name": "Oxygen uptake"
+        },
+        {
+          "Term": "latitude",
+          "Name": "Latitude"
+        },
+        {
+          "Term": "helium",
+          "Name": "Helium"
+        },
+        {
+          "Term": "acidityTotalAcidity",
+          "Name": "Acidity, total acidity"
+        },
+        {
+          "Term": "hostConnected",
+          "Name": "Host connected"
+        },
+        {
+          "Term": "asteridaeCoverage",
+          "Name": "Asteridae coverage"
+        },
+        {
+          "Term": "thalliumDissolved",
+          "Name": "Thallium, dissolved"
+        },
+        {
+          "Term": "1_2_Dichloroethane",
+          "Name": "1,2-Dichloroethane"
+        },
+        {
+          "Term": "cuscutaSppCoverage",
+          "Name": "Cuscuta spp. coverage"
+        },
+        {
+          "Term": "4_Methyldibenzothiophene",
+          "Name": "4-Methyldibenzothiophene"
+        },
+        {
+          "Term": "4_Chloro_3_Methylphenol",
+          "Name": "4-Chloro-3-methylphenol"
+        },
+        {
+          "Term": "N_Nitrosodiethylamine",
+          "Name": "N-Nitrosodiethylamine"
+        },
+        {
+          "Term": "1_3_Dimethyladamantane",
+          "Name": "1,3-Dimethyladamantane"
+        },
+        {
+          "Term": "temperatureSensor",
+          "Name": "Temperature, sensor"
+        },
+        {
+          "Term": "butyricAcid",
+          "Name": "Butyric Acid"
+        },
+        {
+          "Term": "windRun",
+          "Name": "Wind Run"
+        },
+        {
+          "Term": "radiationNetLongwave",
+          "Name": "Radiation, net longwave"
+        },
+        {
+          "Term": "n_Alkane_C21",
+          "Name": "n-alkane, C21"
+        },
+        {
+          "Term": "gageHeight",
+          "Name": "Gage height"
+        },
+        {
+          "Term": "BOD20Nitrogenous",
+          "Name": "BOD20, nitrogenous"
+        },
+        {
+          "Term": "carbonDioxideTransducerSignal",
+          "Name": "Carbon dioxide, transducer signal"
+        },
+        {
+          "Term": "9_10_Dimethylanthracene",
+          "Name": "9,10-Dimethylanthracene"
+        },
+        {
+          "Term": "solidsVolatileDissolved",
+          "Name": "Solids, volatile dissolved"
+        },
+        {
+          "Term": "4_4_DDD",
+          "Name": "4,4-DDD"
+        },
+        {
+          "Term": "lightAttenuationCoefficient",
+          "Name": "Light attenuation coefficient"
+        },
+        {
+          "Term": "butane",
+          "Name": "Butane"
+        },
+        {
+          "Term": "phenol",
+          "Name": "Phenol"
+        },
+        {
+          "Term": "1_Methylanthracene",
+          "Name": "1-Methylanthracene"
+        },
+        {
+          "Term": "chloroform",
+          "Name": "Chloroform"
+        },
+        {
+          "Term": "dinoflagellates",
+          "Name": "Dinoflagellates"
+        },
+        {
+          "Term": "area",
+          "Name": "Area"
+        },
+        {
+          "Term": "cryptophytes",
+          "Name": "Cryptophytes"
+        },
+        {
+          "Term": "dinoseb",
+          "Name": "Dinoseb"
+        },
+        {
+          "Term": "2_6_Dichlorophenol",
+          "Name": "2,6-Dichlorophenol"
+        },
+        {
+          "Term": "chromiumParticulate",
+          "Name": "Chromium, particulate"
+        },
+        {
+          "Term": "acenaphthylene",
+          "Name": "Acenaphthylene"
+        },
+        {
+          "Term": "delta_13COfCO2",
+          "Name": "delta-13C of CO2"
+        },
+        {
+          "Term": "sulfateTotal",
+          "Name": "Sulfate, total"
+        },
+        {
+          "Term": "nitrogenDissolvedKjeldahl",
+          "Name": "Nitrogen, dissolved Kjeldahl"
+        },
+        {
+          "Term": "bariumDistributionCoefficient",
+          "Name": "Barium, distribution coefficient"
+        },
+        {
+          "Term": "ammoniumFlux",
+          "Name": "Ammonium flux"
+        },
+        {
+          "Term": "2_Hexanone",
+          "Name": "2-Hexanone"
+        },
+        {
+          "Term": "o_Xylene",
+          "Name": "o-Xylene"
+        },
+        {
+          "Term": "1_Ethylnaphthalene",
+          "Name": "1-Ethylnaphthalene"
+        },
+        {
+          "Term": "visibility",
+          "Name": "Visibility"
+        },
+        {
+          "Term": "signalToNoiseRatio",
+          "Name": "Signal-to-noise ratio"
+        },
+        {
+          "Term": "salicorniaBigeloviiCoverage",
+          "Name": "Salicornia bigelovii coverage"
+        },
+        {
+          "Term": "n_Alkane_C17",
+          "Name": "n-alkane, C17"
+        },
+        {
+          "Term": "4_Chloroaniline",
+          "Name": "4-Chloroaniline"
+        },
+        {
+          "Term": "ivaFrutescenscoverage",
+          "Name": "Iva frutescens coverage"
+        },
+        {
+          "Term": "chloride",
+          "Name": "Chloride"
+        },
+        {
+          "Term": "chlorophyll_a_CorrectedForPheophytin",
+          "Name": "Chlorophyll a, corrected for pheophytin"
+        },
+        {
+          "Term": "SUVA254",
+          "Name": "SUVA254"
+        },
+        {
+          "Term": "distichlisSpicataCoverage",
+          "Name": "Distichlis spicata Coverage"
+        },
+        {
+          "Term": "4_Nitroaniline",
+          "Name": "4-Nitroaniline"
+        },
+        {
+          "Term": "2_Chloronaphthalene",
+          "Name": "2-Chloronaphthalene"
+        },
+        {
+          "Term": "1_1_2_Trichloroethane",
+          "Name": "1,1,2-Trichloroethane"
+        },
+        {
+          "Term": "3_3_Dichlorobenzidine",
+          "Name": "3,3-Dichlorobenzidine"
+        },
+        {
+          "Term": "barometricPressure",
+          "Name": "Barometric pressure"
+        },
+        {
+          "Term": "BODu",
+          "Name": "BODu"
+        },
+        {
+          "Term": "cadmiumParticulate",
+          "Name": "Cadmium, particulate"
+        }
+      ]
+    },
+    {
+      "CV_Speciation": [
+        {
+          "Term": "As",
+          "Name": "As"
+        },
+        {
+          "Term": "C23H48",
+          "Name": "C23H48"
+        },
+        {
+          "Term": "C20H42",
+          "Name": "C20H42"
+        },
+        {
+          "Term": "S",
+          "Name": "S"
+        },
+        {
+          "Term": "Pb",
+          "Name": "Pb"
+        },
+        {
+          "Term": "C27H56",
+          "Name": "C27H56"
+        },
+        {
+          "Term": "Ag",
+          "Name": "Ag"
+        },
+        {
+          "Term": "C7H6N2O4",
+          "Name": "C7H6N2O4"
+        },
+        {
+          "Term": "CN-",
+          "Name": "CN-"
+        },
+        {
+          "Term": "deltaO18",
+          "Name": "delta O18"
+        },
+        {
+          "Term": "C2HCl3",
+          "Name": "C2HCl3"
+        },
+        {
+          "Term": "C12H8",
+          "Name": "C12H8"
+        },
+        {
+          "Term": "Cr",
+          "Name": "Cr"
+        },
+        {
+          "Term": "pH",
+          "Name": "pH"
+        },
+        {
+          "Term": "Mn",
+          "Name": "Mn"
+        },
+        {
+          "Term": "C6H5NH2",
+          "Name": "C6H5NH2"
+        },
+        {
+          "Term": "CHBrCl2",
+          "Name": "CHBrCl2"
+        },
+        {
+          "Term": "delta2H",
+          "Name": "delta 2H"
+        },
+        {
+          "Term": "Re",
+          "Name": "Re"
+        },
+        {
+          "Term": "C6H5OH",
+          "Name": "C6H5OH"
+        },
+        {
+          "Term": "EC",
+          "Name": "EC"
+        },
+        {
+          "Term": "C3H6O",
+          "Name": "C3H6O"
+        },
+        {
+          "Term": "Fe",
+          "Name": "Fe"
+        },
+        {
+          "Term": "C17H12",
+          "Name": "C17H12"
+        },
+        {
+          "Term": "C26H54",
+          "Name": "C26H54"
+        },
+        {
+          "Term": "CHCl3",
+          "Name": "CHCl3"
+        },
+        {
+          "Term": "C2H3Cl",
+          "Name": "C2H3Cl"
+        },
+        {
+          "Term": "C2H6",
+          "Name": "C2H6"
+        },
+        {
+          "Term": "C2Cl4",
+          "Name": "C2Cl4"
+        },
+        {
+          "Term": "C10H6_CH3_2",
+          "Name": "C10H6(CH3)2"
+        },
+        {
+          "Term": "C10H7CH3",
+          "Name": "C10H7CH3"
+        },
+        {
+          "Term": "C10H8",
+          "Name": "C10H8"
+        },
+        {
+          "Term": "CO3",
+          "Name": "CO3"
+        },
+        {
+          "Term": "Mo",
+          "Name": "Mo"
+        },
+        {
+          "Term": "C12H14O4",
+          "Name": "C12H14O4"
+        },
+        {
+          "Term": "C14H12",
+          "Name": "C14H12"
+        },
+        {
+          "Term": "C2H2Cl4",
+          "Name": "C2H2Cl4"
+        },
+        {
+          "Term": "SiO2",
+          "Name": "SiO2"
+        },
+        {
+          "Term": "CH4",
+          "Name": "CH4"
+        },
+        {
+          "Term": "C17H36",
+          "Name": "C17H36"
+        },
+        {
+          "Term": "C6H5NO2",
+          "Name": "C6H5NO2"
+        },
+        {
+          "Term": "notApplicable",
+          "Name": "Not Applicable"
+        },
+        {
+          "Term": "PO4",
+          "Name": "PO4"
+        },
+        {
+          "Term": "C2H5Cl",
+          "Name": "C2H5Cl"
+        },
+        {
+          "Term": "Th",
+          "Name": "Th"
+        },
+        {
+          "Term": "C16H34",
+          "Name": "C16H34"
+        },
+        {
+          "Term": "F",
+          "Name": "F"
+        },
+        {
+          "Term": "CH3Hg",
+          "Name": "CH3Hg"
+        },
+        {
+          "Term": "B",
+          "Name": "B"
+        },
+        {
+          "Term": "CH3Cl",
+          "Name": "CH3Cl"
+        },
+        {
+          "Term": "C5Cl6",
+          "Name": "C5Cl6"
+        },
+        {
+          "Term": "H2O",
+          "Name": "H2O"
+        },
+        {
+          "Term": "Sr",
+          "Name": "Sr"
+        },
+        {
+          "Term": "unknown",
+          "Name": "Unknown"
+        },
+        {
+          "Term": "C31H64",
+          "Name": "C31H64"
+        },
+        {
+          "Term": "CH2Cl2",
+          "Name": "CH2Cl2"
+        },
+        {
+          "Term": "C15H12",
+          "Name": "C15H12"
+        },
+        {
+          "Term": "C15H32",
+          "Name": "C15H32"
+        },
+        {
+          "Term": "C7H8",
+          "Name": "C7H8"
+        },
+        {
+          "Term": "Sn",
+          "Name": "Sn"
+        },
+        {
+          "Term": "Al",
+          "Name": "Al"
+        },
+        {
+          "Term": "Cu",
+          "Name": "Cu"
+        },
+        {
+          "Term": "C12H9N",
+          "Name": "C12H9N"
+        },
+        {
+          "Term": "C13H10",
+          "Name": "C13H10"
+        },
+        {
+          "Term": "C12H8O",
+          "Name": "C12H8O"
+        },
+        {
+          "Term": "C14H10",
+          "Name": "C14H10"
+        },
+        {
+          "Term": "NO2",
+          "Name": "NO2"
+        },
+        {
+          "Term": "Tl",
+          "Name": "Tl"
+        },
+        {
+          "Term": "C8H8",
+          "Name": "C8H8"
+        },
+        {
+          "Term": "C9H14O",
+          "Name": "C9H14O"
+        },
+        {
+          "Term": "C6H6",
+          "Name": "C6H6"
+        },
+        {
+          "Term": "Na",
+          "Name": "Na"
+        },
+        {
+          "Term": "C12H8S",
+          "Name": "C12H8S"
+        },
+        {
+          "Term": "C29H60",
+          "Name": "C29H60"
+        },
+        {
+          "Term": "CHBr3",
+          "Name": "CHBr3"
+        },
+        {
+          "Term": "Zn",
+          "Name": "Zn"
+        },
+        {
+          "Term": "Co",
+          "Name": "Co"
+        },
+        {
+          "Term": "C2H4Cl2",
+          "Name": "C2H4Cl2"
+        },
+        {
+          "Term": "Se",
+          "Name": "Se"
+        },
+        {
+          "Term": "Ca",
+          "Name": "Ca"
+        },
+        {
+          "Term": "U",
+          "Name": "U"
+        },
+        {
+          "Term": "C10H10O4",
+          "Name": "C10H10O4"
+        },
+        {
+          "Term": "C2H6O2",
+          "Name": "C2H6O2"
+        },
+        {
+          "Term": "TA",
+          "Name": "TA"
+        },
+        {
+          "Term": "CO2",
+          "Name": "CO2"
+        },
+        {
+          "Term": "K",
+          "Name": "K"
+        },
+        {
+          "Term": "C19H20O4",
+          "Name": "C19H20O4"
+        },
+        {
+          "Term": "C4H8O",
+          "Name": "C4H8O"
+        },
+        {
+          "Term": "C6H5Cl",
+          "Name": "C6H5Cl"
+        },
+        {
+          "Term": "C10H7C2H5",
+          "Name": "C10H7C2H5"
+        },
+        {
+          "Term": "C6HCl5O",
+          "Name": "C6HCl5O"
+        },
+        {
+          "Term": "C18H12",
+          "Name": "C18H12"
+        },
+        {
+          "Term": "deltaN15",
+          "Name": "delta N15"
+        },
+        {
+          "Term": "C22H46",
+          "Name": "C22H46"
+        },
+        {
+          "Term": "Mg",
+          "Name": "Mg"
+        },
+        {
+          "Term": "Ti",
+          "Name": "Ti"
+        },
+        {
+          "Term": "C16H14",
+          "Name": "C16H14"
+        },
+        {
+          "Term": "C",
+          "Name": "C"
+        },
+        {
+          "Term": "C6H4N2O5",
+          "Name": "C6H4N2O5"
+        },
+        {
+          "Term": "C24H50",
+          "Name": "C24H50"
+        },
+        {
+          "Term": "Cl",
+          "Name": "Cl"
+        },
+        {
+          "Term": "P",
+          "Name": "P"
+        },
+        {
+          "Term": "Br",
+          "Name": "Br"
+        },
+        {
+          "Term": "C6Cl6",
+          "Name": "C6Cl6"
+        },
+        {
+          "Term": "C4H8Cl2O",
+          "Name": "C4H8Cl2O"
+        },
+        {
+          "Term": "C4Cl6",
+          "Name": "C4Cl6"
+        },
+        {
+          "Term": "Zr",
+          "Name": "Zr"
+        },
+        {
+          "Term": "C12H10",
+          "Name": "C12H10"
+        },
+        {
+          "Term": "Sb",
+          "Name": "Sb"
+        },
+        {
+          "Term": "HCO3",
+          "Name": "HCO3"
+        },
+        {
+          "Term": "C10H4_CH3_4",
+          "Name": "C10H4(CH3)4"
+        },
+        {
+          "Term": "C6H3Cl3",
+          "Name": "C6H3Cl3"
+        },
+        {
+          "Term": "Ra",
+          "Name": "Ra"
+        },
+        {
+          "Term": "C2H3Cl3",
+          "Name": "C2H3Cl3"
+        },
+        {
+          "Term": "C8H10",
+          "Name": "C8H10"
+        },
+        {
+          "Term": "C22H14",
+          "Name": "C22H14"
+        },
+        {
+          "Term": "NO3",
+          "Name": "NO3"
+        },
+        {
+          "Term": "Cd",
+          "Name": "Cd"
+        },
+        {
+          "Term": "SO4",
+          "Name": "SO4"
+        },
+        {
+          "Term": "C6H4Cl2",
+          "Name": "C6H4Cl2"
+        },
+        {
+          "Term": "CaCO3",
+          "Name": "CaCO3"
+        },
+        {
+          "Term": "NH4",
+          "Name": "NH4"
+        },
+        {
+          "Term": "C18H18",
+          "Name": "C18H18"
+        },
+        {
+          "Term": "C2Cl6",
+          "Name": "C2Cl6"
+        },
+        {
+          "Term": "O2",
+          "Name": "O2"
+        },
+        {
+          "Term": "C13H10S",
+          "Name": "C13H10S"
+        },
+        {
+          "Term": "C6H4_CH3_2",
+          "Name": "C6H4(CH3)2"
+        },
+        {
+          "Term": "C28H58",
+          "Name": "C28H58"
+        },
+        {
+          "Term": "C19H14",
+          "Name": "C19H14"
+        },
+        {
+          "Term": "C20H12",
+          "Name": "C20H12"
+        },
+        {
+          "Term": "C18H38",
+          "Name": "C18H38"
+        },
+        {
+          "Term": "C19H40",
+          "Name": "C19H40"
+        },
+        {
+          "Term": "CH3Br",
+          "Name": "CH3Br"
+        },
+        {
+          "Term": "Hg",
+          "Name": "Hg"
+        },
+        {
+          "Term": "CHBr2Cl",
+          "Name": "CHBr2Cl"
+        },
+        {
+          "Term": "N",
+          "Name": "N"
+        },
+        {
+          "Term": "C16H10",
+          "Name": "C16H10"
+        },
+        {
+          "Term": "Ni",
+          "Name": "Ni"
+        },
+        {
+          "Term": "C25H52",
+          "Name": "C25H52"
+        },
+        {
+          "Term": "C21H44",
+          "Name": "C21H44"
+        },
+        {
+          "Term": "C10H5_CH3_3",
+          "Name": "C10H5(CH3)3"
+        },
+        {
+          "Term": "V",
+          "Name": "V"
+        },
+        {
+          "Term": "Si",
+          "Name": "Si"
+        },
+        {
+          "Term": "Be",
+          "Name": "Be"
+        },
+        {
+          "Term": "Ba",
+          "Name": "Ba"
+        }
+      ]
+    },
+    {
+      "CV_SiteType": [
+        {
+          "Term": "composite",
+          "Name": "Composite"
+        },
+        {
+          "Term": "stream",
+          "Name": "Stream"
+        },
+        {
+          "Term": "aggregateWaterUseEstablishment",
+          "Name": "Aggregate water-use establishment"
+        },
+        {
+          "Term": "coastal",
+          "Name": "Coastal"
+        },
+        {
+          "Term": "landfill",
+          "Name": "Landfill"
+        },
+        {
+          "Term": "unsaturatedZone",
+          "Name": "Unsaturated zone"
+        },
+        {
+          "Term": "waterUseEstablishment",
+          "Name": "Water-use establishment"
+        },
+        {
+          "Term": "spring",
+          "Name": "Spring"
+        },
+        {
+          "Term": "outfall",
+          "Name": "Outfall"
+        },
+        {
+          "Term": "animalWasteLagoon",
+          "Name": "Animal waste lagoon"
+        },
+        {
+          "Term": "outcrop",
+          "Name": "Outcrop"
+        },
+        {
+          "Term": "waterDistributionSystem",
+          "Name": "Water-distribution system"
+        },
+        {
+          "Term": "playa",
+          "Name": "Playa"
+        },
+        {
+          "Term": "soilHole",
+          "Name": "Soil hole"
+        },
+        {
+          "Term": "ditch",
+          "Name": "Ditch"
+        },
+        {
+          "Term": "aggregateGroundwaterUse",
+          "Name": "Aggregate groundwater use"
+        },
+        {
+          "Term": "facility",
+          "Name": "Facility"
+        },
+        {
+          "Term": "wastewaterLandApplication",
+          "Name": "Wastewater land application"
+        },
+        {
+          "Term": "canal",
+          "Name": "Canal"
+        },
+        {
+          "Term": "stormSewer",
+          "Name": "Storm sewer"
+        },
+        {
+          "Term": "laboratoryOrSamplePreparationArea",
+          "Name": "Laboratory or sample-preparation area"
+        },
+        {
+          "Term": "wastewaterTreatmentPlant",
+          "Name": "Wastewater-treatment plant"
+        },
+        {
+          "Term": "groundwaterDrain",
+          "Name": "Groundwater drain"
+        },
+        {
+          "Term": "hydroelectricPlant",
+          "Name": "Hydroelectric plant"
+        },
+        {
+          "Term": "golfCourse",
+          "Name": "Golf course"
+        },
+        {
+          "Term": "volcanicVent",
+          "Name": "Volcanic vent"
+        },
+        {
+          "Term": "shore",
+          "Name": "Shore"
+        },
+        {
+          "Term": "glacier",
+          "Name": "Glacier"
+        },
+        {
+          "Term": "fieldPastureOrchardOrNursery",
+          "Name": "Field, Pasture, Orchard, or Nursery"
+        },
+        {
+          "Term": "land",
+          "Name": "Land"
+        },
+        {
+          "Term": "networkInfrastructure",
+          "Name": "Network infrastructure"
+        },
+        {
+          "Term": "waterSupplyTreatmentPlant",
+          "Name": "Water-supply treatment plant"
+        },
+        {
+          "Term": "aggregateSurfaceWaterUse",
+          "Name": "Aggregate surface-water-use"
+        },
+        {
+          "Term": "ocean",
+          "Name": "Ocean"
+        },
+        {
+          "Term": "subsurface",
+          "Name": "Subsurface"
+        },
+        {
+          "Term": "diversion",
+          "Name": "Diversion"
+        },
+        {
+          "Term": "lakeReservoirImpoundment",
+          "Name": "Lake, Reservoir, Impoundment"
+        },
+        {
+          "Term": "tunnelShaftMine",
+          "Name": "Tunnel, shaft, or mine"
+        },
+        {
+          "Term": "combinedSewer",
+          "Name": "Combined sewer"
+        },
+        {
+          "Term": "thermoelectricPlant",
+          "Name": "Thermoelectric plant"
+        },
+        {
+          "Term": "wastewaterSewer",
+          "Name": "Wastewater sewer"
+        },
+        {
+          "Term": "pavement",
+          "Name": "Pavement"
+        },
+        {
+          "Term": "cistern",
+          "Name": "Cistern"
+        },
+        {
+          "Term": "tidalStream",
+          "Name": "Tidal stream"
+        },
+        {
+          "Term": "septicSystem",
+          "Name": "Septic system"
+        },
+        {
+          "Term": "cave",
+          "Name": "Cave"
+        },
+        {
+          "Term": "unknown",
+          "Name": "Unknown"
+        },
+        {
+          "Term": "wetland",
+          "Name": "Wetland"
+        },
+        {
+          "Term": "sinkhole",
+          "Name": "Sinkhole"
+        },
+        {
+          "Term": "atmosphere",
+          "Name": "Atmosphere"
+        },
+        {
+          "Term": "estuary",
+          "Name": "Estuary"
+        }
+      ]
+    },
+    {
+      "CV_ElevationDatum": [
+        {
+          "Term": "NGVD29",
+          "Name": "NGVD29"
+        },
+        {
+          "Term": "EGM96",
+          "Name": "EGM96"
+        },
+        {
+          "Term": "Unknown",
+          "Name": "Unknown"
+        },
+        {
+          "Term": "NAVD88",
+          "Name": "NAVD88"
+        },
+        {
+          "Term": "MSL",
+          "Name": "MSL"
+        }
+      ]
+    },
+    {
+      "CV_MethodType": [
+        {
+          "Term": "estimation",
+          "Name": "Estimation"
+        },
+        {
+          "Term": "equipmentMaintenance",
+          "Name": "Equipment maintenance"
+        },
+        {
+          "Term": "instrumentRetrieval",
+          "Name": "Instrument retrieval"
+        },
+        {
+          "Term": "dataRetrieval",
+          "Name": "Data retrieval"
+        },
+        {
+          "Term": "genericNonObservation",
+          "Name": "Generic non-observation"
+        },
+        {
+          "Term": "equipmentDeployment",
+          "Name": "Equipment deployment"
+        },
+        {
+          "Term": "specimenAnalysis",
+          "Name": "Specimen analysis"
+        },
+        {
+          "Term": "derivation",
+          "Name": "Derivation"
+        },
+        {
+          "Term": "specimenPreservation",
+          "Name": "Specimen preservation"
+        },
+        {
+          "Term": "unknown",
+          "Name": "Unknown"
+        },
+        {
+          "Term": "siteVisit",
+          "Name": "Site visit"
+        },
+        {
+          "Term": "specimenFractionation",
+          "Name": "Specimen fractionation"
+        },
+        {
+          "Term": "simulation",
+          "Name": "Simulation"
+        },
+        {
+          "Term": "fieldActivity",
+          "Name": "Field activity"
+        },
+        {
+          "Term": "equipmentRetrieval",
+          "Name": "Equipment retrieval"
+        },
+        {
+          "Term": "instrumentCalibration",
+          "Name": "Instrument calibration"
+        },
+        {
+          "Term": "equipmentProgramming",
+          "Name": "Equipment programming"
+        },
+        {
+          "Term": "instrumentContinuingCalibrationVerification",
+          "Name": "Instrument Continuing Calibration Verification"
+        },
+        {
+          "Term": "observation",
+          "Name": "Observation"
+        },
+        {
+          "Term": "expedition",
+          "Name": "Expedition"
+        },
+        {
+          "Term": "submersibleLaunch",
+          "Name": "Submersible launch"
+        },
+        {
+          "Term": "specimenCollection",
+          "Name": "Specimen collection"
+        },
+        {
+          "Term": "cruise",
+          "Name": "Cruise"
+        },
+        {
+          "Term": "specimenPreparation",
+          "Name": "Specimen preparation"
+        },
+        {
+          "Term": "instrumentDeployment",
+          "Name": "Instrument deployment"
+        }
+      ]
+    },
+    {
+      "CV_UnitsType": [
+        {
+          "Term": "power",
+          "Name": "Power"
+        },
+        {
+          "Term": "massPerElectricalCharge",
+          "Name": "Mass per electrical charge"
+        },
+        {
+          "Term": "linearVelocity",
+          "Name": "Linear velocity"
+        },
+        {
+          "Term": "inverseLength",
+          "Name": "Inverse length"
+        },
+        {
+          "Term": "forcePerLength",
+          "Name": "Force per length"
+        },
+        {
+          "Term": "snap",
+          "Name": "Snap"
+        },
+        {
+          "Term": "pH",
+          "Name": "pH"
+        },
+        {
+          "Term": "temperature",
+          "Name": "Temperature"
+        },
+        {
+          "Term": "particleLoading",
+          "Name": "Particle loading"
+        },
+        {
+          "Term": "fluidResistance",
+          "Name": "Fluid resistance"
+        },
+        {
+          "Term": "particleFlux",
+          "Name": "Particle flux"
+        },
+        {
+          "Term": "molarEnergy",
+          "Name": "Molar energy"
+        },
+        {
+          "Term": "volumetricHeatCapacity",
+          "Name": "Volumetric heat capacity"
+        },
+        {
+          "Term": "massFlux",
+          "Name": "Mass flux"
+        },
+        {
+          "Term": "doseEquivalent",
+          "Name": "Dose equivalent"
+        },
+        {
+          "Term": "specificSurfaceArea",
+          "Name": "Specific surface area"
+        },
+        {
+          "Term": "energy",
+          "Name": "Energy"
+        },
+        {
+          "Term": "powerPerElectricalCharge",
+          "Name": "Power per electrical charge"
+        },
+        {
+          "Term": "electricalChargePerMass",
+          "Name": "Electrical charge per mass"
+        },
+        {
+          "Term": "volumetricFlux",
+          "Name": "Volumetric flux"
+        },
+        {
+          "Term": "molarMass",
+          "Name": "Molar mass"
+        },
+        {
+          "Term": "specificVolume",
+          "Name": "Specific volume"
+        },
+        {
+          "Term": "linearEnergyTransfer",
+          "Name": "Linear energy transfer"
+        },
+        {
+          "Term": "concentrationOrDensityMassPerVolume",
+          "Name": "Concentration or density mass per volume"
+        },
+        {
+          "Term": "angularVelocityOrFrequency",
+          "Name": "Angular velocity or frequency"
+        },
+        {
+          "Term": "electricalDipoleMoment",
+          "Name": "Electrical dipole moment"
+        },
+        {
+          "Term": "areaTimeTemperature",
+          "Name": "Area time temperature"
+        },
+        {
+          "Term": "concentrationCountPerVolume",
+          "Name": "Concentration count per volume"
+        },
+        {
+          "Term": "electricalFlux",
+          "Name": "Electrical flux"
+        },
+        {
+          "Term": "areaTemperature",
+          "Name": "Area temperature"
+        },
+        {
+          "Term": "electricalPermittivity",
+          "Name": "Electrical permittivity"
+        },
+        {
+          "Term": "electricalResistivity",
+          "Name": "Electrical resistivity"
+        },
+        {
+          "Term": "areaAngle",
+          "Name": "Area angle"
+        },
+        {
+          "Term": "areaPerLength",
+          "Name": "Area per length"
+        },
+        {
+          "Term": "thermalResistivity",
+          "Name": "Thermal resistivity"
+        },
+        {
+          "Term": "electricalCurrentPerAngle",
+          "Name": "Electrical current per angle"
+        },
+        {
+          "Term": "biologicalActivity",
+          "Name": "Biological activity"
+        },
+        {
+          "Term": "temperaturePerTime",
+          "Name": "Temperature per time"
+        },
+        {
+          "Term": "diffusivity",
+          "Name": "Diffusivity"
+        },
+        {
+          "Term": "area",
+          "Name": "Area"
+        },
+        {
+          "Term": "electricalCapacitance",
+          "Name": "Electrical capacitance"
+        },
+        {
+          "Term": "electricalResistance",
+          "Name": "Electrical resistance"
+        },
+        {
+          "Term": "stableIsotopeDelta",
+          "Name": "Stable isotope delta"
+        },
+        {
+          "Term": "magneticFlux",
+          "Name": "Magnetic flux"
+        },
+        {
+          "Term": "specificEnergy",
+          "Name": "Specific energy"
+        },
+        {
+          "Term": "heatTransferCoefficient",
+          "Name": "Heat transfer Coefficient"
+        },
+        {
+          "Term": "inverseLengthTemperature",
+          "Name": "Inverse length temperature"
+        },
+        {
+          "Term": "energyPerSquareMagneticFluxDensity",
+          "Name": "Energy per square magnetic flux density"
+        },
+        {
+          "Term": "lengthIntegratedMassConcentration",
+          "Name": "Length integrated mass concentration"
+        },
+        {
+          "Term": "heatCapacity",
+          "Name": "Heat capacity"
+        },
+        {
+          "Term": "magnetomotiveForce",
+          "Name": "Magnetomotive force"
+        },
+        {
+          "Term": "magneticFieldStrength",
+          "Name": "Magnetic field strength"
+        },
+        {
+          "Term": "massCount",
+          "Name": "Mass count"
+        },
+        {
+          "Term": "electricalCharge",
+          "Name": "Electrical charge"
+        },
+        {
+          "Term": "absorbedDoseRate",
+          "Name": "Absorbed dose rate"
+        },
+        {
+          "Term": "force",
+          "Name": "Force"
+        },
+        {
+          "Term": "molarHeatCapacity",
+          "Name": "Molar heat capacity"
+        },
+        {
+          "Term": "volumetricFlowRate",
+          "Name": "Volumetric flow rate"
+        },
+        {
+          "Term": "electricalChargePerCount",
+          "Name": "Electrical charge per count"
+        },
+        {
+          "Term": "solidAngle",
+          "Name": "Solid angle"
+        },
+        {
+          "Term": "concentrationVolumePerVolume",
+          "Name": "Concentration volume per volume"
+        },
+        {
+          "Term": "polarizability",
+          "Name": "Polarizability"
+        },
+        {
+          "Term": "luminousFlux",
+          "Name": "Luminous flux"
+        },
+        {
+          "Term": "satelliteResolution",
+          "Name": "Satellite resolution"
+        },
+        {
+          "Term": "electricalFieldStrength",
+          "Name": "Electrical field strength"
+        },
+        {
+          "Term": "inverseCount",
+          "Name": "Inverse count"
+        },
+        {
+          "Term": "massNormalizedParticleLoading",
+          "Name": "Mass normalized particle loading"
+        },
+        {
+          "Term": "temperatureCount",
+          "Name": "Temperature count"
+        },
+        {
+          "Term": "specificHeatPressure",
+          "Name": "Specific heat pressure"
+        },
+        {
+          "Term": "lengthTemperatureTime",
+          "Name": "Length temperature time"
+        },
+        {
+          "Term": "level",
+          "Name": "Level"
+        },
+        {
+          "Term": "countPerLength",
+          "Name": "Count per length"
+        },
+        {
+          "Term": "energyFlux",
+          "Name": "Energy flux"
+        },
+        {
+          "Term": "linearThermalExpansion",
+          "Name": "Linear thermal expansion"
+        },
+        {
+          "Term": "magneticPermeability",
+          "Name": "Magnetic permeability"
+        },
+        {
+          "Term": "powerPerAreaQuarticTemperature",
+          "Name": "Power per area quartic temperature"
+        },
+        {
+          "Term": "absorbedDose",
+          "Name": "Absorbed dose"
+        },
+        {
+          "Term": "amountOfInformation",
+          "Name": "Amount of Information"
+        },
+        {
+          "Term": "radioactivityPerVolume",
+          "Name": "Radioactivity per volume"
+        },
+        {
+          "Term": "jerk",
+          "Name": "Jerk"
+        },
+        {
+          "Term": "volume",
+          "Name": "Volume"
+        },
+        {
+          "Term": "magneticFluxPerLength",
+          "Name": "Magnetic flux per length"
+        },
+        {
+          "Term": "timeSquared",
+          "Name": "Time squared"
+        },
+        {
+          "Term": "angularAcceleration",
+          "Name": "Angular acceleration"
+        },
+        {
+          "Term": "lengthEnergy",
+          "Name": "Length energy"
+        },
+        {
+          "Term": "massCountTemperature",
+          "Name": "Mass count temperature"
+        },
+        {
+          "Term": "currency",
+          "Name": "Currency"
+        },
+        {
+          "Term": "electricalConductivity",
+          "Name": "Electrical conductivity"
+        },
+        {
+          "Term": "dynamicViscosity",
+          "Name": "Dynamic viscosity"
+        },
+        {
+          "Term": "massPerLength",
+          "Name": "Mass per length"
+        },
+        {
+          "Term": "specificHeatVolume",
+          "Name": "Specific heat volume"
+        },
+        {
+          "Term": "volumetricProductivity",
+          "Name": "Volumetric productivity"
+        },
+        {
+          "Term": "Hyperpolarizability",
+          "Name": "Hyperpolarizability"
+        },
+        {
+          "Term": "count",
+          "Name": "Count"
+        },
+        {
+          "Term": "thermalConductivity",
+          "Name": "Thermal conductivity"
+        },
+        {
+          "Term": "molarConductivity",
+          "Name": "Molar conductivity"
+        },
+        {
+          "Term": "turbidity",
+          "Name": "Turbidity"
+        },
+        {
+          "Term": "massTemperature",
+          "Name": "Mass temperature"
+        },
+        {
+          "Term": "color",
+          "Name": "Color"
+        },
+        {
+          "Term": "temperaturePerMagneticFluxDensity",
+          "Name": "Temperature per magnetic flux density"
+        },
+        {
+          "Term": "concentrationCountPerCount",
+          "Name": "Concentration count per count"
+        },
+        {
+          "Term": "linearAcceleration",
+          "Name": "Linear acceleration"
+        },
+        {
+          "Term": "magneticFluxDensity",
+          "Name": "Magnetic flux density"
+        },
+        {
+          "Term": "fluidity",
+          "Name": "Fluidity"
+        },
+        {
+          "Term": "standardGravitationalParameter",
+          "Name": "Standard gravitational parameter"
+        },
+        {
+          "Term": "pressureOrStressRate",
+          "Name": "Pressure or stress rate"
+        },
+        {
+          "Term": "electromotiveForce",
+          "Name": "Electromotive force"
+        },
+        {
+          "Term": "powerArea",
+          "Name": "Power area"
+        },
+        {
+          "Term": "concentrationCountPerMass",
+          "Name": "Concentration count per mass"
+        },
+        {
+          "Term": "electricalFluxDensity",
+          "Name": "Electrical flux density"
+        },
+        {
+          "Term": "electricalChargeVolumeDensity",
+          "Name": "Electrical charge volume density"
+        },
+        {
+          "Term": "luminance",
+          "Name": "Luminance"
+        },
+        {
+          "Term": "energyPerArea",
+          "Name": "Energy per area"
+        },
+        {
+          "Term": "angularMass",
+          "Name": "Angular mass"
+        },
+        {
+          "Term": "electricalChargeLineDensity",
+          "Name": "Electrical charge line density"
+        },
+        {
+          "Term": "electricalQuadrupoleMoment",
+          "Name": "Electrical quadrupole moment"
+        },
+        {
+          "Term": "lengthFraction",
+          "Name": "Length fraction"
+        },
+        {
+          "Term": "countPerArea",
+          "Name": "Count per area"
+        },
+        {
+          "Term": "massPerTime",
+          "Name": "Mass per time"
+        },
+        {
+          "Term": "inverseTimeTemperature",
+          "Name": "Inverse time temperature"
+        },
+        {
+          "Term": "electricalCurrent",
+          "Name": "Electrical current"
+        },
+        {
+          "Term": "luminousEnergy",
+          "Name": "Luminous Energy"
+        },
+        {
+          "Term": "fluorescence",
+          "Name": "Fluorescence"
+        },
+        {
+          "Term": "inductance",
+          "Name": "Inductance"
+        },
+        {
+          "Term": "energyPerAreaElectricalCharge",
+          "Name": "Energy per area electrical charge"
+        },
+        {
+          "Term": "linearMomentum",
+          "Name": "Linear momentum"
+        },
+        {
+          "Term": "salinity",
+          "Name": "Salinity"
+        },
+        {
+          "Term": "powerPerArea",
+          "Name": "Power per area"
+        },
+        {
+          "Term": "luminousIntensity",
+          "Name": "Luminous intensity"
+        },
+        {
+          "Term": "torque",
+          "Name": "Torque"
+        },
+        {
+          "Term": "massPerArea",
+          "Name": "Mass per area"
+        },
+        {
+          "Term": "areaTime",
+          "Name": "Area time"
+        },
+        {
+          "Term": "inversePermittivity",
+          "Name": "Inverse permittivity"
+        },
+        {
+          "Term": "thermalInsulance",
+          "Name": "Thermal insulance"
+        },
+        {
+          "Term": "catalyticActivity",
+          "Name": "Catalytic activity"
+        },
+        {
+          "Term": "electricalCurrentDensity",
+          "Name": "Electrical current density"
+        },
+        {
+          "Term": "radioactivity",
+          "Name": "Radioactivity"
+        },
+        {
+          "Term": "angularMomentum",
+          "Name": "Angular momentum"
+        },
+        {
+          "Term": "pressureOrStress",
+          "Name": "Pressure or stress"
+        },
+        {
+          "Term": "electricalCurrentPerEnergy",
+          "Name": "Electrical current per energy"
+        },
+        {
+          "Term": "length",
+          "Name": "Length"
+        },
+        {
+          "Term": "energyDensity",
+          "Name": "Energy density"
+        },
+        {
+          "Term": "inverseSquareEnergy",
+          "Name": "Inverse square energy"
+        },
+        {
+          "Term": "magneticDipoleMoment",
+          "Name": "Magnetic dipole moment"
+        },
+        {
+          "Term": "lengthPerMagneticFlux",
+          "Name": "Length per magnetic flux"
+        },
+        {
+          "Term": "specificRadioactivity",
+          "Name": "Specific radioactivity"
+        },
+        {
+          "Term": "radiance",
+          "Name": "Radiance"
+        },
+        {
+          "Term": "dataRate",
+          "Name": "Data rate"
+        },
+        {
+          "Term": "inverseEnergy",
+          "Name": "Inverse energy"
+        },
+        {
+          "Term": "time",
+          "Name": "Time"
+        },
+        {
+          "Term": "fluidPermeance",
+          "Name": "Fluid permeance"
+        },
+        {
+          "Term": "luminousEfficacy",
+          "Name": "Luminous efficacy"
+        },
+        {
+          "Term": "inverseVolume",
+          "Name": "Inverse volume"
+        },
+        {
+          "Term": "dimensionless",
+          "Name": "Dimensionless"
+        },
+        {
+          "Term": "specificHeatCapacity",
+          "Name": "Specific heat capacity"
+        },
+        {
+          "Term": "illuminance",
+          "Name": "Illuminance"
+        },
+        {
+          "Term": "lengthMolarEnergy",
+          "Name": "Length molar energy"
+        },
+        {
+          "Term": "areaThermalExpansion",
+          "Name": "Area thermal expansion"
+        },
+        {
+          "Term": "radiantIntensity",
+          "Name": "Radiant Intensity"
+        },
+        {
+          "Term": "molarAngularMomentum",
+          "Name": "Molar angular momentum"
+        },
+        {
+          "Term": "lengthTemperature",
+          "Name": "Length temperature"
+        },
+        {
+          "Term": "thrustToMassRatio",
+          "Name": "Thrust to mass ratio"
+        },
+        {
+          "Term": "angle",
+          "Name": "Angle"
+        },
+        {
+          "Term": "quarticElectricDipoleMomentPerCubicEnergy",
+          "Name": "Quartic electrical dipole moment per cubic energy"
+        },
+        {
+          "Term": "gravitationalAttraction",
+          "Name": "Gravitational attraction"
+        },
+        {
+          "Term": "volumeThermalExpansion",
+          "Name": "Volume thermal expansion"
+        },
+        {
+          "Term": "potentialVorticity",
+          "Name": "Potential vorticity"
+        },
+        {
+          "Term": "inverseMagneticFlux",
+          "Name": "Inverse magnetic flux"
+        },
+        {
+          "Term": "concentrationPercentSaturation",
+          "Name": "Concentration percent saturation"
+        },
+        {
+          "Term": "other",
+          "Name": "Other"
+        },
+        {
+          "Term": "frequency",
+          "Name": "Frequency"
+        },
+        {
+          "Term": "powerAreaPerSolidAngle",
+          "Name": "Power area per solid angle"
+        },
+        {
+          "Term": "massFraction",
+          "Name": "Mass fraction"
+        },
+        {
+          "Term": "electricalConductance",
+          "Name": "Electrical conductance"
+        },
+        {
+          "Term": "thermalResistance",
+          "Name": "Thermal resistance"
+        },
+        {
+          "Term": "mass",
+          "Name": "Mass"
+        },
+        {
+          "Term": "molarVolume",
+          "Name": "Molar volume"
+        },
+        {
+          "Term": "yank",
+          "Name": "Yank"
+        },
+        {
+          "Term": "lengthMass",
+          "Name": "Length mass"
+        }
+      ]
+    },
+    {
+      "CV_Status": [
+        {
+          "Term": "unknown",
+          "Name": "Unknown"
+        },
+        {
+          "Term": "ongoing",
+          "Name": "Ongoing"
+        },
+        {
+          "Term": "planned",
+          "Name": "Planned"
+        },
+        {
+          "Term": "complete",
+          "Name": "Complete"
+        }
+      ]
+    },
+    {
+      "CV_Medium": [
+        {
+          "Term": "sediment",
+          "Name": "Sediment"
+        },
+        {
+          "Term": "notApplicable",
+          "Name": "Not applicable"
+        },
+        {
+          "Term": "unknown",
+          "Name": "Unknown"
+        },
+        {
+          "Term": "habitat",
+          "Name": "Habitat"
+        },
+        {
+          "Term": "snow",
+          "Name": "Snow"
+        },
+        {
+          "Term": "particulate",
+          "Name": "Particulate"
+        },
+        {
+          "Term": "soil",
+          "Name": "Soil"
+        },
+        {
+          "Term": "rock",
+          "Name": "Rock"
+        },
+        {
+          "Term": "air",
+          "Name": "Air"
+        },
+        {
+          "Term": "organism",
+          "Name": "Organism"
+        },
+        {
+          "Term": "gas",
+          "Name": "Gas"
+        },
+        {
+          "Term": "ice",
+          "Name": "Ice"
+        },
+        {
+          "Term": "other",
+          "Name": "Other"
+        },
+        {
+          "Term": "tissue",
+          "Name": "Tissue"
+        },
+        {
+          "Term": "mineral",
+          "Name": "Mineral"
+        },
+        {
+          "Term": "liquidOrganic",
+          "Name": "Liquid organic"
+        },
+        {
+          "Term": "liquidAqueous",
+          "Name": "Liquid aqueous"
+        }
+      ]
+    },
+    {
+      "CV_AggregationStatistic": [
+        {
+          "Term": "standardDeviation",
+          "Name": "Standard deviation"
+        },
+        {
+          "Term": "standardErrorOfMean",
+          "Name": "Standard error of mean"
+        },
+        {
+          "Term": "sporadic",
+          "Name": "Sporadic"
+        },
+        {
+          "Term": "unknown",
+          "Name": "Unknown"
+        },
+        {
+          "Term": "constantOverInterval",
+          "Name": "Constant over interval"
+        },
+        {
+          "Term": "continuous",
+          "Name": "Continuous"
+        },
+        {
+          "Term": "median",
+          "Name": "Median"
+        },
+        {
+          "Term": "variance",
+          "Name": "Variance"
+        },
+        {
+          "Term": "incremental",
+          "Name": "Incremental"
+        },
+        {
+          "Term": "average",
+          "Name": "Average"
+        },
+        {
+          "Term": "categorical",
+          "Name": "Categorical"
+        },
+        {
+          "Term": "cumulative",
+          "Name": "Cumulative"
+        },
+        {
+          "Term": "mode",
+          "Name": "Mode"
+        },
+        {
+          "Term": "minimum",
+          "Name": "Minimum"
+        },
+        {
+          "Term": "standardErrorOfTheMean",
+          "Name": "Standard error of the mean"
+        },
+        {
+          "Term": "maximum",
+          "Name": "Maximum"
+        },
+        {
+          "Term": "bestEasySystematicEstimator",
+          "Name": "Best easy systematic estimator"
+        }
+      ]
+    }
+  ],
+  "title": "Water temperature data from the Little Bear River, UT",
+  "description": "This dataset contains time series of observations of water temperature in the Little Bear River, UT. Data were recorded every 30 minutes. The values were recorded using a HydroLab MS5 multi-parameter water quality sonde connected to a Campbell Scientific datalogger. ",
+  "subject": [
+    "Temperature"
+  ],
+  "creators": [],
+  "contributors": [
+    {
+      "name": "Jeff Horsburgh",
+      "phone": "1-435-797-2946",
+      "email": "jeff.horsburgh@usu.edu",
+      "organization": "Utah State University Utah Water Research Laboratory"
+    }
+  ],
+  "coverage": {
+    "type": "period",
+    "value": {
+      "start": "2008-01-01 00:00:00",
+      "end": "2008-01-30 23:30:00"
+    }
+  },
+  "variabletimeseries": {
+    "series_ids": [
+      "51e31687-1ebc-11e6-aa6c-f45c8999816f"
+    ],
+    "variable_code": "USU36",
+    "variable_name": "Temperature",
+    "variable_type": "Water Quality",
+    "no_data_value": -9999.0,
+    "speciation": "Not Applicable"
+  },
+  "processinglevel": {
+    "series_ids": [
+      "51e31687-1ebc-11e6-aa6c-f45c8999816f"
+    ],
+    "processing_level_code": "1",
+    "definition": "Quality controlled data",
+    "explanation": "Quality controlled data that have passed quality assurance procedures such as routine estimation of timing and sensor calibration or visual inspection and removal of obvious errors. An example is USGS published streamflow records following parsing through USGS quality control procedures."
+  },
+  "timeseriesresult": {
+    "series_ids": [
+      "51e31687-1ebc-11e6-aa6c-f45c8999816f"
+    ],
+    "status": "Unknown",
+    "sample_medium": "Surface Water",
+    "value_count": 1441,
+    "units_type": "Temperature",
+    "units_name": "degree celsius",
+    "units_abbreviation": "degC",
+    "aggregation_statistics": "Average"
+  },
+  "site": null,
+  "method": {
+    "series_ids": [
+      "51e31687-1ebc-11e6-aa6c-f45c8999816f"
+    ],
+    "method_code": "28",
+    "method_name": "Quality Control Level 1 Data Series created from raw QC Level 0 data using ODM Tools.",
+    "method_type": "Instrument deployment",
+    "method_description": "Quality Control Level 1 Data Series created from raw QC Level 0 data using ODM Tools."
+  }
+}
