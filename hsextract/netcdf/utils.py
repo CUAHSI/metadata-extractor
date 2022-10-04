@@ -30,7 +30,7 @@ import json
 
 from collections import OrderedDict
 from osgeo import osr
-from pyproj import Proj, transform
+from pyproj import Transformer
 
 
 def get_nc_meta_json(nc_file_name):
@@ -242,14 +242,11 @@ def get_box_info(nc_dataset):
                 get_nc_grid_mapping_projection_import_string_dict(nc_dataset)
             if projection_import_string_dict.get('type') == 'Proj4 String':
                 try:
-                    ori_proj = Proj(projection_import_string_dict['text'])
-                    wgs84_proj = Proj(init='epsg:4326')
-                    box_info['westlimit'], box_info['northlimit'] = transform(
-                        ori_proj, wgs84_proj,
+                    transformer = Transformer.from_crs(projection_import_string_dict['text'], "epsg:4326")
+                    box_info['northlimit'], box_info['westlimit'] = transformer.transform(
                         original_box_info['westlimit'],
                         original_box_info['northlimit'])
-                    box_info['eastlimit'], box_info['southlimit'] = transform(
-                        ori_proj, wgs84_proj,
+                    box_info['southlimit'], box_info['eastlimit'] = transformer.transform(
                         original_box_info['eastlimit'],
                         original_box_info['southlimit'])
                 except Exception:
