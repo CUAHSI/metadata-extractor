@@ -44,6 +44,8 @@ async def list_and_extract(path: str):
             #tasks.append(asyncio.to_thread(extract_metadata(category, file)))
 
     # Will contain a list of dictionaries containing filepath and the extracted metadata
-    metadata_list = await asyncio.gather(*tasks)
+    metadata_list = []
+    if tasks:
+        metadata_list = await asyncio.gather(*tasks)
 
     return sorted_files, metadata_list

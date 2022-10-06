@@ -1,3 +1,5 @@
+import os
+
 from pathlib import Path
 from collections import defaultdict
 
@@ -10,6 +12,8 @@ def _is_not_hidden_file(path):
     return is_not_hidden_file
 
 def sort_files(path: str, include_hidden: bool = False):
+    if os.path.isfile(path):
+        return [path]
     if include_hidden:
         files = [str(p) for p in Path(path).rglob('*') if not path.is_dir()]
     else:

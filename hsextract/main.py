@@ -44,16 +44,26 @@ def netcdf(path: str):
     metadata_dict = get_nc_meta_dict(path)
     print(json.dumps(metadata_dict, indent=2))
 
-async def _extract(path: str):
+async def _extract(path: str, write: bool):
     sorted_files, extracted_metadata = await list_and_extract(path)
     all_metadata = {"files": sorted_files, "extracted": extracted_metadata}
-    os.makedirs(f"{path}/.hs", exist_ok=True)
-    with open(f"{path}/.hs/output.json", "w") as f:
-        f.write(json.dumps(all_metadata, indent=2))
+    all_metadata = json.dumps(all_metadata, indent=2)
+    '''
+    if write:
+        if os.path.isdir(path):
+            os.makedirs(f"{path}/.hs", exist_ok=True)
+            with open(f"{path}/.hs/output.json", "w") as f:
+                f.write(all_metadata)
+        else:
+            with open(f".hs/output.json", "w") as f:
+                f.write(all_metadata)
+    else:
+    '''
+    print(all_metadata)
 
 @app.command()
-def extract(path: str):
-    aiorun(_extract(path))
+def extract(path: str, write=True):
+    aiorun(_extract(path, write))
 
 
 if __name__ == "__main__":
