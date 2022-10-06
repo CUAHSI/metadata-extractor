@@ -1,11 +1,15 @@
-from hsextract.utils import list_and_extract
 import typer
 import json
 import os
 
 from asyncio import run as aiorun
+
+from hsextract.utils import list_and_extract
 from hsextract.feature.utils import extract_metadata_and_files
 from hsextract.raster.utils import extract_from_tif_file
+from hsextract.netcdf.utils import get_nc_meta_dict
+from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
+from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata, extract_metadata_csv
 
 app = typer.Typer()
 
@@ -18,6 +22,26 @@ def feature(path: str):
 @app.command()
 def raster(path: str):
     metadata_dict = extract_from_tif_file(path)
+    print(json.dumps(metadata_dict, indent=2))
+
+@app.command()
+def reftimeseries(path: str):
+    metadata_dict = extract_referenced_timeseries_metadata(path)
+    print(json.dumps(metadata_dict, indent=2))
+
+@app.command()
+def timeseries(path: str):
+    metadata_dict = extract_timeseries_metadata(path)
+    print(json.dumps(metadata_dict, indent=2))    
+
+@app.command()
+def timeseriescsv(path: str):
+    metadata_dict = extract_metadata_csv(path)
+    print(json.dumps(metadata_dict, indent=2))
+
+@app.command()
+def netcdf(path: str):
+    metadata_dict = get_nc_meta_dict(path)
     print(json.dumps(metadata_dict, indent=2))
 
 async def _extract(path: str):
