@@ -11,11 +11,11 @@ def _is_not_hidden_file(path):
 
 def sort_files(path: str, include_hidden: bool = False):
     if include_hidden:
-        files = [p for p in Path(path).rglob('*') if not path.is_dir()]
+        files = [str(p) for p in Path(path).rglob('*') if not path.is_dir()]
     else:
-        files = [p for p in Path(path).rglob('*') if _is_not_hidden_file(p)]
+        files = [str(p) for p in Path(path).rglob('*') if _is_not_hidden_file(p)]
     
-    sorted_files = sorted(files, key=lambda i: (i.name, len(i.name.split("/"))))
+    sorted_files = sorted(files, key=lambda i: (i, len(i.split("/"))))
     return sorted_files
 
 def categorize_files(files):
@@ -24,26 +24,26 @@ def categorize_files(files):
     for f in files:
         #if str(f.name).endswith(".tif"):
         #    categorized_files["raster"].append(f)
-        if str(f.name).endswith(".vrt"):
+        if f.endswith(".vrt"):
             categorized_files["raster"].append(f)
         #if str(f.name).endswith(".tiff"):
         #    categorized_files["raster"].append(f)
 
-        if str(f.name).endswith(".nc"):
+        if f.endswith(".nc"):
             categorized_files["netcdf"].append(f)
 
-        if str(f.name).endswith(".shp"):
+        if f.endswith(".shp"):
             categorized_files["feature"].append(f)
 
-        if str(f.name).endswith(".refts.json"):
+        if f.endswith(".refts.json"):
             categorized_files["reftimeseries"].append(f)
 
-        if str(f.name).endswith(".csv"):
+        if f.endswith(".csv"):
             categorized_files["timeseries"].append(f)
-        if str(f.name).endswith(".sqlite"):
+        if f.endswith(".sqlite"):
             categorized_files["timeseries"].append(f)
 
-        if str(f.name).endswith("hs_user_meta.json"):
+        if f.endswith("hs_user_meta.json"):
             categorized_files["user_meta"].append(f)
 
     return categorized_files

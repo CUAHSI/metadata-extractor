@@ -16,3 +16,9 @@ docker run -v $watersheds_abs_path:/files hsextract feature /files/watersheds.sh
 rasters_abs_path=/Users/scootna/projects/metadata-extractor/tests/test_files/rasters
 docker run -v $rasters_abs_path:/files hsextract raster /files/logan.vrt
 ```
+
+### Run extraction
+```shell
+abs_path=/Users/scootna/projects/metadata-extractor/tests/test_files
+docker run -v $abs_path:/files hsextract extract /files/test_files
+```

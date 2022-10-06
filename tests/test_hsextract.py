@@ -8,7 +8,7 @@ from hsextract.raster.utils import extract_from_tif_file
 from hsextract.netcdf.utils import get_nc_meta_dict
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata, extract_metadata_csv
-from hsextract.listing.utils import prepare_files
+from hsextract.utils import list_and_extract
 
 
 pytest_plugins = ('pytest_asyncio',)
@@ -40,15 +40,13 @@ def _assert_raster_from_file(filename, metadata_json):
 
 def test_rasters_extraction():
     metadata_dict = extract_from_tif_file("tests/test_files/rasters/logan.vrt")
-    metadata_json = json.loads(json.dumps(metadata_dict))
 
-    _assert_raster_from_file("raster.json", metadata_json)
+    _assert_raster_from_file("raster.json", metadata_dict)
 
 def test_features_watersheds_extraction():
     metadata_dict = extract_metadata_and_files("tests/test_files/watersheds/watersheds.shp")
-    metadata_json = json.loads(json.dumps(metadata_dict))
 
-    _assert_from_file("feature.json", metadata_json)
+    _assert_from_file("feature.json", metadata_dict)
 
 def test_reftimeseries_extraction():
     ref_timeseries_json = extract_referenced_timeseries_metadata("tests/test_files/reftimeseries/multi_sites_formatted_version1.0.refts.json")
@@ -73,7 +71,6 @@ def test_netcdf_extraction():
 
 @pytest.mark.asyncio
 async def test_threaded_metadata_extraction():
-    from hsextract.utils import list_and_extract
 
     sorted_files, extracted_metadata = await list_and_extract("tests/test_files")
 
