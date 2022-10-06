@@ -61,7 +61,8 @@ def get_nc_meta_dict(nc_file_name):
     res_type_specific_meta = get_type_specific_meta(nc_dataset)
     nc_dataset.close()
 
-    return res_dublin_core_meta, res_type_specific_meta
+    res_dublin_core_meta.update(res_type_specific_meta)
+    return res_dublin_core_meta
 
 
 # Functions for dublin core meta

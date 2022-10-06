@@ -9,10 +9,15 @@ import logging
 from pycrs.parse import from_unknown_wkt
 import numpy
 import xml.etree.ElementTree as ET
+import tempfile
 
 
 def extract_from_tif_file(tif_file):
-    filename = create_vrt_file(tif_file)
+    ext = os.path.splitext(tif_file)[1]
+    if ext != ".vrt":
+        filename = create_vrt_file(tif_file)
+    else:
+        filename = tif_file
     # file validation and metadaadatta extraction
     file_type_metadata = extract_metadata_from_vrt(filename)
     return file_type_metadata
@@ -22,7 +27,6 @@ def create_vrt_file(tif_file):
     """ tif_file exists in temp directory - retrieved from irods """
 
     # create vrt file
-    import tempfile
     temp_dir = tempfile.gettempdir()
     tif_file_name = os.path.basename(tif_file)
     vrt_file_path = os.path.join(temp_dir, f'{tif_file_name}.vrt')
@@ -408,6 +412,6 @@ def get_vrt_files(raster_path):
         for vrt_file in vrt_files:
             file_names_in_vrt = list_tif_files(vrt_file)
             for vrt_ref_raster_name in file_names_in_vrt:
-                if object_id.endswith(vrt_ref_raster_name):
+                if raster_path.endswith(vrt_ref_raster_name):
                     vrt_files_for_raster.append(vrt_file)
     return vrt_files_for_raster

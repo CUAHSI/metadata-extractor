@@ -28,7 +28,7 @@
     "cellSizeXValue": 30.0,
     "cellSizeYValue": 30.0,
     "cellDataType": "Float32",
-    "name": "logan.vrt.vrt"
+    "name": "logan.vrt"
   },
   "_band_information_0": {
     "name": "Band_1",
