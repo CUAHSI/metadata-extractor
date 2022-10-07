@@ -15,7 +15,7 @@ cat $abs_path/.hs/output.json
 
 ### Run single file extraction
 ```shell
-docker run -v $abs_path:/files hsextract extract /files
+docker run -v $abs_path:/files hsextract extract /files/watersheds/watersheds.shp
 
 cat $abs_path/.hs/output.json
 ```
