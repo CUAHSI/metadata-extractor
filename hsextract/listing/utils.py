@@ -61,6 +61,8 @@ def categorize_files(files):
                 categorized_files["raster-tif"].remove(full_tif_path)
             except ValueError:
                 pass #TODO - warn about an invalid vrt file
+    categorized_files["raster"].extend(categorized_files["raster-tif"])
+    del categorized_files["raster-tif"]
 
     return categorized_files
 

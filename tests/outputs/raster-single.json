@@ -1,0 +1,41 @@
+{
+  "spatial_coverage": {
+    "type": "box",
+    "value": {
+      "northlimit": -111.61721182985312,
+      "southlimit": -111.65768822411246,
+      "eastlimit": 42.04982106246346,
+      "westlimit": 41.98745777903126,
+      "units": "Decimal degrees",
+      "projection": "WGS 84 EPSG:4326"
+    }
+  },
+  "_ori_coverage": {
+    "_value": {
+      "northlimit": 4655492.446916306,
+      "southlimit": 4648592.446916306,
+      "eastlimit": 448874.01909127034,
+      "westlimit": 445574.01909127034,
+      "projection": "NAD83 / UTM zone 12N",
+      "units": "meter",
+      "projection_string": "PROJCS[\"NAD83 / UTM zone 12N\",GEOGCS[\"NAD83\",DATUM[\"North_American_Datum_1983\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6269\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4269\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-111],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"26912\"]]",
+      "datum": "North_American_Datum_1983"
+    }
+  },
+  "_cell_information": {
+    "rows": 230,
+    "columns": 110,
+    "cellSizeXValue": 30.0,
+    "cellSizeYValue": 30.0,
+    "cellDataType": "Float32",
+    "name": "logan1.tif.vrt"
+  },
+  "_band_information_0": {
+    "name": "Band_1",
+    "variableName": "",
+    "variableUnit": "",
+    "noDataValue": -3.4028234663852886e+38,
+    "maximumValue": 2.9516826e-317,
+    "minimumValue": 6.943487883879e-310
+  }
+}

@@ -90,11 +90,13 @@ async def test_threaded_metadata_extraction():
             _assert_from_file("feature-states.json", metadata)
         elif file_path.endswith("logan.vrt"):
             _assert_raster_from_file("raster.json", metadata)
+        elif file_path.endswith("single/logan1.tif"):
+            _assert_raster_from_file("raster-single.json", metadata)
         elif file_path.endswith("hs_user_meta.json"):
             assert metadata == None
         else:
             assert metadata == None
             unextracted_count = unextracted_count + 1
-    assert unextracted_count == 3
+    assert unextracted_count == 2
     assert len(extracted_metadata) == 11
     assert len(sorted_files) == 26
