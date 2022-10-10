@@ -1,7 +1,10 @@
+from multiprocessing.sharedctypes import Value
 import os
 
 from pathlib import Path
 from collections import defaultdict
+
+from hsextract.raster.utils import list_tif_files
 
 
 def _is_not_hidden_file(path):
@@ -26,12 +29,12 @@ def categorize_files(files):
     categorized_files = defaultdict(list)
 
     for f in files:
-        #if str(f.name).endswith(".tif"):
-        #    categorized_files["raster"].append(f)
         if f.endswith(".vrt"):
             categorized_files["raster"].append(f)
-        #if str(f.name).endswith(".tiff"):
-        #    categorized_files["raster"].append(f)
+        if f.endswith(".tiff"):
+            categorized_files["raster-tif"].append(f)
+        if f.endswith(".tif"):
+            categorized_files["raster-tif"].append(f)
 
         if f.endswith(".nc"):
             categorized_files["netcdf"].append(f)
@@ -49,6 +52,15 @@ def categorize_files(files):
 
         if f.endswith("hs_user_meta.json"):
             categorized_files["user_meta"].append(f)
+
+    for vrt_file in categorized_files["raster"]:
+        vrt_file_dir = os.path.dirname(vrt_file)
+        for tif_file in list_tif_files(vrt_file):
+            try:
+                full_tif_path = os.path.join(vrt_file_dir, tif_file)
+                categorized_files["raster-tif"].remove(full_tif_path)
+            except ValueError:
+                pass #TODO - warn about an invalid vrt file
 
     return categorized_files
 

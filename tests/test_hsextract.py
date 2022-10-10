@@ -78,8 +78,6 @@ async def test_threaded_metadata_extraction():
     for file_path, metadata in extracted_metadata:
         if file_path.endswith("netcdf_valid.nc"):
             _assert_from_file("netcdf.json", metadata)
-        elif file_path.endswith("netcdf_invalid.nc"):
-            pass
         elif file_path.endswith("ODM2_Multi_Site_One_Variable_Test.csv"):
             _assert_from_file("timeseries-csv.json", metadata)
         elif file_path.endswith("ODM2_Multi_Site_One_Variable.sqlite"):
@@ -88,6 +86,8 @@ async def test_threaded_metadata_extraction():
             _assert_from_file("reftimeseries.json", metadata)
         elif file_path.endswith("watersheds.shp"):
             _assert_from_file("feature.json", metadata)
+        elif file_path.endswith("states.shp"):
+            _assert_from_file("feature-states.json", metadata)
         elif file_path.endswith("logan.vrt"):
             _assert_raster_from_file("raster.json", metadata)
         elif file_path.endswith("hs_user_meta.json"):
@@ -95,6 +95,6 @@ async def test_threaded_metadata_extraction():
         else:
             assert metadata == None
             unextracted_count = unextracted_count + 1
-    assert unextracted_count == 0
-    assert len(extracted_metadata) == 8
-    assert len(sorted_files) == 18
+    assert unextracted_count == 3
+    assert len(extracted_metadata) == 11
+    assert len(sorted_files) == 26
