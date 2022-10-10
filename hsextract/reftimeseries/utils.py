@@ -4,12 +4,14 @@ from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 import jsonschema
-from dateutil import parser, tz
-from datetime import timezone
+from dateutil import parser
 
 
 def extract_referenced_timeseries_metadata(res_json_file):
-    return _validate_json_file(res_json_file)
+    json_data = _validate_json_file(res_json_file)
+    json_data["files"] = [res_json_file]
+
+    return json_data
 
 def _validate_json_file(res_json_file):
     with open(res_json_file, 'r') as f:

@@ -5185,5 +5185,6 @@
     "method_name": "Quality Control Level 1 Data Series created from raw QC Level 0 data using ODM Tools.",
     "method_type": "Instrument deployment",
     "method_description": "Quality Control Level 1 Data Series created from raw QC Level 0 data using ODM Tools."
-  }
+  },
+  "files": ["tests/test_files/timeseries/ODM2_Multi_Site_One_Variable.sqlite"]
 }

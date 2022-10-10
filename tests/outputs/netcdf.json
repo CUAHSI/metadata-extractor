@@ -78,5 +78,6 @@
     "missing_value": "",
     "method": "",
     "type": "Float"
-  }
+  },
+  "files": ["tests/test_files/netcdf/netcdf_valid.nc"]
 }

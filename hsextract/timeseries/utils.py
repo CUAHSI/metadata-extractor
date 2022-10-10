@@ -234,6 +234,8 @@ def extract_metadata(sqlite_file_name):
             method_elements = extract_method_elements(cur, result, feature_action)
             as_json.update({'method': method_elements})
 
+
+        as_json["files"] = [sqlite_file_name]
         return as_json
 
 def extract_timeseriesresult_elements(cur, result):
@@ -549,7 +551,7 @@ def _extract_coverage_metadata(cur):
 def extract_metadata_csv(csv_file_name):
     """Extracts CV metadata from a csv file"""
 
-    metadata_dict = []
+    metadata_dict = {}
     with open(csv_file_name, 'r') as fl_obj:
         csv_reader = csv.reader(fl_obj, delimiter=',')
         # read the first row - header
@@ -569,7 +571,9 @@ def extract_metadata_csv(csv_file_name):
         for data_col_name in header[1:]:
             value_counts[data_col_name] = str(data_row_count)
 
-        metadata_dict.append({"value_counts": value_counts})
-        metadata_dict.append({"coverage": {"type": 'period', "value": {'start': start_date_str, 'end': end_date_str}}})
+        metadata_dict.update({"value_counts": value_counts})
+        metadata_dict.update({"coverage": {"type": 'period', "value": {'start': start_date_str, 'end': end_date_str}}})
+    
+    metadata_dict["files"] = [csv_file_name]
     
     return metadata_dict

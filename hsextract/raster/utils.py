@@ -14,12 +14,18 @@ import tempfile
 
 def extract_from_tif_file(tif_file):
     ext = os.path.splitext(tif_file)[1]
+    full_path = os.path.dirname(tif_file)
     if ext != ".vrt":
         filename = create_vrt_file(tif_file)
+        tif_files = [tif_file]
     else:
         filename = tif_file
+        tif_files = list_tif_files(filename)
+        tif_files = [os.path.join(full_path, f) for f in tif_files] + [tif_file]
     # file validation and metadaadatta extraction
     file_type_metadata = extract_metadata_from_vrt(filename)
+    file_type_metadata["files"] = tif_files
+
     return file_type_metadata
 
 

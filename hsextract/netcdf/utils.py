@@ -62,6 +62,7 @@ def get_nc_meta_dict(nc_file_name):
     nc_dataset.close()
 
     res_dublin_core_meta.update(res_type_specific_meta)
+    res_dublin_core_meta["files"] = [nc_file_name]
     return res_dublin_core_meta
 
 

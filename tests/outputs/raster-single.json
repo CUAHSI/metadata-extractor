@@ -37,5 +37,6 @@
     "noDataValue": -3.4028234663852886e+38,
     "maximumValue": 2.9516826e-317,
     "minimumValue": 6.943487883879e-310
-  }
+  },
+  "files": ["tests/test_files/rasters/single/logan1.tif"]
 }

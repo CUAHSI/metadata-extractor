@@ -64,5 +64,6 @@
     ],
     "symbol": "http://data.cuahsi.org/content/images/cuahsi_logo_small.png",
     "title": "Sites, Variable"
-  }
+  },
+  "files": ["tests/test_files/reftimeseries/multi_sites_formatted_version1.0.refts.json"]
 }
