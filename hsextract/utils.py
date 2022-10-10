@@ -1,6 +1,5 @@
 import asyncio
 import os
-import json
 
 from hsextract.listing.utils import prepare_files
 from hsextract.raster.utils import extract_from_tif_file
@@ -8,15 +7,24 @@ from hsextract.feature.utils import extract_metadata_and_files
 from hsextract.netcdf.utils import get_nc_meta_dict
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata, extract_metadata_csv
+from hsextract.file_utils import file_metadata
 
-
-def extract_metadata_safe(type: str, filepath):
-    try:
-        return extract_metadata(type, filepath)
-    except Exception as e:
-        return filepath, None
 
 def extract_metadata(type: str, filepath):
+    try:
+        _, extracted_metadata = _extract_metadata(type, filepath)
+        #all_file_metadata = []
+        #for f in extract_metadata["files"]:
+        #    all_file_metadata.append(file_metadata(f))
+        #extracted_metadata["files"] = all_file_metadata
+        return extracted_metadata
+    except Exception as e:
+        return None
+
+def extract_metadata_with_file_path(type: str, filepath):
+    return filepath, extract_metadata(type, filepath)
+
+def _extract_metadata(type: str, filepath):
     extension = os.path.splitext(filepath)[1]
     metadata = None
     if type == "raster":
@@ -40,7 +48,7 @@ async def list_and_extract(path: str):
     tasks = []
     for category, files in categorized_files.items():
         for file in files:
-            tasks.append(asyncio.get_running_loop().run_in_executor(None, extract_metadata_safe, category, str(file)))
+            tasks.append(asyncio.get_running_loop().run_in_executor(None, extract_metadata_with_file_path, category, str(file)))
             #tasks.append(asyncio.to_thread(extract_metadata(category, file)))
 
     # Will contain a list of dictionaries containing filepath and the extracted metadata
