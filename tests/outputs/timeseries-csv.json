@@ -10,5 +10,12 @@
       "end": "2008-01-01 09:30:00"
     }
   },
-  "files": ["tests/test_files/timeseries/ODM2_Multi_Site_One_Variable_Test.csv"]
+  "files": [
+    {
+      "path": "tests/test_files/timeseries/ODM2_Multi_Site_One_Variable_Test.csv",
+      "size": 737,
+      "checksum": "db7548ad91f49e2a7ba663b77299a2fa",
+      "mime_type": "text/csv"
+    }
+  ]
 }

@@ -38,6 +38,11 @@ def test_rasters_extraction():
 
     _assert_raster_from_file("raster.json", metadata_dict)
 
+def test_raster_single_extraction():
+    all_metadata_json = extract_metadata("raster", "tests/test_files/rasters/single/logan1.tif")
+
+    _assert_raster_from_file("raster-single.json", all_metadata_json)
+
 def test_features_watersheds_extraction():
     metadata_dict = extract_metadata("feature", "tests/test_files/watersheds/watersheds.shp")
 
@@ -62,6 +67,11 @@ def test_netcdf_extraction():
     all_metadata_json = extract_metadata("netcdf", "tests/test_files/netcdf/netcdf_valid.nc")
 
     _assert_from_file("netcdf.json", all_metadata_json)
+
+def test_feature_states_extraction():
+    all_metadata_json = extract_metadata("feature", "tests/test_files/states/states.shp")
+
+    _assert_from_file("feature-states.json", all_metadata_json)
 
 
 @pytest.mark.asyncio

@@ -10,19 +10,20 @@ from hsextract.timeseries.utils import extract_metadata as extract_timeseries_me
 from hsextract.file_utils import file_metadata
 
 
+def extract_metadata_with_file_path(type: str, filepath):
+    return filepath, extract_metadata(type, filepath)
+
 def extract_metadata(type: str, filepath):
     try:
         _, extracted_metadata = _extract_metadata(type, filepath)
-        #all_file_metadata = []
-        #for f in extract_metadata["files"]:
-        #    all_file_metadata.append(file_metadata(f))
-        #extracted_metadata["files"] = all_file_metadata
-        return extracted_metadata
     except Exception as e:
         return None
-
-def extract_metadata_with_file_path(type: str, filepath):
-    return filepath, extract_metadata(type, filepath)
+    if extracted_metadata:
+        all_file_metadata = []
+        for f in extracted_metadata["files"]:
+            all_file_metadata.append(file_metadata(f))
+        extracted_metadata["files"] = all_file_metadata
+    return extracted_metadata
 
 def _extract_metadata(type: str, filepath):
     extension = os.path.splitext(filepath)[1]

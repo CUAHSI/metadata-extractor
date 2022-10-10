@@ -36,7 +36,14 @@
     "variableUnit": "",
     "noDataValue": -3.4028234663852886e+38,
     "maximumValue": 2.9516826e-317,
-    "minimumValue": 6.943487883879e-310
+    "minimumValue": 6.9284874111092e-310
   },
-  "files": ["tests/test_files/rasters/single/logan1.tif"]
+  "files": [
+    {
+      "path": "tests/test_files/rasters/single/logan1.tif",
+      "size": 100749,
+      "checksum": "bebc0e5333d575b775cda48d6d27a21c",
+      "mime_type": "image/tiff"
+    }
+  ]
 }

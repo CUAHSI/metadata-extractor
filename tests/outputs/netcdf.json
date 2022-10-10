@@ -19,10 +19,10 @@
     "end": "2010-05-30 23:00:00"
   },
   "box": {
-    "westlimit": "-111.51138807956225",
     "northlimit": "41.867126409000086",
-    "eastlimit": "-111.5059403684569",
+    "westlimit": "-111.51138807956225",
     "southlimit": "41.86390807452128",
+    "eastlimit": "-111.5059403684569",
     "units": "Decimal degrees",
     "projection": "WGS 84 EPSG:4326"
   },
@@ -79,5 +79,12 @@
     "method": "",
     "type": "Float"
   },
-  "files": ["tests/test_files/netcdf/netcdf_valid.nc"]
+  "files": [
+    {
+      "path": "tests/test_files/netcdf/netcdf_valid.nc",
+      "size": 4869898,
+      "checksum": "970c1171f2445d6d76b606feaa5f2e5c",
+      "mime_type": "application/x-netcdf"
+    }
+  ]
 }

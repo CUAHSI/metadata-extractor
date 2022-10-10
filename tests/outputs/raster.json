@@ -18,7 +18,7 @@
       "westlimit": 445574.01909127034,
       "projection": "NAD83 / UTM zone 12N",
       "units": "meter",
-      "projection_string": "PROJCS[\"NAD83 / UTM zone 12N\",GEOGCS[\"NAD83\",DATUM[\"North_American_Datum_1983\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6269\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4269\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-111],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"26912\"]]",
+      "projection_string": "PROJCS[\"NAD83 / UTM zone 12N\",GEOGCS[\"NAD83\",DATUM[\"North_American_Datum_1983\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6269\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433],AUTHORITY[\"EPSG\",\"4269\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-111],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"26912\"]]",
       "datum": "North_American_Datum_1983"
     }
   },
@@ -35,8 +35,27 @@
     "variableName": "",
     "variableUnit": "",
     "noDataValue": -3.4028234663852886e+38,
-    "maximumValue": 6.90621057954314e-310,
-    "minimumValue": 2.7808317e-317
+    "maximumValue": 2880.007080078125,
+    "minimumValue": 2274.958984375
   },
-  "files": ["tests/test_files/rasters/logan1.tif", "tests/test_files/rasters/logan2.tif", "tests/test_files/rasters/logan.vrt"]
+  "files": [
+    {
+      "path": "tests/test_files/rasters/logan1.tif",
+      "size": 100749,
+      "checksum": "bebc0e5333d575b775cda48d6d27a21c",
+      "mime_type": "image/tiff"
+    },
+    {
+      "path": "tests/test_files/rasters/logan2.tif",
+      "size": 98943,
+      "checksum": "7265548b8f345605113bd9539313b4e7",
+      "mime_type": "image/tiff"
+    },
+    {
+      "path": "tests/test_files/rasters/logan.vrt",
+      "size": 2150,
+      "checksum": "d1f18cc8a0a3c98403625d11a5096bfb",
+      "mime_type": null
+    }
+  ]
 }
