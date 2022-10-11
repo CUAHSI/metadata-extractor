@@ -1,5 +1,6 @@
 import asyncio
 import os
+import json
 
 from hsextract.listing.utils import prepare_files
 from hsextract.raster.utils import extract_from_tif_file
@@ -9,9 +10,25 @@ from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata, extract_metadata_csv
 from hsextract.file_utils import file_metadata
 
+from pathlib import PurePath
+
+
+def _to_metadata_path(filepath: str):
+    filepath = filepath + ".json"
+    p = PurePath(filepath)
+    parts = list(p.parts)
+    parts.insert(2, ".hs")
+    metadata_path = PurePath('').joinpath(*parts)
+    return metadata_path
 
 def extract_metadata_with_file_path(type: str, filepath):
-    return filepath, extract_metadata(type, filepath)
+    extracted_metadata = extract_metadata(type, filepath)
+    if extracted_metadata:
+        metadata_path = _to_metadata_path(filepath)
+        os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
+        with open(metadata_path, "w") as f:
+            f.write(json.dumps(extracted_metadata, indent=2))
+    return extracted_metadata
 
 def extract_metadata(type: str, filepath):
     try:
@@ -50,11 +67,17 @@ async def list_and_extract(path: str):
     for category, files in categorized_files.items():
         for file in files:
             tasks.append(asyncio.get_running_loop().run_in_executor(None, extract_metadata_with_file_path, category, str(file)))
-            #tasks.append(asyncio.to_thread(extract_metadata(category, file)))
 
-    # Will contain a list of dictionaries containing filepath and the extracted metadata
-    metadata_list = []
     if tasks:
-        metadata_list = await asyncio.gather(*tasks)
+        await asyncio.gather(*tasks)
 
-    return sorted_files, metadata_list
+    file_tasks = []
+    for file in sorted_files:
+        file_tasks.append(asyncio.get_running_loop().run_in_executor(None, file_metadata, str(file)))
+
+    if file_tasks:
+        metadata_path = os.path.join("/files", ".hs", "file_manifest.json")
+        os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
+        files_with_metadata = await asyncio.gather(*file_tasks)
+        with open(metadata_path, "w") as f:
+            f.write(json.dumps(files_with_metadata, indent=2))

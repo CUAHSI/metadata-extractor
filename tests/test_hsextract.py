@@ -73,35 +73,46 @@ def test_feature_states_extraction():
 
     _assert_from_file("feature-states.json", all_metadata_json)
 
+def read_metadata_json(path: str):
+    with open(path) as f:
+        return json.loads(f.read())
 
 @pytest.mark.asyncio
 async def test_threaded_metadata_extraction():
 
-    sorted_files, extracted_metadata = await list_and_extract("tests/test_files")
+    await list_and_extract("tests/test_files")
 
-    unextracted_count = 0
-    for file_path, metadata in extracted_metadata:
-        if file_path.endswith("netcdf_valid.nc"):
-            _assert_from_file("netcdf.json", metadata)
-        elif file_path.endswith("ODM2_Multi_Site_One_Variable_Test.csv"):
-            _assert_from_file("timeseries-csv.json", metadata)
-        elif file_path.endswith("ODM2_Multi_Site_One_Variable.sqlite"):
-            _assert_from_file("timeseries.json", metadata)
-        elif file_path.endswith("multi_sites_formatted_version1.0.refts.json"):
-            _assert_from_file("reftimeseries.json", metadata)
-        elif file_path.endswith("watersheds.shp"):
-            _assert_from_file("feature.json", metadata)
-        elif file_path.endswith("states.shp"):
-            _assert_from_file("feature-states.json", metadata)
-        elif file_path.endswith("logan.vrt"):
-            _assert_raster_from_file("raster.json", metadata)
-        elif file_path.endswith("single/logan1.tif"):
-            _assert_raster_from_file("raster-single.json", metadata)
-        elif file_path.endswith("hs_user_meta.json"):
-            assert metadata == None
-        else:
-            assert metadata == None
-            unextracted_count = unextracted_count + 1
-    assert unextracted_count == 2
-    assert len(extracted_metadata) == 11
-    assert len(sorted_files) == 26
+    assert os.path.exists(".hs/")
+
+    metadata_path = ".hs/tests/test_files/netcdf/netcdf_valid.nc.json"
+    assert os.path.exists(metadata_path)
+    _assert_from_file("netcdf.json", read_metadata_json(metadata_path))
+
+    metadata_path = ".hs/tests/test_files/timeseries/ODM2_Multi_Site_One_Variable_Test.csv.json"
+    assert os.path.exists(metadata_path)
+    _assert_from_file("timeseries-csv.json", read_metadata_json(metadata_path))
+
+    metadata_path = ".hs/tests/test_files/timeseries/ODM2_Multi_Site_One_Variable.sqlite.json"
+    assert os.path.exists(metadata_path)
+    _assert_from_file("timeseries.json", read_metadata_json(metadata_path))
+
+    metadata_path = ".hs/tests/test_files/reftimeseries/multi_sites_formatted_version1.0.refts.json.json"
+    assert os.path.exists(metadata_path)
+    _assert_from_file("reftimeseries.json", read_metadata_json(metadata_path))
+
+    metadata_path = ".hs/tests/test_files/watersheds/watersheds.shp.json"
+    assert os.path.exists(metadata_path)
+    _assert_from_file("feature.json", read_metadata_json(metadata_path))
+
+    metadata_path = ".hs/tests/test_files/states/states.shp.json"
+    assert os.path.exists(metadata_path)
+    _assert_from_file("feature-states.json", read_metadata_json(metadata_path))
+
+    metadata_path = ".hs/tests/test_files/rasters/logan.vrt.json"
+    assert os.path.exists(metadata_path)
+    _assert_raster_from_file("raster.json", read_metadata_json(metadata_path))
+
+    metadata_path = ".hs/tests/test_files/rasters/single/logan1.tif.json"
+    assert os.path.exists(metadata_path)
+    _assert_raster_from_file("raster-single.json", read_metadata_json(metadata_path))
+

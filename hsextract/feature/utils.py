@@ -323,4 +323,4 @@ def parse_shp_xml(xml_file):
     return metadata
 
 def strip_tags(value):  
-    return ''.join(BeautifulSoup(value).findAll(text=True))
+    return ''.join(BeautifulSoup(value, features="html.parser").findAll(text=True))
