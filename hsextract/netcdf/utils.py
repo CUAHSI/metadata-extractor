@@ -23,6 +23,7 @@ http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html
 """
 
 
+import dateutil.parser
 import re
 import netCDF4
 import numpy
@@ -61,9 +62,10 @@ def get_nc_meta_dict(nc_file_name):
     res_type_specific_meta = get_type_specific_meta(nc_dataset)
     nc_dataset.close()
 
-    res_dublin_core_meta["variables"] = res_type_specific_meta
-    res_dublin_core_meta["files"] = [nc_file_name]
-    return res_dublin_core_meta
+    md = combine_metadata(res_dublin_core_meta, res_type_specific_meta)
+
+    md["files"] = [nc_file_name]
+    return md
 
 
 # Functions for dublin core meta
@@ -136,13 +138,19 @@ def extract_nc_coverage_meta(nc_dataset):
 
     original_box_info = get_original_box_info(nc_dataset)
     for name in list(original_box_info.keys()):
-        original_box_info[name] = str(original_box_info[name])
+        if name.endswith("limit"):
+            original_box_info[name] = float(original_box_info[name])
+        else:
+            original_box_info[name] = str(original_box_info[name])
         if name == 'units' and original_box_info[name].lower() == 'm':
             original_box_info[name] = 'Meter'
 
     box_info = get_box_info(nc_dataset)
     for name in list(box_info.keys()):
-        box_info[name] = str(box_info[name])
+        if name.endswith("limit"):
+            box_info[name] = float(box_info[name])
+        else:
+            box_info[name] = str(box_info[name])
 
     nc_coverage_meta = {
         'projection-info': projection_info,
@@ -191,8 +199,8 @@ def get_period_info_by_acdd_convention(nc_dataset):
 
     if nc_dataset.__dict__.get('time_coverage_start', '') and \
             nc_dataset.__dict__.get('time_coverage_end', ''):
-        period_info['start'] = str(nc_dataset.__dict__['time_coverage_start'])
-        period_info['end'] = str(nc_dataset.__dict__['time_coverage_end'])
+        period_info['start'] = nc_dataset.__dict__['time_coverage_start']
+        period_info['end'] = nc_dataset.__dict__['time_coverage_end']
 
     return period_info
 
@@ -1023,3 +1031,219 @@ def get_nc_grid_mapping_projection_import_string_dict(nc_dataset):
         }
 
     return projection_import_string_dict
+
+
+def add_original_coverage_metadata(extracted_metadata):
+    """
+    Adds data for the original coverage element to the *metadata_list*
+    :param metadata_list: list to  which original coverage data needs to be added
+    :param extracted_metadata: a dict containing netcdf extracted metadata
+    :return:
+    """
+
+    ori_cov = {}
+    if extracted_metadata.get('original-box'):
+        coverage_data = extracted_metadata['original-box']
+        projection_string_type = ""
+        projection_string_text = ""
+        datum = ""
+        if extracted_metadata.get('projection-info'):
+            projection_string_type = extracted_metadata[
+                'projection-info']['type']
+            projection_string_text = extracted_metadata[
+                'projection-info']['text']
+            datum = extracted_metadata['projection-info']['datum']
+
+        ori_cov = {'spatial_reference':
+                   {**coverage_data,
+                    'projection_string_type': projection_string_type,
+                    'projection_string': projection_string_text,
+                    'datum': datum
+                    }
+                   }
+    if ori_cov:
+        return ori_cov
+
+
+def add_creators_metadata(extracted_metadata):
+    """
+    Adds data for creator(s) to the *metadata_list*
+    :param extracted_metadata: a dict containing netcdf extracted metadata
+    :param existing_creators: a QuerySet object for existing creators
+    :return:
+    """
+    if extracted_metadata.get('creator_name'):
+        name = extracted_metadata['creator_name']
+        # add creator only if there is no creator already with the same name
+        email = extracted_metadata.get('creator_email', '')
+        url = extracted_metadata.get('creator_url', '')
+        creator = {'creator': {'name': name, 'email': email, 'homepage': url}}
+        return creator
+
+
+def add_contributors_metadata(extracted_metadata):
+    """
+    Adds data for contributor(s) to the *metadata_list*
+    :param extracted_metadata: a dict containing netcdf extracted metadata
+    :return:
+    """
+    if extracted_metadata.get('contributor_name'):
+        name_list = extracted_metadata['contributor_name'].split(',')
+        for name in name_list:
+            # add contributor only if there is no contributor already with the
+            # same name
+            contributor = {'contributor': {'name': name}}
+            return contributor
+
+
+def add_title_metadata(extracted_metadata):
+    """
+    Adds data for the title element to the *metadata_list*
+    :param extracted_metadata: a dict containing netcdf extracted metadata
+    :return:
+    """
+    if extracted_metadata.get('title'):
+        res_title = {'title': extracted_metadata['title']}
+        return res_title
+
+
+def add_abstract_metadata(extracted_metadata):
+    """
+    Adds data for the abstract (Description) element to the *metadata_list*
+    :param metadata_list: list to  which abstract data needs to be added
+    :param extracted_metadata: a dict containing netcdf extracted metadata
+    :return:
+    """
+
+    if extracted_metadata.get('description'):
+        description = {'abstract': extracted_metadata['description']}
+        return description
+
+
+def add_variable_metadata(extracted_metadata):
+    """
+    Adds variable(s) related data to the *metadata_list*
+    :param extracted_metadata: a dict containing netcdf extracted metadata
+    :return:
+    """
+    variables = []
+    for var_meta in extracted_metadata:
+        meta_info = {}
+        for element, value in list(var_meta.items()):
+            if value != '':
+                meta_info[element] = value
+        variables.append(meta_info)
+    return {"variables": variables}
+
+
+def add_spatial_coverage_metadata(extracted_metadata):
+    """
+    Adds data for one spatial coverage metadata element to the *metadata_list**
+    :param extracted_metadata: a dict containing netcdf extracted metadata
+    :return:
+    """
+    if extracted_metadata.get('box'):
+        return {'spatial_coverage': extracted_metadata['box']}
+
+
+def add_temporal_coverage_metadata(extracted_metadata):
+    """
+    Adds data for one temporal metadata element to the *metadata_list*
+    :param extracted_metadata: a dict containing netcdf extracted metadata
+    :return:
+    """
+    if extracted_metadata.get('period'):
+        start = dateutil.parser.isoparse(extracted_metadata['period']['start']).isoformat()
+        end = dateutil.parser.isoparse(extracted_metadata['period']['end']).isoformat()
+        return {'period_coverage': {"start": start, "end": end}}
+
+
+def add_keywords_metadata(extracted_metadata):
+    """
+    Adds data for subject/keywords element to the *metadata_list*
+    :param extracted_metadata: a dict containing netcdf extracted metadata
+    metadata extraction is for NetCDF resource
+    :return:
+    """
+    if extracted_metadata.get('subject'):
+        keywords = extracted_metadata['subject'].split(',')
+        return {'subjects': keywords}
+
+
+def combine_metadata(extracted_core_meta, extracted_specific_meta):
+    """
+    Helper function to populate metadata lists (*res_meta_list* and *file_meta_list*) with
+    extracted metadata from the NetCDF file. These metadata lists are then used for creating
+    metadata element objects by the caller.
+    :param extracted_core_meta: a dict of extracted dublin core metadata
+    :param extracted_specific_meta: a dict of extracted metadata that is NetCDF specific
+    :return:
+    """
+
+    metadata = {}
+    # add title
+    title = add_title_metadata(extracted_core_meta)
+    if title:
+        metadata.update(title)
+
+    # add abstract (Description element)
+    abstract = add_abstract_metadata(extracted_core_meta)
+    if abstract:
+        metadata.update(abstract)
+
+    # add keywords
+    keywords = add_keywords_metadata(extracted_core_meta)
+    if keywords:
+        metadata.update(keywords)
+
+    # add creators:
+    creators = add_creators_metadata(extracted_core_meta)
+    if creators:
+        metadata.update(creators)
+
+    # add contributors:
+    contributors = add_contributors_metadata(extracted_core_meta)
+    if contributors:
+        metadata.update(contributors)
+
+    # add relation of type 'source' (applies only to NetCDF resource type)
+    if extracted_core_meta.get('source'):
+        relation = {'relation': {'type': 'source', 'value': extracted_core_meta['source']}}
+        metadata.update(relation)
+
+    # add relation of type 'references' (applies only to NetCDF resource type)
+    if extracted_core_meta.get('references'):
+        relation = {'relation': {'type': 'references',
+                                 'value': extracted_core_meta['references']}}
+        metadata.update(relation)
+
+    # add rights (applies only to NetCDF resource type)
+    if extracted_core_meta.get('rights'):
+        raw_info = extracted_core_meta.get('rights')
+        b = re.search("(?P<url>https?://[^\s]+)", raw_info)
+        url = b.group('url') if b else ''
+        statement = raw_info.replace(url, '') if url else raw_info
+        rights = {'rights': {'statement': statement, 'url': url}}
+        metadata.update(rights)
+
+    # add coverage - period
+    period_coverage = add_temporal_coverage_metadata(extracted_core_meta)
+    if period_coverage:
+        metadata.update(period_coverage)
+
+    # add coverage - box
+    spatial_coverage = add_spatial_coverage_metadata(extracted_core_meta)
+    if spatial_coverage:
+        metadata.update(spatial_coverage)
+
+    # add variables
+    variables = add_variable_metadata(extracted_specific_meta)
+    if variables:
+        metadata.update(variables)
+
+    # add original spatial coverage
+    original_coverage = add_original_coverage_metadata(extracted_core_meta)
+    if original_coverage:
+        metadata.update(original_coverage)
+
+    return metadata
