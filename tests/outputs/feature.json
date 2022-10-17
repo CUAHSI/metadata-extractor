@@ -1,102 +1,70 @@
 {
-  "coverage": {
+  "spatial_coverage": {
     "type": "box",
-    "value": {
-      "westlimit": 41.847326492578134,
-      "northlimit": -111.79812580632708,
-      "eastlimit": 41.46101782271448,
-      "southlimit": -111.40051926333076,
-      "projection": "WGS 84 EPSG:4326",
-      "units": "Decimal degrees"
-    }
+    "northlimit": 41.847326492578134,
+    "westlimit": -111.79812580632708,
+    "southlimit": 41.46101782271448,
+    "eastlimit": -111.40051926333076,
+    "projection": "WGS 84 EPSG:4326",
+    "units": "Decimal degrees"
   },
-  "originalcoverage": {
-    "originalcoverage": {
-      "northlimit": 4633133.170079696,
-      "southlimit": 4590013.875646103,
-      "westlimit": 433743.11484404095,
-      "eastlimit": 466551.48032255494,
-      "projection_string": "PROJCS[\"NAD83 / UTM zone 12N\",\n    GEOGCS[\"NAD83\",\n        DATUM[\"North_American_Datum_1983\",\n            SPHEROID[\"GRS 1980\",6378137,298.257222101,\n                AUTHORITY[\"EPSG\",\"7019\"]],\n            AUTHORITY[\"EPSG\",\"6269\"]],\n        PRIMEM[\"Greenwich\",0,\n            AUTHORITY[\"EPSG\",\"8901\"]],\n        UNIT[\"degree\",0.0174532925199433,\n            AUTHORITY[\"EPSG\",\"9122\"]],\n        AUTHORITY[\"EPSG\",\"4269\"]],\n    PROJECTION[\"Transverse_Mercator\"],\n    PARAMETER[\"latitude_of_origin\",0],\n    PARAMETER[\"central_meridian\",-111],\n    PARAMETER[\"scale_factor\",0.9996],\n    PARAMETER[\"false_easting\",500000],\n    PARAMETER[\"false_northing\",0],\n    UNIT[\"metre\",1,\n        AUTHORITY[\"EPSG\",\"9001\"]],\n    AXIS[\"Easting\",EAST],\n    AXIS[\"Northing\",NORTH],\n    AUTHORITY[\"EPSG\",\"26912\"]]",
-      "projection_name": "NAD83 / UTM zone 12N",
-      "datum": "North_American_Datum_1983",
-      "unit": "metre"
-    }
-  },
-  "geometryinformation": {
-    "featureCount": 5,
-    "geometryType": "POLYGON"
-  },
-  "url": "tests/test_files/watersheds/watersheds.shp",
-  "id": "cda113beb8567a200bdf625db05db69b",
-  "originalcoveragegeofeature": {
-    "northlimit": 4633133.170079696,
-    "southlimit": 4590013.875646103,
-    "westlimit": 433743.11484404095,
-    "eastlimit": 466551.48032255494,
+  "spatial_reference": {
+    "northlimit": 4590013.875646103,
+    "southlimit": 466551.48032255494,
+    "westlimit": 4633133.170079696,
+    "eastlimit": 433743.11484404095,
     "projection_string": "PROJCS[\"NAD83 / UTM zone 12N\",\n    GEOGCS[\"NAD83\",\n        DATUM[\"North_American_Datum_1983\",\n            SPHEROID[\"GRS 1980\",6378137,298.257222101,\n                AUTHORITY[\"EPSG\",\"7019\"]],\n            AUTHORITY[\"EPSG\",\"6269\"]],\n        PRIMEM[\"Greenwich\",0,\n            AUTHORITY[\"EPSG\",\"8901\"]],\n        UNIT[\"degree\",0.0174532925199433,\n            AUTHORITY[\"EPSG\",\"9122\"]],\n        AUTHORITY[\"EPSG\",\"4269\"]],\n    PROJECTION[\"Transverse_Mercator\"],\n    PARAMETER[\"latitude_of_origin\",0],\n    PARAMETER[\"central_meridian\",-111],\n    PARAMETER[\"scale_factor\",0.9996],\n    PARAMETER[\"false_easting\",500000],\n    PARAMETER[\"false_northing\",0],\n    UNIT[\"metre\",1,\n        AUTHORITY[\"EPSG\",\"9001\"]],\n    AXIS[\"Easting\",EAST],\n    AXIS[\"Northing\",NORTH],\n    AUTHORITY[\"EPSG\",\"26912\"]]",
     "projection_name": "NAD83 / UTM zone 12N",
     "datum": "North_American_Datum_1983",
-    "unit": "metre"
+    "units": "metre"
   },
-  "fieldinformations": [
+  "field_information": [
     {
-      "fieldinformation": {
-        "fieldName": "OBJECTID",
-        "fieldTypeCode": 12,
-        "fieldType": "Integer64",
-        "fieldWidth": 10,
-        "fieldPrecision": 0
-      }
+      "field_name": "OBJECTID",
+      "field_type_code": 12,
+      "field_type": "Integer64",
+      "field_width": 10,
+      "field_precision": 0
     },
     {
-      "fieldinformation": {
-        "fieldName": "Id",
-        "fieldTypeCode": 12,
-        "fieldType": "Integer64",
-        "fieldWidth": 10,
-        "fieldPrecision": 0
-      }
+      "field_name": "Id",
+      "field_type_code": 12,
+      "field_type": "Integer64",
+      "field_width": 10,
+      "field_precision": 0
     },
     {
-      "fieldinformation": {
-        "fieldName": "gridcode",
-        "fieldTypeCode": 12,
-        "fieldType": "Integer64",
-        "fieldWidth": 10,
-        "fieldPrecision": 0
-      }
+      "field_name": "gridcode",
+      "field_type_code": 12,
+      "field_type": "Integer64",
+      "field_width": 10,
+      "field_precision": 0
     },
     {
-      "fieldinformation": {
-        "fieldName": "Shape_Leng",
-        "fieldTypeCode": 2,
-        "fieldType": "Real",
-        "fieldWidth": 19,
-        "fieldPrecision": 11
-      }
+      "field_name": "Shape_Leng",
+      "field_type_code": 2,
+      "field_type": "Real",
+      "field_width": 19,
+      "field_precision": 11
     },
     {
-      "fieldinformation": {
-        "fieldName": "Shape_Area",
-        "fieldTypeCode": 2,
-        "fieldType": "Real",
-        "fieldWidth": 19,
-        "fieldPrecision": 11
-      }
+      "field_name": "Shape_Area",
+      "field_type_code": 2,
+      "field_type": "Real",
+      "field_width": 19,
+      "field_precision": 11
     },
     {
-      "fieldinformation": {
-        "fieldName": "Area_km2",
-        "fieldTypeCode": 2,
-        "fieldType": "Real",
-        "fieldWidth": 19,
-        "fieldPrecision": 11
-      }
+      "field_name": "Area_km2",
+      "field_type_code": 2,
+      "field_type": "Real",
+      "field_width": 19,
+      "field_precision": 11
     }
   ],
-  "geometryinformations": {
-    "featureCount": 5,
-    "geometryType": "POLYGON"
+  "geometry_information": {
+    "feature_count": 5,
+    "geometry_type": "POLYGON"
   },
   "files": [
     {

@@ -16,8 +16,8 @@ def extract_metadata_and_files(feature_path):
     meta_dict = extract_metadata(feature_path)
     #meta_dict["url"] = shp_file.public_url
     #meta_dict["id"] = hashlib.md5(bytes(shp_file.public_url, 'utf-8')).hexdigest()
-    meta_dict["url"] = shp_file
-    meta_dict["id"] = hashlib.md5(bytes(shp_file, 'utf-8')).hexdigest()
+    #meta_dict["url"] = shp_file
+    #meta_dict["id"] = hashlib.md5(bytes(shp_file, 'utf-8')).hexdigest()
     meta_dict = add_metadata(meta_dict, xml_file)
     files = []
     for f in shape_files:
@@ -59,60 +59,42 @@ def extract_metadata(shp_file):
         # if extent is a point, create point type coverage
         if wgs84_dict["westlimit"] == wgs84_dict["eastlimit"] \
            and wgs84_dict["northlimit"] == wgs84_dict["southlimit"]:
-            coverage_dict = {"Coverage": {"type": "point",
-                                          "value": {
-                                              "east": wgs84_dict["eastlimit"],
-                                              "north": wgs84_dict["northlimit"],
-                                              "units": wgs84_dict["units"],
-                                              "projection": wgs84_dict["projection"]
-                                          }}}
+            coverage_dict = {"type": "point",
+                            "east": wgs84_dict["eastlimit"],
+                            "north": wgs84_dict["northlimit"],
+                            "units": wgs84_dict["units"],
+                            "projection": wgs84_dict["projection"]}
         else:  # otherwise, create box type coverage
-            coverage_dict = {"Coverage": {"type": "box",
-                                          "value": parsed_md_dict["wgs84_extent_dict"]}}
+            coverage_dict = {"type": "box", **parsed_md_dict["wgs84_extent_dict"]}
 
-        metadata_dict["coverage"] = coverage_dict
+        metadata_dict["spatial_coverage"] = coverage_dict
 
     # original extent
-    original_coverage_dict = {}
-    original_coverage_dict["originalcoverage"] = {"northlimit":
-                                                  parsed_md_dict
-                                                  ["origin_extent_dict"]["northlimit"],
-                                                  "southlimit":
-                                                  parsed_md_dict
-                                                  ["origin_extent_dict"]["southlimit"],
-                                                  "westlimit":
-                                                  parsed_md_dict
-                                                  ["origin_extent_dict"]["westlimit"],
-                                                  "eastlimit":
-                                                  parsed_md_dict
-                                                  ["origin_extent_dict"]["eastlimit"],
-                                                  "projection_string":
-                                                  parsed_md_dict
-                                                  ["origin_projection_string"],
-                                                  "projection_name":
-                                                  parsed_md_dict["origin_projection_name"],
-                                                  "datum": parsed_md_dict["origin_datum"],
-                                                  "unit": parsed_md_dict["origin_unit"]
-                                                  }
+    original_coverage_dict = {"northlimit": parsed_md_dict["origin_extent_dict"]["northlimit"],
+                                "southlimit": parsed_md_dict["origin_extent_dict"]["southlimit"],
+                                "westlimit": parsed_md_dict["origin_extent_dict"]["westlimit"],
+                                "eastlimit": parsed_md_dict["origin_extent_dict"]["eastlimit"],
+                                "projection_string": parsed_md_dict["origin_projection_string"],
+                                "projection_name": parsed_md_dict["origin_projection_name"],
+                                "datum": parsed_md_dict["origin_datum"],
+                                "units": parsed_md_dict["origin_unit"]}
 
-    metadata_dict["originalcoverage"] = original_coverage_dict
+    metadata_dict["spatial_reference"] = original_coverage_dict
 
     # field
     field_info_array = []
     field_name_list = parsed_md_dict["field_meta_dict"]['field_list']
     for field_name in field_name_list:
-        field_info_dict_item = {}
-        field_info_dict_item['fieldinformation'] = \
-            parsed_md_dict["field_meta_dict"]["field_attr_dict"][field_name]
+        field_info_dict_item = parsed_md_dict["field_meta_dict"]["field_attr_dict"][field_name]
         field_info_array.append(field_info_dict_item)
 
-    metadata_dict['field_info_array'] = field_info_array
+    metadata_dict['field_information'] = field_info_array
 
     # geometry
-    geometryinformation = {"featureCount": parsed_md_dict["feature_count"],
-                           "geometryType": parsed_md_dict["geometry_type"]}
+    geometryinformation = {"feature_count": parsed_md_dict["feature_count"],
+                           "geometry_type": parsed_md_dict["geometry_type"]}
 
-    metadata_dict["geometryinformation"] = geometryinformation
+    metadata_dict["geometry_information"] = geometryinformation
     return metadata_dict
 
 
@@ -180,15 +162,15 @@ def parse_shp(shp_file_path):
         attr_dict = {}
         field_meta_dict["field_attr_dict"][fieldName] = attr_dict
 
-        attr_dict["fieldName"] = fieldName
+        attr_dict["field_name"] = fieldName
         fieldTypeCode = layerDefinition.GetFieldDefn(i).GetType()
-        attr_dict["fieldTypeCode"] = fieldTypeCode
+        attr_dict["field_type_code"] = fieldTypeCode
         fieldType = layerDefinition.GetFieldDefn(i).GetFieldTypeName(fieldTypeCode)
-        attr_dict["fieldType"] = fieldType
+        attr_dict["field_type"] = fieldType
         fieldWidth = layerDefinition.GetFieldDefn(i).GetWidth()
-        attr_dict["fieldWidth"] = fieldWidth
+        attr_dict["field_width"] = fieldWidth
         fieldPrecision = layerDefinition.GetFieldDefn(i).GetPrecision()
-        attr_dict["fieldPrecision"] = fieldPrecision
+        attr_dict["field_precision"] = fieldPrecision
 
     # get layer extent
     layer_extent = layer.GetExtent()
@@ -221,10 +203,10 @@ def parse_shp(shp_file_path):
 
     # source map always has extent, even projection is unknown
     shp_metadata_dict["origin_extent_dict"] = {}
-    shp_metadata_dict["origin_extent_dict"]["westlimit"] = layer_extent[0]
-    shp_metadata_dict["origin_extent_dict"]["northlimit"] = layer_extent[3]
-    shp_metadata_dict["origin_extent_dict"]["eastlimit"] = layer_extent[1]
-    shp_metadata_dict["origin_extent_dict"]["southlimit"] = layer_extent[2]
+    shp_metadata_dict["origin_extent_dict"]["eastlimit"] = layer_extent[0]
+    shp_metadata_dict["origin_extent_dict"]["westlimit"] = layer_extent[3]
+    shp_metadata_dict["origin_extent_dict"]["southlimit"] = layer_extent[1]
+    shp_metadata_dict["origin_extent_dict"]["northlimit"] = layer_extent[2]
 
     # reproject to WGS84
     shp_metadata_dict["wgs84_extent_dict"] = {}
@@ -235,10 +217,10 @@ def parse_shp(shp_file_path):
         # project two key points
         left_upper_point.Transform(transform)
         right_lower_point.Transform(transform)
-        shp_metadata_dict["wgs84_extent_dict"]["westlimit"] = left_upper_point.GetX()
-        shp_metadata_dict["wgs84_extent_dict"]["northlimit"] = left_upper_point.GetY()
-        shp_metadata_dict["wgs84_extent_dict"]["eastlimit"] = right_lower_point.GetX()
-        shp_metadata_dict["wgs84_extent_dict"]["southlimit"] = right_lower_point.GetY()
+        shp_metadata_dict["wgs84_extent_dict"]["northlimit"] = left_upper_point.GetX()
+        shp_metadata_dict["wgs84_extent_dict"]["westlimit"] = left_upper_point.GetY()
+        shp_metadata_dict["wgs84_extent_dict"]["southlimit"] = right_lower_point.GetX()
+        shp_metadata_dict["wgs84_extent_dict"]["eastlimit"] = right_lower_point.GetY()
         shp_metadata_dict["wgs84_extent_dict"]["projection"] = "WGS 84 EPSG:4326"
         shp_metadata_dict["wgs84_extent_dict"]["units"] = "Decimal degrees"
     else:
@@ -251,17 +233,7 @@ def parse_shp(shp_file_path):
 
     return shp_metadata_dict
 
-def add_metadata(metadata_dict, xml_file):
-    if "coverage" in list(metadata_dict.keys()):
-        metadata_dict["coverage"] = metadata_dict["coverage"]['Coverage']
-
-    metadata_dict["originalcoveragegeofeature"] = metadata_dict["originalcoverage"]['originalcoverage']
-
-    metadata_dict["fieldinformations"] = metadata_dict["field_info_array"]
-    del metadata_dict["field_info_array"]
-
-    metadata_dict["geometryinformations"] = metadata_dict["geometryinformation"]
-    
+def add_metadata(metadata_dict, xml_file):    
     if xml_file:
         shp_xml_metadata_list = parse_shp_xml(xml_file)
         for shp_xml_metadata in shp_xml_metadata_list:
