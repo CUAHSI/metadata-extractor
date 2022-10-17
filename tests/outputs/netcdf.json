@@ -34,51 +34,53 @@
     "northlimit": "4635150.0",
     "projection": "transverse_mercator"
   },
-  "SWE": {
-    "name": "SWE",
-    "unit": "m",
-    "shape": "y,x,time",
-    "descriptive_name": "Snow water equivalent",
-    "missing_value": "-9999",
-    "method": "model simulation of UEB model",
-    "type": "Float"
-  },
-  "transverse_mercator": {
-    "name": "transverse_mercator",
-    "unit": "Unknown",
-    "shape": "Not defined",
-    "descriptive_name": "",
-    "missing_value": "",
-    "method": "",
-    "type": "Unknown"
-  },
-  "time": {
-    "name": "time",
-    "unit": "hours since 2009-10-1 0:0:00 UTC",
-    "shape": "time",
-    "descriptive_name": "time",
-    "missing_value": "",
-    "method": "",
-    "type": "Float"
-  },
-  "y": {
-    "name": "y",
-    "unit": "Meter",
-    "shape": "y",
-    "descriptive_name": "y coordinate of projection",
-    "missing_value": "",
-    "method": "",
-    "type": "Float"
-  },
-  "x": {
-    "name": "x",
-    "unit": "Meter",
-    "shape": "x",
-    "descriptive_name": "x coordinate of projection",
-    "missing_value": "",
-    "method": "",
-    "type": "Float"
-  },
+  "variables": [
+    {
+      "name": "SWE",
+      "unit": "m",
+      "shape": "y,x,time",
+      "descriptive_name": "Snow water equivalent",
+      "missing_value": "-9999",
+      "method": "model simulation of UEB model",
+      "type": "Float"
+    },
+    {
+      "name": "transverse_mercator",
+      "unit": "Unknown",
+      "shape": "Not defined",
+      "descriptive_name": "",
+      "missing_value": "",
+      "method": "",
+      "type": "Unknown"
+    },
+    {
+      "name": "time",
+      "unit": "hours since 2009-10-1 0:0:00 UTC",
+      "shape": "time",
+      "descriptive_name": "time",
+      "missing_value": "",
+      "method": "",
+      "type": "Float"
+    },
+    {
+      "name": "y",
+      "unit": "Meter",
+      "shape": "y",
+      "descriptive_name": "y coordinate of projection",
+      "missing_value": "",
+      "method": "",
+      "type": "Float"
+    },
+    {
+      "name": "x",
+      "unit": "Meter",
+      "shape": "x",
+      "descriptive_name": "x coordinate of projection",
+      "missing_value": "",
+      "method": "",
+      "type": "Float"
+    }
+  ],
   "files": [
     {
       "path": "tests/test_files/netcdf/netcdf_valid.nc",

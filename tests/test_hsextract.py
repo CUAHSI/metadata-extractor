@@ -82,37 +82,37 @@ async def test_threaded_metadata_extraction():
 
     await list_and_extract("tests/test_files")
 
-    assert os.path.exists(".hs/")
+    assert os.path.exists("tests/test_files/.hs")
 
-    metadata_path = ".hs/tests/test_files/netcdf/netcdf_valid.nc.json"
+    metadata_path = "tests/test_files/.hs/netcdf/netcdf_valid.nc.json"
     assert os.path.exists(metadata_path)
     _assert_from_file("netcdf.json", read_metadata_json(metadata_path))
 
-    metadata_path = ".hs/tests/test_files/timeseries/ODM2_Multi_Site_One_Variable_Test.csv.json"
+    metadata_path = "tests/test_files/.hs/timeseries/ODM2_Multi_Site_One_Variable_Test.csv.json"
     assert os.path.exists(metadata_path)
     _assert_from_file("timeseries-csv.json", read_metadata_json(metadata_path))
 
-    metadata_path = ".hs/tests/test_files/timeseries/ODM2_Multi_Site_One_Variable.sqlite.json"
+    metadata_path = "tests/test_files/.hs/timeseries/ODM2_Multi_Site_One_Variable.sqlite.json"
     assert os.path.exists(metadata_path)
     _assert_from_file("timeseries.json", read_metadata_json(metadata_path))
 
-    metadata_path = ".hs/tests/test_files/reftimeseries/multi_sites_formatted_version1.0.refts.json.json"
+    metadata_path = "tests/test_files/.hs/reftimeseries/multi_sites_formatted_version1.0.refts.json.json"
     assert os.path.exists(metadata_path)
     _assert_from_file("reftimeseries.json", read_metadata_json(metadata_path))
 
-    metadata_path = ".hs/tests/test_files/watersheds/watersheds.shp.json"
+    metadata_path = "tests/test_files/.hs/watersheds/watersheds.shp.json"
     assert os.path.exists(metadata_path)
     _assert_from_file("feature.json", read_metadata_json(metadata_path))
 
-    metadata_path = ".hs/tests/test_files/states/states.shp.json"
+    metadata_path = "tests/test_files/.hs/states/states.shp.json"
     assert os.path.exists(metadata_path)
     _assert_from_file("feature-states.json", read_metadata_json(metadata_path))
 
-    metadata_path = ".hs/tests/test_files/rasters/logan.vrt.json"
+    metadata_path = "tests/test_files/.hs/rasters/logan.vrt.json"
     assert os.path.exists(metadata_path)
     _assert_raster_from_file("raster.json", read_metadata_json(metadata_path))
 
-    metadata_path = ".hs/tests/test_files/rasters/single/logan1.tif.json"
+    metadata_path = "tests/test_files/.hs/rasters/single/logan1.tif.json"
     assert os.path.exists(metadata_path)
     _assert_raster_from_file("raster-single.json", read_metadata_json(metadata_path))
 

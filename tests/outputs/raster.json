@@ -53,8 +53,8 @@
     },
     {
       "path": "tests/test_files/rasters/logan.vrt",
-      "size": 2175,
-      "checksum": "fd6781e2e1b50f0f953461c9017066e9",
+      "size": 2150,
+      "checksum": "d1f18cc8a0a3c98403625d11a5096bfb",
       "mime_type": null
     }
   ]

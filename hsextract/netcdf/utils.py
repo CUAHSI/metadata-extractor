@@ -61,7 +61,7 @@ def get_nc_meta_dict(nc_file_name):
     res_type_specific_meta = get_type_specific_meta(nc_dataset)
     nc_dataset.close()
 
-    res_dublin_core_meta.update(res_type_specific_meta)
+    res_dublin_core_meta["variables"] = res_type_specific_meta
     res_dublin_core_meta["files"] = [nc_file_name]
     return res_dublin_core_meta
 
@@ -462,8 +462,9 @@ def get_type_specific_meta(nc_dataset):
 
     nc_data_variables = nc_dataset.variables  # get_nc_data_variables(nc_dataset)
     type_specific_meta = extract_nc_data_variables_meta(nc_data_variables)
+    variables = [val for val in type_specific_meta.values()]
 
-    return type_specific_meta
+    return variables
 
 
 def extract_nc_data_variables_meta(nc_data_variables):
