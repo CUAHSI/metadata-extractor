@@ -47,16 +47,16 @@ def test_features_watersheds_extraction():
     metadata_dict = extract_metadata("feature", "tests/test_files/watersheds/watersheds.shp")
 
     _assert_from_file("feature.json", metadata_dict)
-'''
+
 def test_reftimeseries_extraction():
     ref_timeseries_json = extract_metadata("reftimeseries", "tests/test_files/reftimeseries/multi_sites_formatted_version1.0.refts.json")
-    with open("tests/outputs/reftimeseries.json", "w") as f:
-        f.write(json.dumps(ref_timeseries_json, indent=2))
 
     _assert_from_file("reftimeseries.json", ref_timeseries_json)
-
+'''
 def test_timeseries_sqlite_extraction():
     timeseries_json = extract_metadata("timeseries", "tests/test_files/timeseries/ODM2_Multi_Site_One_Variable.sqlite")
+    with open("tests/outputs/timeseries.json", "w") as f:
+        f.write(json.dumps(timeseries_json, indent=2))
 
     _assert_from_file("timeseries.json", timeseries_json)
 

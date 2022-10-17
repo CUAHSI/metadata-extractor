@@ -1,3 +1,4 @@
+import pytz
 import json
 import ssl
 from urllib.error import URLError
@@ -9,9 +10,16 @@ from dateutil import parser
 
 def extract_referenced_timeseries_metadata(res_json_file):
     json_data = _validate_json_file(res_json_file)
-    json_data["files"] = [res_json_file]
+    metadata = {}
+    metadata["title"] = json_data['timeSeriesReferenceFile']['title']
+    metadata["abstract"] = json_data['timeSeriesReferenceFile']['abstract']
+    metadata["subjects"] = json_data['timeSeriesReferenceFile']['keyWords']
+    metadata["period_coverage"] = period_coverage(json_data)
+    metadata["spatial_coverage"] = spatial_coverage(json_data)
 
-    return json_data
+    metadata["files"] = [res_json_file]
+
+    return metadata
 
 def _validate_json_file(res_json_file):
     with open(res_json_file, 'r') as f:
@@ -212,3 +220,60 @@ TS_SCHEMA = {
     "required": ["timeSeriesReferenceFile"],
     "additionalProperties": False
 }
+
+def is_aware(value):
+    return value.utcoffset() is not None
+
+def make_naive(value, timezone=pytz.utc):
+    """
+    Makes an aware datetime.datetime naive in a given time zone.
+    """
+    # Emulate the behavior of astimezone() on Python < 3.6.
+    if not is_aware(value):
+        raise ValueError("make_naive() cannot be applied to a naive datetime")
+    value = value.astimezone(timezone)
+    if hasattr(timezone, 'normalize'):
+        # This method is available for pytz time zones.
+        value = timezone.normalize(value)
+    return value.replace(tzinfo=None)
+
+def period_coverage(json_data):
+    # add file level temporal coverage
+    start_date = min([parser.parse(series['beginDate']) for series in
+                      json_data['timeSeriesReferenceFile']['referencedTimeSeries']])
+    end_date = max([parser.parse(series['endDate']) for series in
+                    json_data['timeSeriesReferenceFile']['referencedTimeSeries']])
+    if is_aware(start_date):
+        start_date = make_naive(start_date)
+    if is_aware(end_date):
+        end_date = make_naive(end_date)
+    return {'start': start_date.isoformat(), 'end': end_date.isoformat()}
+
+def spatial_coverage(json_data):
+        # add file level spatial coverage
+    # check if we have single site or multiple sites
+    sites = set([series['site']['siteCode'] for series in json_data['timeSeriesReferenceFile']['referencedTimeSeries']])
+    if len(sites) == 1:
+        series = json_data['timeSeriesReferenceFile']['referencedTimeSeries'][0]
+        value_dict = {'east': series['site']['longitude'],
+                      'north': series['site']['latitude'],
+                      'projection': 'Unknown',
+                      'units': "Decimal degrees"}
+        return {'type': 'point', **value_dict}
+    else:
+        bbox = {'northlimit': -90, 'southlimit': 90, 'eastlimit': -180, 'westlimit': 180,
+                'projection': 'Unknown', 'units': "Decimal degrees"}
+        for series in json_data['timeSeriesReferenceFile']['referencedTimeSeries']:
+            latitude = float(series['site']['latitude'])
+            if bbox['northlimit'] < latitude:
+                bbox['northlimit'] = latitude
+            if bbox['southlimit'] > latitude:
+                bbox['southlimit'] = latitude
+
+            longitude = float(series['site']['longitude'])
+            if bbox['eastlimit'] < longitude:
+                bbox['eastlimit'] = longitude
+
+            if bbox['westlimit'] > longitude:
+                bbox['westlimit'] = longitude
+        return {'type': 'box', **bbox}

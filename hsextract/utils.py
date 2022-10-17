@@ -34,7 +34,8 @@ def extract_metadata(type: str, filepath):
     try:
         _, extracted_metadata = _extract_metadata(type, filepath)
     except Exception as e:
-        return None
+        raise
+        #return None
     if extracted_metadata:
         all_file_metadata = []
         for f in extracted_metadata["files"]:

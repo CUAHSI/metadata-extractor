@@ -11,3 +11,4 @@ dnspython
 pyproj
 jsonschema
 python-dateutil
+pytz

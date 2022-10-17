@@ -13,26 +13,26 @@ def _load_json(filename):
 
 def test_netcdf_extraction():
     json_metadata = _load_json("netcdf.json")
-    del json_metadata["files"]
+    model = MultidimensionalMetadataIn(**json_metadata)
 
+    model_json = json.loads(model.json())
+    del json_metadata["files"]
     del json_metadata["abstract"]
     del json_metadata["contributor"]
     del json_metadata["creator"]
     del json_metadata["relation"]
     del json_metadata["rights"]
-    model = MultidimensionalMetadataIn(**json_metadata)
 
-    model_json = json.loads(model.json())
     del model_json["language"]
     del model_json["additional_metadata"]
     assert json_metadata == model_json
 
 def test_rasters_extraction():
     json_metadata = _load_json("raster.json")
-    del json_metadata["files"]
-
     model = GeographicRasterMetadataIn(**json_metadata)
     model_json = json.loads(model.json())
+    del json_metadata["files"]
+
     del model_json["subjects"]
     del model_json["language"]
     del model_json["additional_metadata"]
@@ -45,9 +45,10 @@ def test_rasters_extraction():
 
 def test_raster_single_extraction():
     json_metadata = _load_json("raster-single.json")
-    del json_metadata["files"]
     model = GeographicRasterMetadataIn(**json_metadata)
     model_json = json.loads(model.json())
+    del json_metadata["files"]
+
     del model_json["subjects"]
     del model_json["language"]
     del model_json["additional_metadata"]
@@ -60,9 +61,10 @@ def test_raster_single_extraction():
 
 def test_features_watersheds_extraction():
     json_metadata = _load_json("feature.json")
-    del json_metadata["files"]
     model = GeographicFeatureMetadataIn(**json_metadata)
     model_json = json.loads(model.json())
+    del json_metadata["files"]
+
     del model_json["subjects"]
     del model_json["language"]
     del model_json["additional_metadata"]
@@ -71,13 +73,19 @@ def test_features_watersheds_extraction():
         fi["field_type_code"] = int(fi["field_type_code"])
 
     assert json_metadata == model_json
-'''
+
 def test_reftimeseries_extraction():
     json_metadata = _load_json("reftimeseries.json")
-    model = ReferencedTimeSeriesMetadata(**json_metadata)
+    model = ReferencedTimeSeriesMetadataIn(**json_metadata)
+    model_json = json.loads(model.json())
+    del json_metadata["files"]
+    del json_metadata["abstract"]
 
-    assert json.dumps(json_metadata, indent=2) == model.json(indent=2)
+    del model_json["language"]
+    del model_json["additional_metadata"]
 
+    assert json_metadata == model_json
+'''
 def test_timeseries_sqlite_extraction():
     json_metadata = _load_json("timeseries.json")
     model = TimeSeriesMetadata(**json_metadata)
