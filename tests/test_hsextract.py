@@ -21,14 +21,14 @@ def _assert_raster_from_file(filename, metadata_json):
         expected_json = json.loads(expected_str)
     
     # remove the minimumValue, maximumValue and projection_string because gdal is inconsistent
-    del metadata_json['_band_information_0']['maximumValue']
-    del expected_json['_band_information_0']['maximumValue']
+    del metadata_json['band_information']['maximum_value']
+    del expected_json['band_information']['maximum_value']
 
-    del metadata_json['_band_information_0']['minimumValue']
-    del expected_json['_band_information_0']['minimumValue']
+    del metadata_json['band_information']['minimum_value']
+    del expected_json['band_information']['minimum_value']
 
-    del metadata_json['_ori_coverage']['_value']['projection_string']
-    del expected_json['_ori_coverage']['_value']['projection_string']
+    del metadata_json['spatial_reference']['projection_string']
+    del expected_json['spatial_reference']['projection_string']
 
     assert metadata_json == expected_json
 
@@ -115,4 +115,3 @@ async def test_threaded_metadata_extraction():
     metadata_path = "tests/test_files/.hs/rasters/single/logan1.tif.json"
     assert os.path.exists(metadata_path)
     _assert_raster_from_file("raster-single.json", read_metadata_json(metadata_path))
-

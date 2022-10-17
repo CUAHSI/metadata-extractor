@@ -26,13 +26,23 @@ def test_netcdf_extraction():
     del model_json["language"]
     del model_json["additional_metadata"]
     assert json_metadata == model_json
-'''
+
 def test_rasters_extraction():
     json_metadata = _load_json("raster.json")
-    model = GeographicRasterMetadata(**json_metadata)
+    del json_metadata["files"]
 
-    assert json.dumps(json_metadata, indent=2) == model.json(indent=2)
+    model = GeographicRasterMetadataIn(**json_metadata)
+    model_json = json.loads(model.json())
+    del model_json["subjects"]
+    del model_json["language"]
+    del model_json["additional_metadata"]
 
+    model_json["band_information"]["maximum_value"] = float(model_json["band_information"]["maximum_value"])
+    model_json["band_information"]["minimum_value"] = float(model_json["band_information"]["minimum_value"])
+    model_json["band_information"]["no_data_value"] = float(model_json["band_information"]["no_data_value"])
+
+    assert json_metadata == model_json
+'''
 def test_raster_single_extraction():
     json_metadata = _load_json("raster-single.json")
     model = GeographicRasterMetadata(**json_metadata)

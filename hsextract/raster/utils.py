@@ -57,8 +57,8 @@ def extract_metadata_from_vrt(vrt_file_path):
     res_md_dict = get_raster_meta_dict(vrt_file_path)
     wgs_cov_info = res_md_dict['spatial_coverage_info']['wgs84_coverage_info']
     # add core metadata coverage - box
-    if wgs_cov_info:
-        box = {'spatial_coverage': {'type': 'box', 'value': wgs_cov_info}}
+    if wgs_cov_info and wgs_cov_info["northlimit"] is not None:
+        box = {'spatial_coverage': {'type': 'box', **wgs_cov_info}}
         metadata.append(box)
 
     # Save extended meta spatial reference
@@ -67,19 +67,26 @@ def extract_metadata_from_vrt(vrt_file_path):
     # Here the assumption is that if there is no value for the 'northlimit' then there is no value
     # for the bounding box
     if orig_cov_info['northlimit'] is not None:
-        ori_cov = {'_ori_coverage': {'_value': orig_cov_info}}
+        ori_cov = {'spatial_reference': orig_cov_info}
         metadata.append(ori_cov)
 
     # Save extended meta cell info
     res_md_dict['cell_info']['name'] = os.path.basename(vrt_file_path)
-    metadata.append({'_cell_information': res_md_dict['cell_info']})
+    metadata.append({'cell_information': res_md_dict['cell_info']})
     #print(json.dumps(metadata, indent=2))
     # Save extended meta band info
     assert len(res_md_dict['band_info']) == 1
     #print(json.dumps(res_md_dict, indent=2))
     for index, band_info in enumerate(list(res_md_dict['band_info'].values())):
         #print(json.dumps(band_info, indent=2))
-        metadata.append({f'_band_information_{index}': band_info})
+        b_info = {}
+        b_info["name"] = band_info["name"]
+        b_info["maximum_value"] = band_info["maximumValue"]
+        b_info["minimum_value"] = band_info["minimumValue"]
+        b_info["no_data_value"] = band_info["noDataValue"]
+        b_info["variable_name"] = band_info["variableName"]
+        b_info["variable_unit"] = band_info["variableUnit"]
+        metadata.append({f'band_information': b_info})
     
     metadata_dict = {}
     # use the extracted metadata to populate file metadata
@@ -280,10 +287,10 @@ def get_wgs84_coverage_info(raster_dataset):
                     y_wgs84.append(yt)
                 yarr.reverse()
 
-            wgs84_northlimit = max(y_wgs84)  # max y
-            wgs84_southlimit = min(y_wgs84)
-            wgs84_westlimit = min(x_wgs84)  # min x
-            wgs84_eastlimit = max(x_wgs84)
+            wgs84_eastlimit = max(y_wgs84)  # max y
+            wgs84_westlimit = min(y_wgs84)
+            wgs84_southlimit = min(x_wgs84)  # min x
+            wgs84_northlimit = max(x_wgs84)
 
             wgs84_coverage_info = OrderedDict([
                 ('northlimit', wgs84_northlimit),
@@ -319,18 +326,18 @@ def get_cell_info(raster_file_name):
         cell_info = OrderedDict([
             ('rows', rows),
             ('columns', columns),
-            ('cellSizeXValue', cell_size_x_value),
-            ('cellSizeYValue', cell_size_y_value),
-            ('cellDataType', cell_data_type),
+            ('cell_size_x_value', cell_size_x_value),
+            ('cell_size_y_value', cell_size_y_value),
+            ('cell_data_type', cell_data_type),
 
         ])
     else:
         cell_info = OrderedDict([
             ('rows', None),
             ('columns', None),
-            ('cellSizeXValue', None),
-            ('cellSizeYValue', None),
-            ('cellDataType', None),
+            ('cell_size_x_value', None),
+            ('cell_size_y_value', None),
+            ('cell_data_type', None),
         ])
 
     return cell_info
