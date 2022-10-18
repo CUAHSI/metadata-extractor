@@ -85,13 +85,23 @@ def test_reftimeseries_extraction():
     del model_json["additional_metadata"]
 
     assert json_metadata == model_json
-'''
+
 def test_timeseries_sqlite_extraction():
     json_metadata = _load_json("timeseries.json")
-    model = TimeSeriesMetadata(**json_metadata)
+    model = TimeSeriesMetadataIn(**json_metadata)
+    model_json = json.loads(model.json())
+    del json_metadata["files"]
+    del json_metadata["creators"]
+    del json_metadata["contributors"]
 
-    assert json.dumps(json_metadata, indent=2) == model.json(indent=2)
+    del model_json["language"]
+    del model_json["additional_metadata"]
 
+    for result in model_json['time_series_results']:
+        result['variable']['no_data_value'] = float(result['variable']['no_data_value'])
+
+    assert json_metadata == model_json
+'''
 def test_timeseries_csv_extraction():
     json_metadata = _load_json("timeseries-csv.json")
     model = TimeSeriesMetadata(**json_metadata)

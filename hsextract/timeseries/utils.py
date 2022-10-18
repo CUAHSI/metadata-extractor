@@ -176,9 +176,9 @@ def extract_metadata(sqlite_file_name):
 
         as_json = {}
 
-        term_names = create_cv_lookup_models(cur)
+        #term_names = create_cv_lookup_models(cur)
 
-        as_json.update({"term_names": term_names})
+        #as_json.update({"term_names": term_names})
 
         # extract abstract and title
         cur.execute("SELECT DataSetTitle, DataSetAbstract FROM DataSets")
@@ -189,7 +189,7 @@ def extract_metadata(sqlite_file_name):
 
         # create abstract/description element
         if dataset["DataSetAbstract"]:
-            as_json.update({'description': dataset["DataSetAbstract"]})
+            as_json.update({'abstract': dataset["DataSetAbstract"]})
 
         # extract keywords/subjects
         # these are the comma separated values in the VariableNameCV column of the Variables
@@ -200,7 +200,7 @@ def extract_metadata(sqlite_file_name):
         for variable in variables:
             keywords = variable["VariableNameCV"].split(",")
             keyword_list = keyword_list + keywords
-        as_json.update({'subject': keyword_list})
+        as_json.update({'subjects': keyword_list})
 
         # find the contributors for metadata
         creators, contributors = _extract_creators_contributors(cur)
@@ -209,19 +209,22 @@ def extract_metadata(sqlite_file_name):
 
         # extract coverage data
         coverage = _extract_coverage_metadata(cur)
-        as_json.update({'coverage': coverage})
+        as_json.update(coverage)
 
         cur.execute("SELECT * FROM Results")
         results = cur.fetchall()
+        time_series_results = []
         for result in results:
+            result_json = {}
+            result_json["series_id"] = result["ResultUUID"]
             variable_elements = extract_variable_elements(cur, result)
-            as_json.update({"variabletimeseries": variable_elements})
+            result_json.update({"variable": variable_elements})
             
             processinglevel_elements = extract_processinglevel_elements(cur, result)
-            as_json.update({'processinglevel': processinglevel_elements})
+            result_json.update({'processing_level': processinglevel_elements})
 
             timeseriesresult_elements = extract_timeseriesresult_elements(cur, result)
-            as_json.update({'timeseriesresult': timeseriesresult_elements})
+            result_json.update(timeseriesresult_elements)
 
             # query FeatureActions
             cur.execute("SELECT * FROM FeatureActions WHERE FeatureActionID=?",
@@ -229,12 +232,13 @@ def extract_metadata(sqlite_file_name):
             feature_action = cur.fetchone()
 
             site_elements = extract_site_elements(cur, result, feature_action)
-            as_json.update({'site': site_elements})
+            result_json.update({'site': site_elements})
 
             method_elements = extract_method_elements(cur, result, feature_action)
-            as_json.update({'method': method_elements})
+            result_json.update({'method': method_elements})
+            time_series_results.append(result_json)
 
-
+        as_json["time_series_results"] = time_series_results
         as_json["files"] = [sqlite_file_name]
         return as_json
 
@@ -242,7 +246,7 @@ def extract_timeseriesresult_elements(cur, result):
     # extract data for TimeSeriesResult element
     # Start with Results table
     data_dict = {}
-    data_dict['series_ids'] = [result["ResultUUID"]]
+    #data_dict['series_ids'] = [result["ResultUUID"]]
     if result["StatusCV"] is not None:
         data_dict["status"] = result["StatusCV"]
     else:
@@ -252,14 +256,15 @@ def extract_timeseriesresult_elements(cur, result):
 
     cur.execute("SELECT * FROM Units WHERE UnitsID=?", (result["UnitsID"],))
     unit = cur.fetchone()
-    data_dict['units_type'] = unit["UnitsTypeCV"]
-    data_dict['units_name'] = unit["UnitsName"]
-    data_dict['units_abbreviation'] = unit["UnitsAbbreviation"]
+    data_dict['unit'] = {}
+    data_dict['unit']['type'] = unit["UnitsTypeCV"]
+    data_dict['unit']['name'] = unit["UnitsName"]
+    data_dict['unit']['abbreviation'] = unit["UnitsAbbreviation"]
 
     cur.execute("SELECT AggregationStatisticCV FROM TimeSeriesResults WHERE "
                             "ResultID=?", (result["ResultID"],))
     ts_result = cur.fetchone()
-    data_dict["aggregation_statistics"] = ts_result["AggregationStatisticCV"]
+    data_dict["aggregation_statistic"] = ts_result["AggregationStatisticCV"]
 
     return data_dict
 
@@ -270,7 +275,7 @@ def extract_processinglevel_elements(cur, result):
                             (result["ProcessingLevelID"],))
     pro_level = cur.fetchone()
     data_dict = {}
-    data_dict['series_ids'] = [result["ResultUUID"]]
+    #data_dict['series_ids'] = [result["ResultUUID"]]
     data_dict['processing_level_code'] = pro_level["ProcessingLevelCode"]
     if pro_level["Definition"]:
         data_dict["definition"] = pro_level["Definition"]
@@ -291,7 +296,7 @@ def extract_method_elements(cur, result, feature_action):
     method = cur.fetchone()
     
     data_dict = {}
-    data_dict['series_ids'] = [result["ResultUUID"]]
+    #data_dict['series_ids'] = [result["ResultUUID"]]
     data_dict['method_code'] = method["MethodCode"]
     data_dict["method_name"] = method["MethodName"]
     data_dict['method_type'] = method["MethodTypeCV"]
@@ -312,7 +317,7 @@ def extract_variable_elements(cur, result):
                             (result["VariableID"],))
     variable = cur.fetchone()
     data_dict = {}
-    data_dict['series_ids'] = [result["ResultUUID"]]
+    #data_dict['series_ids'] = [result["ResultUUID"]]
     data_dict['variable_code'] = variable["VariableCode"]
     data_dict["variable_name"] = variable["VariableNameCV"]
     data_dict['variable_type'] = variable["VariableTypeCV"]
@@ -338,7 +343,7 @@ def extract_site_elements(cur, result, feature_action):
                             (feature_action["SamplingFeatureID"],))
     site = cur.fetchone()
     data_dict = {}
-    data_dict['series_ids'] = [result["ResultUUID"]]
+    #data_dict['series_ids'] = [result["ResultUUID"]]
     data_dict['site_code'] = sampling_feature["SamplingFeatureCode"]
     data_dict['site_name'] = sampling_feature["SamplingFeatureName"]
     if sampling_feature["Elevation_m"]:
@@ -353,7 +358,7 @@ def extract_site_elements(cur, result, feature_action):
     data_dict["latitude"] = site["Latitude"]
     data_dict["longitude"] = site["Longitude"]
 
-    data_dict
+    return data_dict
 
 
 def extract_cv_metadata_from_blank_sqlite_file(csv_file):
@@ -502,7 +507,7 @@ def _extract_coverage_metadata(cur):
                 if spatialref:
                     if spatialref["SRSName"]:
                         value_dict["projection"] = spatialref["SRSName"]
-            coverage.update({"type": "point", "value": value_dict})
+            coverage["spatial_coverage"] = {"type": "point", **value_dict}
     else:
         # in case of multiple sites we will create one coverage element of type 'box'
         bbox = {'northlimit': -90, 'southlimit': 90, 'eastlimit': -180, 'westlimit': 180,
@@ -532,19 +537,18 @@ def _extract_coverage_metadata(cur):
 
             if bbox['projection'] == 'Unknown':
                 bbox['projection'] = 'WGS 84 EPSG:4326'
-        coverage.update({"type": "box", "value": bbox})
+        coverage["spatial_coverage"] = {"type": "box", **bbox}
 
     # extract temporal coverage
     cur.execute("SELECT MAX(ValueDateTime) AS 'EndDate', MIN(ValueDateTime) AS 'BeginDate' "
                 "FROM TimeSeriesResultValues")
 
     dates = cur.fetchone()
-    begin_date = dates['BeginDate']
-    end_date = dates['EndDate']
+    begin_date = parser.parse(dates['BeginDate'])
+    end_date = parser.parse(dates['EndDate'])
 
     # create coverage element
-    value_dict = {"start": begin_date, "end": end_date}
-    coverage.update({"type": "period", "value": {"start": begin_date, "end": end_date}})
+    coverage["period_coverage"] = {"start": begin_date.isoformat(), "end": end_date.isoformat()}
 
     return coverage
 
