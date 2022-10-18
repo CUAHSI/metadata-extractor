@@ -101,13 +101,17 @@ def test_timeseries_sqlite_extraction():
         result['variable']['no_data_value'] = float(result['variable']['no_data_value'])
 
     assert json_metadata == model_json
+
 '''
+# TODO re-enable after hsmodels release with no required time series results fields
 def test_timeseries_csv_extraction():
     json_metadata = _load_json("timeseries-csv.json")
-    model = TimeSeriesMetadata(**json_metadata)
+    model = TimeSeriesMetadataIn(**json_metadata)
+    model_json = json.loads(model.json())
 
-    assert json.dumps(json_metadata, indent=2) == model.json(indent=2)
-
+    assert json_metadata == model_json
+'''
+'''
 def test_feature_states_extraction():
     json_metadata = _load_json("feature-states.json")
     model = GeographicFeatureMetadata(**json_metadata)

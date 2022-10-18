@@ -57,11 +57,9 @@ def test_timeseries_sqlite_extraction():
     timeseries_json = extract_metadata("timeseries", "tests/test_files/timeseries/ODM2_Multi_Site_One_Variable.sqlite")
 
     _assert_from_file("timeseries.json", timeseries_json)
-'''
+
 def test_timeseries_csv_extraction():
     timeseries_json = extract_metadata("timeseries", "tests/test_files/timeseries/ODM2_Multi_Site_One_Variable_Test.csv")
-    with open("tests/outputs/timeseries.json", "w") as f:
-        f.write(json.dumps(timeseries-csv_json, indent=2))
 
     _assert_from_file("timeseries-csv.json", timeseries_json)
 
@@ -69,7 +67,7 @@ def test_netcdf_extraction():
     all_metadata_json = extract_metadata("netcdf", "tests/test_files/netcdf/netcdf_valid.nc")
 
     _assert_from_file("netcdf.json", all_metadata_json)
-
+'''
 def test_feature_states_extraction():
     all_metadata_json = extract_metadata("feature", "tests/test_files/states/states.shp")
 
