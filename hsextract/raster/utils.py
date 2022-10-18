@@ -213,7 +213,7 @@ def get_original_coverage_info(raster_dataset):
         westlimit = None
         eastlimit = None
 
-    spatial_coverage_info = OrderedDict([
+    spatial_coverage_info = dict([
         ('northlimit', northlimit),
         ('southlimit', southlimit),
         ('eastlimit', eastlimit),

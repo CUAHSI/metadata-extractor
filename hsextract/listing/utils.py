@@ -18,9 +18,9 @@ def sort_files(path: str, include_hidden: bool = False):
     if os.path.isfile(path):
         return [path]
     if include_hidden:
-        files = [str(p) for p in Path(path).rglob('*') if not path.is_dir()]
+        files = [str(os.path.relpath(p, start=path)) for p in Path(path).rglob('*') if not path.is_dir()]
     else:
-        files = [str(p) for p in Path(path).rglob('*') if _is_not_hidden_file(p)]
+        files = [str(os.path.relpath(p, start=path)) for p in Path(path).rglob('*') if _is_not_hidden_file(p)]
     
     sorted_files = sorted(files, key=lambda i: (i, len(i.split("/"))))
     return sorted_files
