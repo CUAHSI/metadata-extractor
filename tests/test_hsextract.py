@@ -41,6 +41,11 @@ def test_rasters_extraction():
 def test_raster_single_extraction():
     all_metadata_json = extract_metadata("raster", "tests/test_files/rasters/single/logan1.tif")
 
+    _assert_from_file("raster-single.json", all_metadata_json)
+
+def test_raster_single_extraction():
+    all_metadata_json = extract_metadata("raster", "tests/test_files/rasters/single/logan1.tif")
+
     _assert_raster_from_file("raster-single.json", all_metadata_json)
 
 def test_features_watersheds_extraction():
@@ -67,7 +72,7 @@ def test_netcdf_extraction():
     all_metadata_json = extract_metadata("netcdf", "tests/test_files/netcdf/netcdf_valid.nc")
 
     _assert_from_file("netcdf.json", all_metadata_json)
-'''
+
 def test_feature_states_extraction():
     all_metadata_json = extract_metadata("feature", "tests/test_files/states/states.shp")
 
@@ -115,5 +120,3 @@ async def test_threaded_metadata_extraction():
     metadata_path = "tests/test_files/.hs/rasters/single/logan1.tif.json"
     assert os.path.exists(metadata_path)
     _assert_raster_from_file("raster-single.json", read_metadata_json(metadata_path))
-
-'''

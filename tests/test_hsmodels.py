@@ -111,10 +111,17 @@ def test_timeseries_csv_extraction():
 
     assert json_metadata == model_json
 '''
-'''
+
 def test_feature_states_extraction():
     json_metadata = _load_json("feature-states.json")
-    model = GeographicFeatureMetadata(**json_metadata)
+    model = GeographicFeatureMetadataIn(**json_metadata)
+    model_json = json.loads(model.json())
+    del json_metadata["files"]
+    del json_metadata["abstract"]
 
-    assert json.dumps(json_metadata, indent=2) == model.json(indent=2)
-'''
+    del model_json["language"]
+    del model_json["additional_metadata"]
+    for fi in model_json["field_information"]:
+        fi["field_type_code"] = int(fi["field_type_code"])
+
+    assert json_metadata == model_json

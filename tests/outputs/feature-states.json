@@ -1,93 +1,63 @@
 {
-  "coverage": {
+  "spatial_coverage": {
     "type": "box",
-    "value": {
-      "westlimit": 71.40623539396698,
-      "northlimit": -178.21759836236586,
-      "eastlimit": 18.92178634508703,
-      "southlimit": -66.96927125875777,
-      "projection": "WGS 84 EPSG:4326",
-      "units": "Decimal degrees"
-    }
-  },
-  "originalcoverage": {
-    "originalcoverage": {
-      "northlimit": 71.40623539396698,
-      "southlimit": 18.92178634508703,
-      "westlimit": -178.21759836236586,
-      "eastlimit": -66.96927125875777,
-      "projection_string": "GEOGCS[\"NAD83\",\n    DATUM[\"North_American_Datum_1983\",\n        SPHEROID[\"GRS 1980\",6378137,298.257222101,\n            AUTHORITY[\"EPSG\",\"7019\"]],\n        AUTHORITY[\"EPSG\",\"6269\"]],\n    PRIMEM[\"Greenwich\",0,\n        AUTHORITY[\"EPSG\",\"8901\"]],\n    UNIT[\"degree\",0.0174532925199433,\n        AUTHORITY[\"EPSG\",\"9122\"]],\n    AXIS[\"Latitude\",NORTH],\n    AXIS[\"Longitude\",EAST],\n    AUTHORITY[\"EPSG\",\"4269\"]]",
-      "projection_name": "NAD83",
-      "datum": "North_American_Datum_1983",
-      "unit": "degree"
-    }
-  },
-  "geometryinformation": {
-    "featureCount": 51,
-    "geometryType": "MULTIPOLYGON"
-  },
-  "url": "tests/test_files/states/states.shp",
-  "id": "042bb30e47021124a5e0bc7551c55b16",
-  "originalcoveragegeofeature": {
     "northlimit": 71.40623539396698,
-    "southlimit": 18.92178634508703,
     "westlimit": -178.21759836236586,
+    "southlimit": 18.92178634508703,
     "eastlimit": -66.96927125875777,
+    "projection": "WGS 84 EPSG:4326",
+    "units": "Decimal degrees"
+  },
+  "spatial_reference": {
+    "northlimit": 18.92178634508703,
+    "southlimit": -66.96927125875777,
+    "westlimit": 71.40623539396698,
+    "eastlimit": -178.21759836236586,
     "projection_string": "GEOGCS[\"NAD83\",\n    DATUM[\"North_American_Datum_1983\",\n        SPHEROID[\"GRS 1980\",6378137,298.257222101,\n            AUTHORITY[\"EPSG\",\"7019\"]],\n        AUTHORITY[\"EPSG\",\"6269\"]],\n    PRIMEM[\"Greenwich\",0,\n        AUTHORITY[\"EPSG\",\"8901\"]],\n    UNIT[\"degree\",0.0174532925199433,\n        AUTHORITY[\"EPSG\",\"9122\"]],\n    AXIS[\"Latitude\",NORTH],\n    AXIS[\"Longitude\",EAST],\n    AUTHORITY[\"EPSG\",\"4269\"]]",
     "projection_name": "NAD83",
     "datum": "North_American_Datum_1983",
-    "unit": "degree"
+    "units": "degree"
   },
-  "fieldinformations": [
+  "field_information": [
     {
-      "fieldinformation": {
-        "fieldName": "STATE_NAME",
-        "fieldTypeCode": 4,
-        "fieldType": "String",
-        "fieldWidth": 25,
-        "fieldPrecision": 0
-      }
+      "field_name": "STATE_NAME",
+      "field_type_code": 4,
+      "field_type": "String",
+      "field_width": 25,
+      "field_precision": 0
     },
     {
-      "fieldinformation": {
-        "fieldName": "DRAWSEQ",
-        "fieldTypeCode": 0,
-        "fieldType": "Integer",
-        "fieldWidth": 2,
-        "fieldPrecision": 0
-      }
+      "field_name": "DRAWSEQ",
+      "field_type_code": 0,
+      "field_type": "Integer",
+      "field_width": 2,
+      "field_precision": 0
     },
     {
-      "fieldinformation": {
-        "fieldName": "STATE_FIPS",
-        "fieldTypeCode": 4,
-        "fieldType": "String",
-        "fieldWidth": 2,
-        "fieldPrecision": 0
-      }
+      "field_name": "STATE_FIPS",
+      "field_type_code": 4,
+      "field_type": "String",
+      "field_width": 2,
+      "field_precision": 0
     },
     {
-      "fieldinformation": {
-        "fieldName": "SUB_REGION",
-        "fieldTypeCode": 4,
-        "fieldType": "String",
-        "fieldWidth": 20,
-        "fieldPrecision": 0
-      }
+      "field_name": "SUB_REGION",
+      "field_type_code": 4,
+      "field_type": "String",
+      "field_width": 20,
+      "field_precision": 0
     },
     {
-      "fieldinformation": {
-        "fieldName": "STATE_ABBR",
-        "fieldTypeCode": 4,
-        "fieldType": "String",
-        "fieldWidth": 2,
-        "fieldPrecision": 0
-      }
+      "field_name": "STATE_ABBR",
+      "field_type_code": 4,
+      "field_type": "String",
+      "field_width": 2,
+      "field_precision": 0
     }
   ],
-  "geometryinformations": {
-    "featureCount": 51,
-    "geometryType": "MULTIPOLYGON"
+  "geometry_information": {
+    "feature_count": 51,
+    "geometry_type": "MULTIPOLYGON"
   },
   "title": "Logan River Stream Network",
   "abstract": "Logan River Stream Network delineated from a digital elevation model using TauDEM",
