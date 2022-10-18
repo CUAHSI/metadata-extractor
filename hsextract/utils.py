@@ -22,7 +22,7 @@ def extract_metadata_with_file_path(type: str, filepath):
         os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
         with open(metadata_path, "w") as f:
             f.write(json.dumps(extracted_metadata, indent=2))
-    return extracted_metadata
+    return filepath, extracted_metadata is not None
 
 def extract_metadata(type: str, filepath):
     try:
@@ -68,12 +68,20 @@ async def list_and_extract(path: str):
             for file in files:
                 tasks.append(asyncio.get_running_loop().run_in_executor(None, extract_metadata_with_file_path, category, file))
 
+        results = []
+        if tasks:
+            results.extend(await asyncio.gather(*tasks))
+
         # The netcdf library does not seem to be thread safe, running them in this thread
         for file in netcdf_files:
-            extract_metadata_with_file_path("netcdf", file)
+            results.append(extract_metadata_with_file_path("netcdf", file))
 
-        if tasks:
-            await asyncio.gather(*tasks)
+        metadata_manifest = [{file_path: f"{file_path}.json"} for file_path, extracted in results if extracted]
+        if metadata_manifest:
+            metadata_path = os.path.join(".hs", "metadata_manifest.json")
+            os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
+            with open(metadata_path, "w") as f:
+                f.write(json.dumps(metadata_manifest, indent=2))
 
         file_tasks = []
         for file in sorted_files:

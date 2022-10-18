@@ -102,6 +102,8 @@ async def test_threaded_metadata_extraction(cleanup_metadata):
     await list_and_extract("tests/test_files")
 
     assert os.path.exists("tests/test_files/.hs")
+    assert os.path.exists("tests/test_files/.hs/file_manifest.json")
+    assert os.path.exists("tests/test_files/.hs/metadata_manifest.json")
 
     metadata_path = "tests/test_files/.hs/timeseries/ODM2_Multi_Site_One_Variable_Test.csv.json"
     assert os.path.exists(metadata_path)
