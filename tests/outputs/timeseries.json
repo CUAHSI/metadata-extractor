@@ -303,7 +303,7 @@
   ],
   "files": [
     {
-      "path": "tests/test_files/timeseries/ODM2_Multi_Site_One_Variable.sqlite",
+      "path": "timeseries/ODM2_Multi_Site_One_Variable.sqlite",
       "size": 1894400,
       "checksum": "12aa820cbd1d28d926ec6d28f0202659",
       "mime_type": null

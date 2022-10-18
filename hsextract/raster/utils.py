@@ -73,12 +73,11 @@ def extract_metadata_from_vrt(vrt_file_path):
     # Save extended meta cell info
     res_md_dict['cell_info']['name'] = os.path.basename(vrt_file_path)
     metadata.append({'cell_information': res_md_dict['cell_info']})
-    #print(json.dumps(metadata, indent=2))
+    
     # Save extended meta band info
     assert len(res_md_dict['band_info']) == 1
-    #print(json.dumps(res_md_dict, indent=2))
+    
     for index, band_info in enumerate(list(res_md_dict['band_info'].values())):
-        #print(json.dumps(band_info, indent=2))
         b_info = {}
         b_info["name"] = band_info["name"]
         b_info["maximum_value"] = band_info["maximumValue"]

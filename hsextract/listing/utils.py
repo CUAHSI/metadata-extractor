@@ -14,13 +14,11 @@ def _is_not_hidden_file(path):
     is_not_hidden_file = not any(part.startswith('.') for part in path.parts)
     return is_not_hidden_file
 
-def sort_files(path: str, include_hidden: bool = False):
-    if os.path.isfile(path):
-        return [path]
+def sort_files(include_hidden: bool = False):
     if include_hidden:
-        files = [str(os.path.relpath(p, start=path)) for p in Path(path).rglob('*') if not path.is_dir()]
+        files = [str(p) for p in Path().rglob('*') if not p.is_dir()]
     else:
-        files = [str(os.path.relpath(p, start=path)) for p in Path(path).rglob('*') if _is_not_hidden_file(p)]
+        files = [str(p) for p in Path().rglob('*') if _is_not_hidden_file(p)]
     
     sorted_files = sorted(files, key=lambda i: (i, len(i.split("/"))))
     return sorted_files
@@ -67,8 +65,8 @@ def categorize_files(files):
     return categorized_files
 
 
-def prepare_files(path):
-    sorted_files = sort_files(path)
+def prepare_files():
+    sorted_files = sort_files()
     categorized_files = categorize_files(sorted_files)
     
     return sorted_files, categorized_files

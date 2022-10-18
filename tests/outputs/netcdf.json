@@ -83,7 +83,7 @@
   },
   "files": [
     {
-      "path": "tests/test_files/netcdf/netcdf_valid.nc",
+      "path": "netcdf/netcdf_valid.nc",
       "size": 4869898,
       "checksum": "970c1171f2445d6d76b606feaa5f2e5c",
       "mime_type": "application/x-netcdf"

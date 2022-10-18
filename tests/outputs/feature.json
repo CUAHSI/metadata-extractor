@@ -68,49 +68,49 @@
   },
   "files": [
     {
-      "path": "tests/test_files/watersheds/watersheds.cpg",
+      "path": "watersheds/watersheds.cpg",
       "size": 5,
       "checksum": "ae3b3df9970b49b6523e608759bc957d",
       "mime_type": null
     },
     {
-      "path": "tests/test_files/watersheds/watersheds.dbf",
+      "path": "watersheds/watersheds.dbf",
       "size": 666,
       "checksum": "5f0795b993fb2a78ee67c5836e562123",
       "mime_type": null
     },
     {
-      "path": "tests/test_files/watersheds/watersheds.prj",
+      "path": "watersheds/watersheds.prj",
       "size": 425,
       "checksum": "5107bb62e2ab8f330d2e58c9a66db212",
       "mime_type": null
     },
     {
-      "path": "tests/test_files/watersheds/watersheds.sbn",
+      "path": "watersheds/watersheds.sbn",
       "size": 180,
       "checksum": "2c11856707ebf325113081c82cc8914f",
       "mime_type": null
     },
     {
-      "path": "tests/test_files/watersheds/watersheds.sbx",
+      "path": "watersheds/watersheds.sbx",
       "size": 124,
       "checksum": "f68d697732ad065f596fac7472014394",
       "mime_type": null
     },
     {
-      "path": "tests/test_files/watersheds/watersheds.shp",
+      "path": "watersheds/watersheds.shp",
       "size": 29228,
       "checksum": "2bdc7bf81d55fab1ab59b2861e5fbb40",
       "mime_type": "application/x-qgis"
     },
     {
-      "path": "tests/test_files/watersheds/watersheds.shp.xml",
+      "path": "watersheds/watersheds.shp.xml",
       "size": 821,
       "checksum": "e5d6d6d7658983fbe7ae75589ec64d06",
       "mime_type": "application/xml"
     },
     {
-      "path": "tests/test_files/watersheds/watersheds.shx",
+      "path": "watersheds/watersheds.shx",
       "size": 140,
       "checksum": "27ba8e2b565c810cdda151e70c1ef3cc",
       "mime_type": "application/x-qgis"

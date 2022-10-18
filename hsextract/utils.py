@@ -61,12 +61,18 @@ async def list_and_extract(path: str):
     current_directory = os.getcwd()
     try:
         os.chdir(path)
+        sorted_files, categorized_files = prepare_files()
 
-        sorted_files, categorized_files = prepare_files(path)
+        netcdf_files = categorized_files["netcdf"]
+        del categorized_files["netcdf"]
         tasks = []
         for category, files in categorized_files.items():
             for file in files:
                 tasks.append(asyncio.get_running_loop().run_in_executor(None, extract_metadata_with_file_path, category, file))
+
+        # The netcdf library does not seem to be thread safe, running them in this thread
+        for file in netcdf_files:
+            extract_metadata_with_file_path("netcdf", file)
 
         if tasks:
             await asyncio.gather(*tasks)
