@@ -1,26 +1,28 @@
 import asyncio
-import shutil
-import pytest
 import json
 import os
+import shutil
 
-from hsextract.utils import list_and_extract, extract_metadata
+import pytest
 
+from hsextract.utils import extract_metadata, list_and_extract
 
 pytest_plugins = ('pytest_asyncio',)
+
 
 def _assert_from_file(filename, metadata_json):
     with open(filename) as f:
         expected_str = f.read()
         expected_json = json.loads(expected_str)
-    
+
     assert metadata_json == expected_json
+
 
 def _assert_raster_from_file(filename, metadata_json):
     with open(filename) as f:
         expected_str = f.read()
         expected_json = json.loads(expected_str)
-    
+
     # remove the minimumValue, maximumValue and projection_string because gdal is inconsistent
     del metadata_json['band_information']['maximum_value']
     del expected_json['band_information']['maximum_value']
@@ -33,6 +35,7 @@ def _assert_raster_from_file(filename, metadata_json):
 
     assert metadata_json == expected_json
 
+
 @pytest.fixture()
 def test_file_dir():
     current_dir = os.getcwd()
@@ -40,54 +43,65 @@ def test_file_dir():
     yield
     os.chdir(current_dir)
 
+
 def test_rasters_extraction(test_file_dir):
     metadata_dict = extract_metadata("raster", "rasters/logan.vrt")
 
     _assert_raster_from_file("../outputs/raster.json", metadata_dict)
+
 
 def test_raster_single_extraction(test_file_dir):
     all_metadata_json = extract_metadata("raster", "rasters/single/logan1.tif")
 
     _assert_from_file("../outputs/raster-single.json", all_metadata_json)
 
+
 def test_raster_single_extraction(test_file_dir):
     all_metadata_json = extract_metadata("raster", "rasters/single/logan1.tif")
 
     _assert_raster_from_file("../outputs/raster-single.json", all_metadata_json)
+
 
 def test_features_watersheds_extraction(test_file_dir):
     metadata_dict = extract_metadata("feature", "watersheds/watersheds.shp")
 
     _assert_from_file("../outputs/feature.json", metadata_dict)
 
+
 def test_reftimeseries_extraction(test_file_dir):
     ref_timeseries_json = extract_metadata("reftimeseries", "reftimeseries/multi_sites_formatted_version1.0.refts.json")
 
     _assert_from_file("../outputs/reftimeseries.json", ref_timeseries_json)
+
 
 def test_timeseries_sqlite_extraction(test_file_dir):
     timeseries_json = extract_metadata("timeseries", "timeseries/ODM2_Multi_Site_One_Variable.sqlite")
 
     _assert_from_file("../outputs/timeseries.json", timeseries_json)
 
+
 def test_timeseries_csv_extraction(test_file_dir):
     timeseries_json = extract_metadata("timeseries", "timeseries/ODM2_Multi_Site_One_Variable_Test.csv")
 
     _assert_from_file("../outputs/timeseries-csv.json", timeseries_json)
+
 
 def test_netcdf_extraction(test_file_dir):
     all_metadata_json = extract_metadata("netcdf", "netcdf/netcdf_valid.nc")
 
     _assert_from_file("../outputs/netcdf.json", all_metadata_json)
 
+
 def test_feature_states_extraction(test_file_dir):
     all_metadata_json = extract_metadata("feature", "states/states.shp")
 
     _assert_from_file("../outputs/feature-states.json", all_metadata_json)
 
+
 def read_metadata_json(path: str):
     with open(path) as f:
         return json.loads(f.read())
+
 
 @pytest.fixture()
 def cleanup_metadata():

@@ -15,6 +15,7 @@ def _to_metadata_path(filepath: str):
     filepath = filepath + ".json"
     return os.path.join(".hs", filepath)
 
+
 def extract_metadata_with_file_path(type: str, filepath):
     extracted_metadata = extract_metadata(type, filepath)
     if extracted_metadata:
@@ -23,6 +24,7 @@ def extract_metadata_with_file_path(type: str, filepath):
         with open(metadata_path, "w") as f:
             f.write(json.dumps(extracted_metadata, indent=2))
     return filepath, extracted_metadata is not None
+
 
 def extract_metadata(type: str, filepath):
     try:
@@ -35,6 +37,7 @@ def extract_metadata(type: str, filepath):
             all_file_metadata.append(file_metadata(f))
         extracted_metadata["files"] = all_file_metadata
     return extracted_metadata
+
 
 def _extract_metadata(type: str, filepath):
     extension = os.path.splitext(filepath)[1]
@@ -55,6 +58,7 @@ def _extract_metadata(type: str, filepath):
 
     return filepath, metadata
 
+
 async def list_and_extract(path: str):
     current_directory = os.getcwd()
     try:
@@ -66,7 +70,9 @@ async def list_and_extract(path: str):
         tasks = []
         for category, files in categorized_files.items():
             for file in files:
-                tasks.append(asyncio.get_running_loop().run_in_executor(None, extract_metadata_with_file_path, category, file))
+                tasks.append(
+                    asyncio.get_running_loop().run_in_executor(None, extract_metadata_with_file_path, category, file)
+                )
 
         results = []
         if tasks:

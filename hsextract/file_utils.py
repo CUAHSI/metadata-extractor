@@ -9,9 +9,4 @@ def file_metadata(path: str):
     checksum = hashlib.md5(contents).hexdigest()
     size = os.path.getsize(path)
     mime_type = mimetypes.guess_type(path)[0]
-    return {
-        "path": path,
-        "size": size,
-        "checksum": checksum,
-        "mime_type": mime_type
-    }
+    return {"path": path, "size": size, "checksum": checksum, "mime_type": mime_type}

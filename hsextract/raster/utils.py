@@ -36,7 +36,7 @@ def create_vrt_file(tif_file):
     temp_dir = tempfile.gettempdir()
     tif_file_name = os.path.basename(tif_file)
     vrt_file_path = os.path.join(temp_dir, f'{tif_file_name}.vrt')
-    #os.mknod(vrt_file_path)
+    # os.mknod(vrt_file_path)
     input_file = gdal.Open(tif_file)
     output_file = gdal.Translate(vrt_file_path, input_file, format="VRT")
 
@@ -73,10 +73,10 @@ def extract_metadata_from_vrt(vrt_file_path):
     # Save extended meta cell info
     res_md_dict['cell_info']['name'] = os.path.basename(vrt_file_path)
     metadata.append({'cell_information': res_md_dict['cell_info']})
-    
+
     # Save extended meta band info
     assert len(res_md_dict['band_info']) == 1
-    
+
     for index, band_info in enumerate(list(res_md_dict['band_info'].values())):
         b_info = {}
         b_info["name"] = band_info["name"]
@@ -86,7 +86,7 @@ def extract_metadata_from_vrt(vrt_file_path):
         b_info["variable_name"] = band_info["variableName"]
         b_info["variable_unit"] = band_info["variableUnit"]
         metadata.append({f'band_information': b_info})
-    
+
     metadata_dict = {}
     # use the extracted metadata to populate file metadata
     for element in metadata:
@@ -132,7 +132,7 @@ def get_spatial_coverage_info(raster_file_name):
     wgs84_coverage_info = get_wgs84_coverage_info(raster_dataset)
     spatial_coverage_info = {
         'original_coverage_info': original_coverage_info,
-        'wgs84_coverage_info': wgs84_coverage_info
+        'wgs84_coverage_info': wgs84_coverage_info,
     }
     return spatial_coverage_info
 
@@ -158,8 +158,7 @@ def get_original_coverage_info(raster_dataset):
 
         # get projection string, datum
         projection_string = proj_wkt
-        datum = spatial_ref.GetAttrValue("DATUM", 0) \
-            if spatial_ref.GetAttrValue("DATUM", 0) else None
+        datum = spatial_ref.GetAttrValue("DATUM", 0) if spatial_ref.GetAttrValue("DATUM", 0) else None
 
         # get unit info and check spelling
         unit = spatial_ref.GetAttrValue("UNIT", 0)
@@ -197,8 +196,8 @@ def get_original_coverage_info(raster_dataset):
         y_coor = []
         for px in xarr:
             for py in yarr:
-                x = gt[0]+(px*gt[1])+(py*gt[2])
-                y = gt[3]+(px*gt[4])+(py*gt[5])
+                x = gt[0] + (px * gt[1]) + (py * gt[2])
+                y = gt[3] + (px * gt[4]) + (py * gt[5])
                 x_coor.append(x)
                 y_coor.append(y)
             yarr.reverse()
@@ -212,16 +211,18 @@ def get_original_coverage_info(raster_dataset):
         westlimit = None
         eastlimit = None
 
-    spatial_coverage_info = dict([
-        ('northlimit', northlimit),
-        ('southlimit', southlimit),
-        ('eastlimit', eastlimit),
-        ('westlimit', westlimit),
-        ('projection', projection),
-        ('units', unit),
-        ('projection_string', projection_string),
-        ('datum', datum)
-    ])
+    spatial_coverage_info = dict(
+        [
+            ('northlimit', northlimit),
+            ('southlimit', southlimit),
+            ('eastlimit', eastlimit),
+            ('westlimit', westlimit),
+            ('projection', projection),
+            ('units', unit),
+            ('projection_string', projection_string),
+            ('datum', datum),
+        ]
+    )
 
     return spatial_coverage_info
 
@@ -291,14 +292,16 @@ def get_wgs84_coverage_info(raster_dataset):
             wgs84_southlimit = min(x_wgs84)  # min x
             wgs84_northlimit = max(x_wgs84)
 
-            wgs84_coverage_info = OrderedDict([
-                ('northlimit', wgs84_northlimit),
-                ('southlimit', wgs84_southlimit),
-                ('eastlimit', wgs84_eastlimit),
-                ('westlimit', wgs84_westlimit),
-                ('units', 'Decimal degrees'),
-                ('projection', 'WGS 84 EPSG:4326')
-            ])
+            wgs84_coverage_info = OrderedDict(
+                [
+                    ('northlimit', wgs84_northlimit),
+                    ('southlimit', wgs84_southlimit),
+                    ('eastlimit', wgs84_eastlimit),
+                    ('westlimit', wgs84_westlimit),
+                    ('units', 'Decimal degrees'),
+                    ('projection', 'WGS 84 EPSG:4326'),
+                ]
+            )
 
     return wgs84_coverage_info
 
@@ -322,22 +325,25 @@ def get_cell_info(raster_file_name):
         band = raster_dataset.GetRasterBand(1)
         cell_data_type = gdal.GetDataTypeName(band.DataType)
 
-        cell_info = OrderedDict([
-            ('rows', rows),
-            ('columns', columns),
-            ('cell_size_x_value', cell_size_x_value),
-            ('cell_size_y_value', cell_size_y_value),
-            ('cell_data_type', cell_data_type),
-
-        ])
+        cell_info = OrderedDict(
+            [
+                ('rows', rows),
+                ('columns', columns),
+                ('cell_size_x_value', cell_size_x_value),
+                ('cell_size_y_value', cell_size_y_value),
+                ('cell_data_type', cell_data_type),
+            ]
+        )
     else:
-        cell_info = OrderedDict([
-            ('rows', None),
-            ('columns', None),
-            ('cell_size_x_value', None),
-            ('cell_size_y_value', None),
-            ('cell_data_type', None),
-        ])
+        cell_info = OrderedDict(
+            [
+                ('rows', None),
+                ('columns', None),
+                ('cell_size_x_value', None),
+                ('cell_size_y_value', None),
+                ('cell_data_type', None),
+            ]
+        )
 
     return cell_info
 
@@ -352,7 +358,7 @@ def get_band_info(raster_file_name):
         band_count = raster_dataset.RasterCount
 
         for i in range(0, band_count):
-            band = raster_dataset.GetRasterBand(i+1)
+            band = raster_dataset.GetRasterBand(i + 1)
             minimum, maximum, _, _ = band.ComputeStatistics(False)
             no_data = band.GetNoDataValue()
             new_no_data = None
@@ -366,25 +372,26 @@ def get_band_info(raster_file_name):
                 band.SetNoDataValue(new_no_data)
                 minimum, maximum, _, _ = band.ComputeStatistics(False)
 
-            band_info[i+1] = {
-                'name': 'Band_'+str(i+1),
+            band_info[i + 1] = {
+                'name': 'Band_' + str(i + 1),
                 'variableName': '',
                 'variableUnit': band.GetUnitType(),
                 'noDataValue': band.GetNoDataValue(),
                 'maximumValue': maximum,
                 'minimumValue': minimum,
-                }
+            }
     else:
         band_info = {
-                'name': 'Band_1',
-                'variableName': '',
-                'variableUnit': '',
-                'noDataValue': None,
-                'maximumValue': None,
-                'minimumValue': None,
+            'name': 'Band_1',
+            'variableName': '',
+            'variableUnit': '',
+            'noDataValue': None,
+            'maximumValue': None,
+            'minimumValue': None,
         }
     raster_dataset = None
     return band_info
+
 
 def raster_file_metadata_extraction(raster_path):
     raster_resource_files = []
@@ -395,7 +402,9 @@ def raster_file_metadata_extraction(raster_path):
         raster_resource_files.extend([vrt_file])
     else:
         # create the .vrt file
-        tif_files = [f for f in os.listdir(os.path.dirname(raster_path)) if f.file_name == os.path.basename(raster_path)]
+        tif_files = [
+            f for f in os.listdir(os.path.dirname(raster_path)) if f.file_name == os.path.basename(raster_path)
+        ]
         vrt_file = create_vrt_file(raster_path)
 
     raster_resource_files.extend(tif_files)

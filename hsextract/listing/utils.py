@@ -10,18 +10,20 @@ from hsextract.raster.utils import list_tif_files
 def _is_not_hidden_file(path):
     if path.is_dir():
         return False
-    
+
     is_not_hidden_file = not any(part.startswith('.') for part in path.parts)
     return is_not_hidden_file
+
 
 def sort_files(include_hidden: bool = False):
     if include_hidden:
         files = [str(p) for p in Path().rglob('*') if not p.is_dir()]
     else:
         files = [str(p) for p in Path().rglob('*') if _is_not_hidden_file(p)]
-    
+
     sorted_files = sorted(files, key=lambda i: (i, len(i.split("/"))))
     return sorted_files
+
 
 def categorize_files(files):
     categorized_files = defaultdict(list)
@@ -58,7 +60,7 @@ def categorize_files(files):
                 full_tif_path = os.path.join(vrt_file_dir, tif_file)
                 categorized_files["raster-tif"].remove(full_tif_path)
             except ValueError:
-                pass #TODO - warn about an invalid vrt file
+                pass  # TODO - warn about an invalid vrt file
     categorized_files["raster"].extend(categorized_files["raster-tif"])
     del categorized_files["raster-tif"]
 
@@ -68,5 +70,5 @@ def categorize_files(files):
 def prepare_files():
     sorted_files = sort_files()
     categorized_files = categorize_files(sorted_files)
-    
+
     return sorted_files, categorized_files

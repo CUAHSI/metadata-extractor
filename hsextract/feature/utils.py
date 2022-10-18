@@ -8,16 +8,16 @@ from bs4 import BeautifulSoup
 
 
 UNKNOWN_STR = "unknown"
-TITLE_MAX_LENGTH=300
+TITLE_MAX_LENGTH = 300
 
 
 def extract_metadata_and_files(feature_path):
     shape_files, xml_file, shp_file = get_all_related_shp_files(feature_path)
     meta_dict = extract_metadata(feature_path)
-    #meta_dict["url"] = shp_file.public_url
-    #meta_dict["id"] = hashlib.md5(bytes(shp_file.public_url, 'utf-8')).hexdigest()
-    #meta_dict["url"] = shp_file
-    #meta_dict["id"] = hashlib.md5(bytes(shp_file, 'utf-8')).hexdigest()
+    # meta_dict["url"] = shp_file.public_url
+    # meta_dict["id"] = hashlib.md5(bytes(shp_file.public_url, 'utf-8')).hexdigest()
+    # meta_dict["url"] = shp_file
+    # meta_dict["id"] = hashlib.md5(bytes(shp_file, 'utf-8')).hexdigest()
     meta_dict = add_metadata(meta_dict, xml_file)
     files = []
     for f in shape_files:
@@ -34,7 +34,23 @@ def get_all_related_shp_files(feature_path):
         f_path = Path(f)
         if str(f_path.suffix).lower() == '.xml' and not str(f_path.name).lower().endswith('.shp.xml'):
             continue
-        if str(f_path.suffix).lower() in [".shp", ".shx", ".dbf", ".prj", ".sbx", ".sbn", ".cpg", ".xml", ".fbn", ".fbx", ".ain", ".aih", ".atx", ".ixs", ".mxs"]:
+        if str(f_path.suffix).lower() in [
+            ".shp",
+            ".shx",
+            ".dbf",
+            ".prj",
+            ".sbx",
+            ".sbn",
+            ".cpg",
+            ".xml",
+            ".fbn",
+            ".fbx",
+            ".ain",
+            ".aih",
+            ".atx",
+            ".ixs",
+            ".mxs",
+        ]:
             shape_res_files.append(os.path.join(dir_path, f))
         if str(f_path.suffix).lower() == ".xml":
             xml_file = os.path.join(dir_path, f)
@@ -57,27 +73,30 @@ def extract_metadata(shp_file):
     if parsed_md_dict["wgs84_extent_dict"]["westlimit"] != UNKNOWN_STR:
         wgs84_dict = parsed_md_dict["wgs84_extent_dict"]
         # if extent is a point, create point type coverage
-        if wgs84_dict["westlimit"] == wgs84_dict["eastlimit"] \
-           and wgs84_dict["northlimit"] == wgs84_dict["southlimit"]:
-            coverage_dict = {"type": "point",
-                            "east": wgs84_dict["eastlimit"],
-                            "north": wgs84_dict["northlimit"],
-                            "units": wgs84_dict["units"],
-                            "projection": wgs84_dict["projection"]}
+        if wgs84_dict["westlimit"] == wgs84_dict["eastlimit"] and wgs84_dict["northlimit"] == wgs84_dict["southlimit"]:
+            coverage_dict = {
+                "type": "point",
+                "east": wgs84_dict["eastlimit"],
+                "north": wgs84_dict["northlimit"],
+                "units": wgs84_dict["units"],
+                "projection": wgs84_dict["projection"],
+            }
         else:  # otherwise, create box type coverage
             coverage_dict = {"type": "box", **parsed_md_dict["wgs84_extent_dict"]}
 
         metadata_dict["spatial_coverage"] = coverage_dict
 
     # original extent
-    original_coverage_dict = {"northlimit": parsed_md_dict["origin_extent_dict"]["northlimit"],
-                                "southlimit": parsed_md_dict["origin_extent_dict"]["southlimit"],
-                                "westlimit": parsed_md_dict["origin_extent_dict"]["westlimit"],
-                                "eastlimit": parsed_md_dict["origin_extent_dict"]["eastlimit"],
-                                "projection_string": parsed_md_dict["origin_projection_string"],
-                                "projection_name": parsed_md_dict["origin_projection_name"],
-                                "datum": parsed_md_dict["origin_datum"],
-                                "units": parsed_md_dict["origin_unit"]}
+    original_coverage_dict = {
+        "northlimit": parsed_md_dict["origin_extent_dict"]["northlimit"],
+        "southlimit": parsed_md_dict["origin_extent_dict"]["southlimit"],
+        "westlimit": parsed_md_dict["origin_extent_dict"]["westlimit"],
+        "eastlimit": parsed_md_dict["origin_extent_dict"]["eastlimit"],
+        "projection_string": parsed_md_dict["origin_projection_string"],
+        "projection_name": parsed_md_dict["origin_projection_name"],
+        "datum": parsed_md_dict["origin_datum"],
+        "units": parsed_md_dict["origin_unit"],
+    }
 
     metadata_dict["spatial_reference"] = original_coverage_dict
 
@@ -91,8 +110,10 @@ def extract_metadata(shp_file):
     metadata_dict['field_information'] = field_info_array
 
     # geometry
-    geometryinformation = {"feature_count": parsed_md_dict["feature_count"],
-                           "geometry_type": parsed_md_dict["geometry_type"]}
+    geometryinformation = {
+        "feature_count": parsed_md_dict["feature_count"],
+        "geometry_type": parsed_md_dict["geometry_type"],
+    }
 
     metadata_dict["geometry_information"] = geometryinformation
     return metadata_dict
@@ -233,16 +254,17 @@ def parse_shp(shp_file_path):
 
     return shp_metadata_dict
 
-def add_metadata(metadata_dict, xml_file):    
+
+def add_metadata(metadata_dict, xml_file):
     if xml_file:
         shp_xml_metadata_list = parse_shp_xml(xml_file)
         for shp_xml_metadata in shp_xml_metadata_list:
             if 'description' in shp_xml_metadata:
                 metadata_dict["abstract"] = shp_xml_metadata['description']['abstract']
-                
+
             elif 'title' in shp_xml_metadata:
                 metadata_dict["title"] = shp_xml_metadata['title']['value']
-                
+
             elif 'subject' in shp_xml_metadata:
                 metadata_dict["subjects"] = [shp_xml_metadata['subject']['value']]
     return metadata_dict
@@ -273,7 +295,7 @@ def parse_shp_xml(xml_file):
 
                 title_max_length = TITLE_MAX_LENGTH
                 if len(title_value) > title_max_length:
-                    title_value = title_value[:title_max_length-1]
+                    title_value = title_value[: title_max_length - 1]
                 title = {'title': {'value': title_value}}
                 metadata.append(title)
 
@@ -294,5 +316,6 @@ def parse_shp_xml(xml_file):
                     metadata.append({'subject': {'value': k}})
     return metadata
 
-def strip_tags(value):  
+
+def strip_tags(value):
     return ''.join(BeautifulSoup(value, features="html.parser").findAll(text=True))

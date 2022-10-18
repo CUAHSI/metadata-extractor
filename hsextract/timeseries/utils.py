@@ -22,18 +22,37 @@ def validate_odm2_db_file(sqlite_file_path):
 
             # check that the uploaded file has all the tables from ODM2Core and the CV tables
             cur = con.cursor()
-            odm2_core_table_names = ['People', 'Affiliations', 'SamplingFeatures', 'ActionBy',
-                                     'Organizations', 'Methods', 'FeatureActions', 'Actions',
-                                     'RelatedActions', 'Results', 'Variables', 'Units', 'Datasets',
-                                     'DatasetsResults', 'ProcessingLevels', 'TaxonomicClassifiers',
-                                     'CV_VariableType', 'CV_VariableName', 'CV_Speciation',
-                                     'CV_SiteType', 'CV_ElevationDatum', 'CV_MethodType',
-                                     'CV_UnitsType', 'CV_Status', 'CV_Medium',
-                                     'CV_AggregationStatistic']
+            odm2_core_table_names = [
+                'People',
+                'Affiliations',
+                'SamplingFeatures',
+                'ActionBy',
+                'Organizations',
+                'Methods',
+                'FeatureActions',
+                'Actions',
+                'RelatedActions',
+                'Results',
+                'Variables',
+                'Units',
+                'Datasets',
+                'DatasetsResults',
+                'ProcessingLevels',
+                'TaxonomicClassifiers',
+                'CV_VariableType',
+                'CV_VariableName',
+                'CV_Speciation',
+                'CV_SiteType',
+                'CV_ElevationDatum',
+                'CV_MethodType',
+                'CV_UnitsType',
+                'CV_Status',
+                'CV_Medium',
+                'CV_AggregationStatistic',
+            ]
             # check the tables exist
             for table_name in odm2_core_table_names:
-                cur.execute("SELECT COUNT(*) FROM sqlite_master WHERE type=? AND name=?",
-                            ("table", table_name))
+                cur.execute("SELECT COUNT(*) FROM sqlite_master WHERE type=? AND name=?", ("table", table_name))
                 result = cur.fetchone()
                 if result[0] <= 0:
                     err_message += " Table '{}' is missing.".format(table_name)
@@ -138,20 +157,23 @@ def validate_csv_file(csv_file_path):
 
     return None
 
+
 def create_cv_lookup_models(sql_cur):
 
-    table_names = ['CV_VariableType',
-                                    'CV_VariableName',
-                                    'CV_Speciation',
-                                    'CV_SiteType',
-                                    'CV_ElevationDatum',
-                                    'CV_MethodType',
-                                    'CV_UnitsType',
-                                    'CV_Status',
-                                    'CV_Medium',
-                                    'CV_AggregationStatistic']
+    table_names = [
+        'CV_VariableType',
+        'CV_VariableName',
+        'CV_Speciation',
+        'CV_SiteType',
+        'CV_ElevationDatum',
+        'CV_MethodType',
+        'CV_UnitsType',
+        'CV_Status',
+        'CV_Medium',
+        'CV_AggregationStatistic',
+    ]
     term_names = []
-    
+
     for table_name in table_names:
         sql_cur.execute("SELECT Term, Name FROM {}".format(table_name))
         table_rows = sql_cur.fetchall()
@@ -159,7 +181,7 @@ def create_cv_lookup_models(sql_cur):
         for row in table_rows:
             rows.append({"Term": row['Term'], "Name": row["Name"]})
         term_names.append({table_name: rows})
-    return term_names    
+    return term_names
 
 
 def extract_metadata(sqlite_file_name):
@@ -176,16 +198,16 @@ def extract_metadata(sqlite_file_name):
 
         as_json = {}
 
-        #term_names = create_cv_lookup_models(cur)
+        # term_names = create_cv_lookup_models(cur)
 
-        #as_json.update({"term_names": term_names})
+        # as_json.update({"term_names": term_names})
 
         # extract abstract and title
         cur.execute("SELECT DataSetTitle, DataSetAbstract FROM DataSets")
         dataset = cur.fetchone()
         # update title element
         if dataset["DataSetTitle"]:
-            as_json.update({'title': dataset["DataSetTitle"]}) # TODO strip() all at the end?
+            as_json.update({'title': dataset["DataSetTitle"]})  # TODO strip() all at the end?
 
         # create abstract/description element
         if dataset["DataSetAbstract"]:
@@ -219,7 +241,7 @@ def extract_metadata(sqlite_file_name):
             result_json["series_id"] = result["ResultUUID"]
             variable_elements = extract_variable_elements(cur, result)
             result_json.update({"variable": variable_elements})
-            
+
             processinglevel_elements = extract_processinglevel_elements(cur, result)
             result_json.update({'processing_level': processinglevel_elements})
 
@@ -227,8 +249,7 @@ def extract_metadata(sqlite_file_name):
             result_json.update(timeseriesresult_elements)
 
             # query FeatureActions
-            cur.execute("SELECT * FROM FeatureActions WHERE FeatureActionID=?",
-                        (result["FeatureActionID"],))
+            cur.execute("SELECT * FROM FeatureActions WHERE FeatureActionID=?", (result["FeatureActionID"],))
             feature_action = cur.fetchone()
 
             site_elements = extract_site_elements(cur, result, feature_action)
@@ -242,11 +263,12 @@ def extract_metadata(sqlite_file_name):
         as_json["files"] = [sqlite_file_name]
         return as_json
 
+
 def extract_timeseriesresult_elements(cur, result):
     # extract data for TimeSeriesResult element
     # Start with Results table
     data_dict = {}
-    #data_dict['series_ids'] = [result["ResultUUID"]]
+    # data_dict['series_ids'] = [result["ResultUUID"]]
     if result["StatusCV"] is not None:
         data_dict["status"] = result["StatusCV"]
     else:
@@ -261,42 +283,41 @@ def extract_timeseriesresult_elements(cur, result):
     data_dict['unit']['name'] = unit["UnitsName"]
     data_dict['unit']['abbreviation'] = unit["UnitsAbbreviation"]
 
-    cur.execute("SELECT AggregationStatisticCV FROM TimeSeriesResults WHERE "
-                            "ResultID=?", (result["ResultID"],))
+    cur.execute("SELECT AggregationStatisticCV FROM TimeSeriesResults WHERE " "ResultID=?", (result["ResultID"],))
     ts_result = cur.fetchone()
     data_dict["aggregation_statistic"] = ts_result["AggregationStatisticCV"]
 
     return data_dict
 
+
 def extract_processinglevel_elements(cur, result):
     # extract processinglevel element data
     # Start with Results table to -> ProcessingLevels table
-    cur.execute("SELECT * FROM ProcessingLevels WHERE ProcessingLevelID=?",
-                            (result["ProcessingLevelID"],))
+    cur.execute("SELECT * FROM ProcessingLevels WHERE ProcessingLevelID=?", (result["ProcessingLevelID"],))
     pro_level = cur.fetchone()
     data_dict = {}
-    #data_dict['series_ids'] = [result["ResultUUID"]]
+    # data_dict['series_ids'] = [result["ResultUUID"]]
     data_dict['processing_level_code'] = pro_level["ProcessingLevelCode"]
     if pro_level["Definition"]:
         data_dict["definition"] = pro_level["Definition"]
 
     if pro_level["Explanation"]:
         data_dict["explanation"] = pro_level["Explanation"]
-    
+
     return data_dict
+
 
 def extract_method_elements(cur, result, feature_action):
     # extract method element data
     # Start with Results table -> FeatureActions table to -> Actions table to ->
     # Method table
-    cur.execute("SELECT MethodID from Actions WHERE ActionID=?",
-                            (feature_action["ActionID"],))
+    cur.execute("SELECT MethodID from Actions WHERE ActionID=?", (feature_action["ActionID"],))
     action = cur.fetchone()
     cur.execute("SELECT * FROM Methods WHERE MethodID=?", (action["MethodID"],))
     method = cur.fetchone()
-    
+
     data_dict = {}
-    #data_dict['series_ids'] = [result["ResultUUID"]]
+    # data_dict['series_ids'] = [result["ResultUUID"]]
     data_dict['method_code'] = method["MethodCode"]
     data_dict["method_name"] = method["MethodName"]
     data_dict['method_type'] = method["MethodTypeCV"]
@@ -308,16 +329,15 @@ def extract_method_elements(cur, result, feature_action):
         data_dict["method_link"] = method["MethodLink"]
 
     return data_dict
-        
+
 
 def extract_variable_elements(cur, result):
     # extract variable element data
     # Start with Results table to -> Variables table
-    cur.execute("SELECT * FROM Variables WHERE VariableID=?",
-                            (result["VariableID"],))
+    cur.execute("SELECT * FROM Variables WHERE VariableID=?", (result["VariableID"],))
     variable = cur.fetchone()
     data_dict = {}
-    #data_dict['series_ids'] = [result["ResultUUID"]]
+    # data_dict['series_ids'] = [result["ResultUUID"]]
     data_dict['variable_code'] = variable["VariableCode"]
     data_dict["variable_name"] = variable["VariableNameCV"]
     data_dict['variable_type'] = variable["VariableTypeCV"]
@@ -335,15 +355,13 @@ def extract_site_elements(cur, result, feature_action):
     # extract site element data
     # Start with Results table to -> FeatureActions table -> SamplingFeatures table
     # check if we need to create multiple site elements
-    cur.execute("SELECT * FROM SamplingFeatures WHERE SamplingFeatureID=?",
-                            (feature_action["SamplingFeatureID"],))
+    cur.execute("SELECT * FROM SamplingFeatures WHERE SamplingFeatureID=?", (feature_action["SamplingFeatureID"],))
     sampling_feature = cur.fetchone()
 
-    cur.execute("SELECT * FROM Sites WHERE SamplingFeatureID=?",
-                            (feature_action["SamplingFeatureID"],))
+    cur.execute("SELECT * FROM Sites WHERE SamplingFeatureID=?", (feature_action["SamplingFeatureID"],))
     site = cur.fetchone()
     data_dict = {}
-    #data_dict['series_ids'] = [result["ResultUUID"]]
+    # data_dict['series_ids'] = [result["ResultUUID"]]
     data_dict['site_code'] = sampling_feature["SamplingFeatureCode"]
     data_dict['site_name'] = sampling_feature["SamplingFeatureName"]
     if sampling_feature["Elevation_m"]:
@@ -398,8 +416,7 @@ def extract_cv_metadata_from_blank_sqlite_file(csv_file):
 def _extract_creators_contributors(cur):
     # check if the AuthorList table exists
     authorlists_table_exists = False
-    cur.execute("SELECT COUNT(*) FROM sqlite_master WHERE type=? AND name=?",
-                ("table", "AuthorLists"))
+    cur.execute("SELECT COUNT(*) FROM sqlite_master WHERE type=? AND name=?", ("table", "AuthorLists"))
     qry_result = cur.fetchone()
     if qry_result[0] > 0:
         authorlists_table_exists = True
@@ -411,39 +428,35 @@ def _extract_creators_contributors(cur):
     contributors = []
     creators = []
     for result in results:
-        cur.execute("SELECT ActionID FROM FeatureActions WHERE FeatureActionID=?",
-                    (result["FeatureActionID"],))
+        cur.execute("SELECT ActionID FROM FeatureActions WHERE FeatureActionID=?", (result["FeatureActionID"],))
         feature_actions = cur.fetchall()
         for feature_action in feature_actions:
-            cur.execute("SELECT ActionID FROM Actions WHERE ActionID=?",
-                        (feature_action["ActionID"],))
+            cur.execute("SELECT ActionID FROM Actions WHERE ActionID=?", (feature_action["ActionID"],))
 
             actions = cur.fetchall()
             for action in actions:
                 # get the AffiliationID from the ActionsBy table for the matching ActionID
-                cur.execute("SELECT AffiliationID FROM ActionBy WHERE ActionID=?",
-                            (action["ActionID"],))
+                cur.execute("SELECT AffiliationID FROM ActionBy WHERE ActionID=?", (action["ActionID"],))
                 actionby_rows = cur.fetchall()
 
                 for actionby in actionby_rows:
                     # get the matching Affiliations records
-                    cur.execute("SELECT * FROM Affiliations WHERE AffiliationID=?",
-                                (actionby["AffiliationID"],))
+                    cur.execute("SELECT * FROM Affiliations WHERE AffiliationID=?", (actionby["AffiliationID"],))
                     affiliation_rows = cur.fetchall()
                     for affiliation in affiliation_rows:
                         # get records from the People table
                         if affiliation['PersonID'] not in author_ids_already_used:
                             author_ids_already_used.append(affiliation['PersonID'])
-                            cur.execute("SELECT * FROM People WHERE PersonID=?",
-                                        (affiliation['PersonID'],))
+                            cur.execute("SELECT * FROM People WHERE PersonID=?", (affiliation['PersonID'],))
                             person = cur.fetchone()
 
                             # get person organization name - get only one organization name
                             organization = None
                             if affiliation['OrganizationID']:
-                                cur.execute("SELECT OrganizationName FROM Organizations WHERE "
-                                            "OrganizationID=?",
-                                            (affiliation["OrganizationID"],))
+                                cur.execute(
+                                    "SELECT OrganizationName FROM Organizations WHERE " "OrganizationID=?",
+                                    (affiliation["OrganizationID"],),
+                                )
                                 organization = cur.fetchone()
 
                             # create contributor metadata elements
@@ -466,8 +479,7 @@ def _extract_creators_contributors(cur):
                             # check if this person is an author (creator)
                             author = None
                             if authorlists_table_exists:
-                                cur.execute("SELECT * FROM AuthorLists WHERE PersonID=?",
-                                            (person['PersonID'],))
+                                cur.execute("SELECT * FROM AuthorLists WHERE PersonID=?", (person['PersonID'],))
                                 author = cur.fetchone()
 
                             if author:
@@ -480,12 +492,11 @@ def _extract_creators_contributors(cur):
 
     # TODO: extraction of creator data has not been tested as the sample database does not have
     #  any records in the AuthorLists table
-    authors_data_dict_sorted_list = sorted(authors_data_dict,
-                                           key=lambda key: authors_data_dict[key])
+    authors_data_dict_sorted_list = sorted(authors_data_dict, key=lambda key: authors_data_dict[key])
     creators = []
     for data_dict in authors_data_dict_sorted_list:
         creators.append(data_dict)
-    
+
     return creators, contributors
 
 
@@ -497,12 +508,10 @@ def _extract_coverage_metadata(cur):
     if len(sites) == 1:
         site = sites[0]
         if site["Latitude"] and site["Longitude"]:
-            value_dict = {'east': site["Longitude"], 'north': site["Latitude"],
-                          'units': "Decimal degrees"}
+            value_dict = {'east': site["Longitude"], 'north': site["Latitude"], 'units': "Decimal degrees"}
             # get spatial reference
             if site["SpatialReferenceID"]:
-                cur.execute("SELECT * FROM SpatialReferences WHERE SpatialReferenceID=?",
-                            (site["SpatialReferenceID"],))
+                cur.execute("SELECT * FROM SpatialReferences WHERE SpatialReferenceID=?", (site["SpatialReferenceID"],))
                 spatialref = cur.fetchone()
                 if spatialref:
                     if spatialref["SRSName"]:
@@ -510,8 +519,14 @@ def _extract_coverage_metadata(cur):
             coverage["spatial_coverage"] = {"type": "point", **value_dict}
     else:
         # in case of multiple sites we will create one coverage element of type 'box'
-        bbox = {'northlimit': -90, 'southlimit': 90, 'eastlimit': -180, 'westlimit': 180,
-                'projection': 'Unknown', 'units': "Decimal degrees"}
+        bbox = {
+            'northlimit': -90,
+            'southlimit': 90,
+            'eastlimit': -180,
+            'westlimit': 180,
+            'projection': 'Unknown',
+            'units': "Decimal degrees",
+        }
         for site in sites:
             if site["Latitude"]:
                 if bbox['northlimit'] < site["Latitude"]:
@@ -528,8 +543,9 @@ def _extract_coverage_metadata(cur):
 
             if bbox['projection'] == 'Unknown':
                 if site["SpatialReferenceID"]:
-                    cur.execute("SELECT * FROM SpatialReferences WHERE SpatialReferenceID=?",
-                                (site["SpatialReferenceID"],))
+                    cur.execute(
+                        "SELECT * FROM SpatialReferences WHERE SpatialReferenceID=?", (site["SpatialReferenceID"],)
+                    )
                     spatialref = cur.fetchone()
                     if spatialref:
                         if spatialref["SRSName"]:
@@ -540,8 +556,9 @@ def _extract_coverage_metadata(cur):
         coverage["spatial_coverage"] = {"type": "box", **bbox}
 
     # extract temporal coverage
-    cur.execute("SELECT MAX(ValueDateTime) AS 'EndDate', MIN(ValueDateTime) AS 'BeginDate' "
-                "FROM TimeSeriesResultValues")
+    cur.execute(
+        "SELECT MAX(ValueDateTime) AS 'EndDate', MIN(ValueDateTime) AS 'BeginDate' " "FROM TimeSeriesResultValues"
+    )
 
     dates = cur.fetchone()
     begin_date = parser.parse(dates['BeginDate'])
@@ -551,6 +568,7 @@ def _extract_coverage_metadata(cur):
     coverage["period_coverage"] = {"start": begin_date.isoformat(), "end": end_date.isoformat()}
 
     return coverage
+
 
 def extract_metadata_csv(csv_file_name):
     """Extracts CV metadata from a csv file"""
@@ -579,7 +597,7 @@ def extract_metadata_csv(csv_file_name):
         start_date = parser.parse(start_date_str)
         end_date = parser.parse(end_date_str)
         metadata_dict.update({"period_coverage": {'start': start_date.isoformat(), 'end': end_date.isoformat()}})
-    
+
     metadata_dict["files"] = [csv_file_name]
-    
+
     return metadata_dict

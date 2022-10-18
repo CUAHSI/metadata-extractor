@@ -110,8 +110,7 @@ def extract_nc_global_meta(nc_dataset):
         'description': ['summary', 'comment'],
         'rights': ['license'],
         'references': ['references'],
-        'source': ['source']
-
+        'source': ['source'],
     }
 
     for dublincore, convention in list(dublincore_vs_convention.items()):
@@ -197,8 +196,7 @@ def get_period_info_by_acdd_convention(nc_dataset):
 
     period_info = {}
 
-    if nc_dataset.__dict__.get('time_coverage_start', '') and \
-            nc_dataset.__dict__.get('time_coverage_end', ''):
+    if nc_dataset.__dict__.get('time_coverage_start', '') and nc_dataset.__dict__.get('time_coverage_end', ''):
         period_info['start'] = nc_dataset.__dict__['time_coverage_start']
         period_info['end'] = nc_dataset.__dict__['time_coverage_end']
 
@@ -248,17 +246,16 @@ def get_box_info(nc_dataset):
             box_info['eastlimit'] = check_lon_limit(westlimit, eastlimit)[1]
 
         elif original_box_info.get('projection', ''):  # projection coor x, y
-            projection_import_string_dict = \
-                get_nc_grid_mapping_projection_import_string_dict(nc_dataset)
+            projection_import_string_dict = get_nc_grid_mapping_projection_import_string_dict(nc_dataset)
             if projection_import_string_dict.get('type') == 'Proj4 String':
                 try:
                     transformer = Transformer.from_crs(projection_import_string_dict['text'], "epsg:4326")
                     box_info['northlimit'], box_info['westlimit'] = transformer.transform(
-                        original_box_info['westlimit'],
-                        original_box_info['northlimit'])
+                        original_box_info['westlimit'], original_box_info['northlimit']
+                    )
                     box_info['southlimit'], box_info['eastlimit'] = transformer.transform(
-                        original_box_info['eastlimit'],
-                        original_box_info['southlimit'])
+                        original_box_info['eastlimit'], original_box_info['southlimit']
+                    )
                 except Exception:
                     pass
             elif projection_import_string_dict.get('type') == 'WKT String':
@@ -270,16 +267,16 @@ def get_box_info(nc_dataset):
                     original_cs.ImportFromWkt(projection_import_string_dict.get('text'))
                     crs_transform = osr.CoordinateTransformation(original_cs, wgs84_cs)
                     box_info['westlimit'], box_info['northlimit'] = crs_transform.TransformPoint(
-                        float(original_box_info['westlimit']),
-                        float(original_box_info['northlimit']))[:2]
+                        float(original_box_info['westlimit']), float(original_box_info['northlimit'])
+                    )[:2]
 
                     box_info['eastlimit'], box_info['southlimit'] = crs_transform.TransformPoint(
-                        float(original_box_info['eastlimit']),
-                        float(original_box_info['southlimit']))[:2]
+                        float(original_box_info['eastlimit']), float(original_box_info['southlimit'])
+                    )[:2]
                 except Exception:
                     pass
 
-    if not box_info:    # spatial coverage was not computed from spatial reference
+    if not box_info:  # spatial coverage was not computed from spatial reference
         # get the spatial coverage as per ACDD convention
         box_info = get_original_box_info_by_acdd_convention(nc_dataset)
     if box_info:
@@ -311,7 +308,7 @@ def check_lon_limit(westlimit, eastlimit):
         westlimit = -180
         eastlimit = 180
     elif westlimit > eastlimit:
-        if (180 - westlimit) >= (eastlimit+180):
+        if (180 - westlimit) >= (eastlimit + 180):
             eastlimit = 180
         else:
             westlimit = -180
@@ -345,10 +342,12 @@ def get_original_box_info_by_acdd_convention(nc_dataset):
     """
 
     original_box_info = {}
-    if nc_dataset.__dict__.get('geospatial_lat_min', '') \
-            and nc_dataset.__dict__.get('geospatial_lat_max', '')\
-            and nc_dataset.__dict__.get('geospatial_lon_min', '') \
-            and nc_dataset.__dict__.get('geospatial_lon_max', ''):
+    if (
+        nc_dataset.__dict__.get('geospatial_lat_min', '')
+        and nc_dataset.__dict__.get('geospatial_lat_max', '')
+        and nc_dataset.__dict__.get('geospatial_lon_min', '')
+        and nc_dataset.__dict__.get('geospatial_lon_max', '')
+    ):
         original_box_info['southlimit'] = str(nc_dataset.__dict__['geospatial_lat_min'])
         original_box_info['northlimit'] = str(nc_dataset.__dict__['geospatial_lat_max'])
         original_box_info['westlimit'] = str(nc_dataset.__dict__['geospatial_lon_min'])
@@ -394,7 +393,7 @@ def get_limits_info(nc_dataset, info_source):
         coor_type = coor_dir + info_source
         limit_meta = get_limit_meta_by_coor_type(nc_dataset, coor_type, coor_type_mapping)
         if limit_meta:
-            limits_info = dict(list(limits_info.items())+list(limit_meta.items()))
+            limits_info = dict(list(limits_info.items()) + list(limit_meta.items()))
         else:
             limits_info = {}
             break
@@ -418,7 +417,7 @@ def get_limit_meta_by_coor_type(nc_dataset, coor_type, coor_type_mapping):
     var_name_list = list(coor_type_mapping.keys())
     coor_type_list = list(coor_type_mapping.values())
 
-    for coor_type_name in [coor_type, coor_type+'_bnd']:
+    for coor_type_name in [coor_type, coor_type + '_bnd']:
         if coor_type_name in coor_type_list:
             index = coor_type_list.index(coor_type_name)
             var_name = var_name_list[index]
@@ -442,15 +441,9 @@ def get_limit_meta_by_coor_type(nc_dataset, coor_type, coor_type_mapping):
                 'eastlimit': coor_max,
             }
         elif "Y" in coor_type:
-            limit_meta = {
-                'southlimit': coor_min,
-                'northlimit': coor_max
-            }
+            limit_meta = {'southlimit': coor_min, 'northlimit': coor_max}
         if "T" in coor_type:
-            limit_meta = {
-                'start': coor_min,
-                'end': coor_max
-            }
+            limit_meta = {'start': coor_min, 'end': coor_max}
 
         if coor_units:
             limit_meta['units'] = coor_units
@@ -488,8 +481,7 @@ def extract_nc_data_variables_meta(nc_data_variables):
             'unit': var_obj.units if (hasattr(var_obj, 'units') and var_obj.units) else 'Unknown',
             'shape': ','.join(var_obj.dimensions) if var_obj.dimensions else 'Not defined',
             'descriptive_name': var_obj.long_name if hasattr(var_obj, 'long_name') else '',
-            'missing_value': str(var_obj.missing_value
-                                 if hasattr(var_obj, 'missing_value') else ''),
+            'missing_value': str(var_obj.missing_value if hasattr(var_obj, 'missing_value') else ''),
             'method': str(var_obj.comment if hasattr(var_obj, 'comment') else ''),
         }
 
@@ -509,15 +501,12 @@ def extract_nc_data_variables_meta(nc_data_variables):
 
         if var_obj.dimensions:
             try:
-                if isinstance(var_obj.datatype, netCDF4.CompoundType) or \
-                   isinstance(var_obj.datatype, netCDF4.VLType):
+                if isinstance(var_obj.datatype, netCDF4.CompoundType) or isinstance(var_obj.datatype, netCDF4.VLType):
                     nc_data_variables_meta[var_name]['type'] = 'User Defined Type'
                 elif var_obj.datatype.name in list(nc_data_type_dict.keys()):
-                    nc_data_variables_meta[var_name]['type'] = \
-                        nc_data_type_dict[var_obj.datatype.name]
+                    nc_data_variables_meta[var_name]['type'] = nc_data_type_dict[var_obj.datatype.name]
                 elif ('string' in var_obj.datatype.name) or ('unicode' in var_obj.datatype.name):
-                    nc_data_variables_meta[var_name]['type'] = 'Char' \
-                        if '8' in var_obj.datatype.name else 'String'
+                    nc_data_variables_meta[var_name]['type'] = 'Char' if '8' in var_obj.datatype.name else 'String'
                 else:
                     nc_data_variables_meta[var_name]['type'] = 'Unknown'
             except Exception:
@@ -572,9 +561,13 @@ def get_nc_variable_original_meta(nc_dataset, nc_variable_name):
 
     nc_variable = nc_dataset.variables[nc_variable_name]
 
-    nc_variable_original_meta = OrderedDict([('dimension', str(nc_variable.dimensions)),
-                                             ('shape', str(nc_variable.shape)),
-                                             ('data_type', str(nc_variable.dtype))])
+    nc_variable_original_meta = OrderedDict(
+        [
+            ('dimension', str(nc_variable.dimensions)),
+            ('shape', str(nc_variable.shape)),
+            ('data_type', str(nc_variable.dtype)),
+        ]
+    )
 
     for key, value in list(nc_variable.__dict__.items()):
         nc_variable_original_meta[key] = str(value)
@@ -595,7 +588,7 @@ def get_nc_variables_coordinate_type_mapping(nc_dataset):
     """
     nc_variables_dict = {
         "C": get_nc_coordinate_variables(nc_dataset),
-        "A": get_nc_auxiliary_coordinate_variables(nc_dataset)
+        "A": get_nc_auxiliary_coordinate_variables(nc_dataset),
     }
     nc_variables_coordinate_type_mapping = {}
 
@@ -604,7 +597,7 @@ def get_nc_variables_coordinate_type_mapping(nc_dataset):
             var_coor_type_name = get_nc_variable_coordinate_type(var_obj) + variables_type
             nc_variables_coordinate_type_mapping[var_name] = var_coor_type_name
             if hasattr(var_obj, 'bounds') and nc_dataset.variables.get(var_obj.bounds, None):
-                var_coor_bounds_type_name = var_coor_type_name+'_bnd'
+                var_coor_bounds_type_name = var_coor_type_name + '_bnd'
                 nc_variables_coordinate_type_mapping[var_obj.bounds] = var_coor_bounds_type_name
 
     return nc_variables_coordinate_type_mapping
@@ -621,15 +614,14 @@ def get_nc_variable_coordinate_type(nc_variable):
     if hasattr(nc_variable, 'axis') and nc_variable.axis:
         return nc_variable.axis
 
-    nc_variable_standard_name = getattr(nc_variable, 'standard_name',
-                                        getattr(nc_variable, 'long_name', None))
+    nc_variable_standard_name = getattr(nc_variable, 'standard_name', getattr(nc_variable, 'long_name', None))
     if nc_variable_standard_name:
         compare_dict = {
             'latitude': 'Y',
             'longitude': 'X',
             'time': 'T',
             'projection_x_coordinate': 'X',
-            'projection_y_coordinate': 'Y'
+            'projection_y_coordinate': 'Y',
         }
         for standard_name, coor_type in list(compare_dict.items()):
             if re.match(standard_name, nc_variable_standard_name, re.I):
@@ -645,8 +637,7 @@ def get_nc_variable_coordinate_type(nc_variable):
             return 'Y'
         else:
             info = nc_variable.units.split(' ')
-            time_units = ['days', 'hours', 'minutes', 'seconds',
-                          'milliseconds', 'microseconds']  # see python netcdf4
+            time_units = ['days', 'hours', 'minutes', 'seconds', 'milliseconds', 'microseconds']  # see python netcdf4
             if len(info) >= 3 and (info[0].lower() in time_units) and info[1].lower() == 'since':
                 return 'T'
 
@@ -669,15 +660,12 @@ def get_nc_variable_coordinate_meta(nc_dataset, nc_variable_name):
         coordinate_max = None
         coordinate_min = None
         if nc_variable_data.size:
-            coordinate_min = nc_variable_data[numpy.unravel_index(nc_variable_data.argmin(),
-                                                                  nc_variable_data.shape)]
-            coordinate_max = nc_variable_data[numpy.unravel_index(nc_variable_data.argmax(),
-                                                                  nc_variable_data.shape)]
+            coordinate_min = nc_variable_data[numpy.unravel_index(nc_variable_data.argmin(), nc_variable_data.shape)]
+            coordinate_max = nc_variable_data[numpy.unravel_index(nc_variable_data.argmax(), nc_variable_data.shape)]
             coordinate_units = nc_variable.units if hasattr(nc_variable, 'units') else ''
 
             if nc_variable_coordinate_type in ['TC', 'TA', 'TC_bnd', 'TA_bnd']:
-                index = list(nc_variables_coordinate_type_mapping.values()).index(
-                    nc_variable_coordinate_type[:2])
+                index = list(nc_variables_coordinate_type_mapping.values()).index(nc_variable_coordinate_type[:2])
                 var_name = list(nc_variables_coordinate_type_mapping.keys())[index]
                 var_obj = nc_dataset.variables[var_name]
                 time_units = var_obj.units if hasattr(var_obj, 'units') else ''
@@ -685,10 +673,8 @@ def get_nc_variable_coordinate_meta(nc_dataset, nc_variable_name):
 
                 if time_units and time_calendar:
                     try:
-                        coordinate_min = netCDF4.num2date(coordinate_min, units=time_units,
-                                                          calendar=time_calendar)
-                        coordinate_max = netCDF4.num2date(coordinate_max, units=time_units,
-                                                          calendar=time_calendar)
+                        coordinate_min = netCDF4.num2date(coordinate_min, units=time_units, calendar=time_calendar)
+                        coordinate_max = netCDF4.num2date(coordinate_max, units=time_units, calendar=time_calendar)
                         coordinate_units = time_units
                     except Exception:
                         pass
@@ -697,7 +683,7 @@ def get_nc_variable_coordinate_meta(nc_dataset, nc_variable_name):
                 'coordinate_type': nc_variable_coordinate_type,
                 'coordinate_units': coordinate_units,
                 'coordinate_start': coordinate_min,
-                'coordinate_end': coordinate_max
+                'coordinate_end': coordinate_max,
             }
 
     return nc_variable_coordinate_meta
@@ -710,6 +696,7 @@ def get_nc_variable_coordinate_meta(nc_dataset, nc_variable_name):
 # 3) coordinate variable sometimes doesn't represent the real lat lon time vertical info
 # 4) coordinate variable sometimes has associated bound variable if it represents
 #    the real lat lon time vertical info
+
 
 def get_nc_coordinate_variables(nc_dataset):
     """
@@ -746,6 +733,7 @@ def get_nc_coordinate_variable_namelist(nc_dataset):
 # 2) the data variable will include 'coordinates' attribute to store the name of the
 #    auxiliary coordinate variable
 
+
 def get_nc_auxiliary_coordinate_variable_namelist(nc_dataset):
     """
     (object) -> list
@@ -772,8 +760,7 @@ def get_nc_auxiliary_coordinate_variables(nc_dataset):
     Format: {'var_name': var_obj}
     """
 
-    nc_auxiliary_coordinate_variable_namelist = \
-        get_nc_auxiliary_coordinate_variable_namelist(nc_dataset)
+    nc_auxiliary_coordinate_variable_namelist = get_nc_auxiliary_coordinate_variable_namelist(nc_dataset)
     nc_auxiliary_coordinate_variables = {}
     for name in nc_auxiliary_coordinate_variable_namelist:
         if nc_dataset.variables.get(name, ''):
@@ -789,6 +776,7 @@ def get_nc_auxiliary_coordinate_variables(nc_dataset):
 # 3) If a coordinate or an auxiliary coordinate variable has bounds variable,
 #    the has the attributes 'bounds'
 
+
 def get_nc_coordinate_bounds_variables(nc_dataset):
     """
     (object) -> dict
@@ -799,9 +787,9 @@ def get_nc_coordinate_bounds_variables(nc_dataset):
     nc_coordinate_variables = get_nc_coordinate_variables(nc_dataset)
     nc_auxiliary_coordinate_variables = get_nc_auxiliary_coordinate_variables(nc_dataset)
     nc_coordinate_bounds_variables = {}
-    for var_name, var_obj in \
-            list(dict(list(nc_coordinate_variables.items()) +
-                 list(nc_auxiliary_coordinate_variables.items())).items()):
+    for var_name, var_obj in list(
+        dict(list(nc_coordinate_variables.items()) + list(nc_auxiliary_coordinate_variables.items())).items()
+    ):
         if hasattr(var_obj, 'bounds') and nc_dataset.variables.get(var_obj.bounds, None):
             nc_coordinate_bounds_variables[var_obj.bounds] = nc_dataset.variables[var_obj.bounds]
 
@@ -862,7 +850,7 @@ def get_nc_grid_mapping_variable_name(nc_dataset):
     nc_all_variables = nc_dataset.variables
     nc_grid_mapping_variable_name = ''
     for var_name, var_obj in list(nc_all_variables.items()):
-        if hasattr(var_obj, 'grid_mapping_name')and var_obj.grid_mapping_name:
+        if hasattr(var_obj, 'grid_mapping_name') and var_obj.grid_mapping_name:
             nc_grid_mapping_variable_name = var_name
 
     return nc_grid_mapping_variable_name
@@ -955,8 +943,7 @@ def get_nc_grid_mapping_projection_import_string_dict(nc_dataset):
         try:
             spatial_ref = osr.SpatialReference()
             spatial_ref.ImportFromWkt(projection_string)
-            datum = spatial_ref.GetAttrValue("DATUM", 0) \
-                if spatial_ref.GetAttrValue("DATUM", 0) else ''
+            datum = spatial_ref.GetAttrValue("DATUM", 0) if spatial_ref.GetAttrValue("DATUM", 0) else ''
         except Exception:
             datum = ''
 
@@ -981,7 +968,7 @@ def get_nc_grid_mapping_projection_import_string_dict(nc_dataset):
             '+k_0': 'scale_factor_at_projection_origin,scale_factor_at_central_meridian',
             '+lat_0': 'latitude_of_projection_origin',
             '+lon_0': 'longitude_of_projection_origin,longitude_of_central_meridian,'
-                      'straight_vertical_longitude_from_pole',
+            'straight_vertical_longitude_from_pole',
             '+h': 'perspective_point_height',
             '+a': 'semi_major_axis',
             '+b': 'semi_minor_axis',
@@ -1000,8 +987,7 @@ def get_nc_grid_mapping_projection_import_string_dict(nc_dataset):
             for proj4_para, cf_para in list(proj_paras.items()):
                 for para in cf_para.split(','):
                     if hasattr(nc_grid_mapping_variable, para):
-                        proj_info_list.append(
-                            '{0}={1}'.format(proj4_para, getattr(nc_grid_mapping_variable, para)))
+                        proj_info_list.append('{0}={1}'.format(proj4_para, getattr(nc_grid_mapping_variable, para)))
                         break
 
             # add standard parallel para
@@ -1011,13 +997,11 @@ def get_nc_grid_mapping_projection_import_string_dict(nc_dataset):
                     try:
                         num_value = sorted([float(x) for x in str_value])
                         if num_value.__len__() <= 2:
-                            proj_info_list.extend(['lat_{0}={1}'.format(i+1, j)
-                                                   for i, j in enumerate(num_value)])
+                            proj_info_list.extend(['lat_{0}={1}'.format(i + 1, j) for i, j in enumerate(num_value)])
                     except Exception:
                         pass
                 else:
-                    proj_info_list.append(
-                        '{0}={1}'.format('+lat_ts', nc_grid_mapping_variable.standard_parallel))
+                    proj_info_list.append('{0}={1}'.format('+lat_ts', nc_grid_mapping_variable.standard_parallel))
 
         projection_string = ' '.join(proj_info_list)
         projection_type = 'Proj4 String'
@@ -1048,19 +1032,18 @@ def add_original_coverage_metadata(extracted_metadata):
         projection_string_text = ""
         datum = ""
         if extracted_metadata.get('projection-info'):
-            projection_string_type = extracted_metadata[
-                'projection-info']['type']
-            projection_string_text = extracted_metadata[
-                'projection-info']['text']
+            projection_string_type = extracted_metadata['projection-info']['type']
+            projection_string_text = extracted_metadata['projection-info']['text']
             datum = extracted_metadata['projection-info']['datum']
 
-        ori_cov = {'spatial_reference':
-                   {**coverage_data,
-                    'projection_string_type': projection_string_type,
-                    'projection_string': projection_string_text,
-                    'datum': datum
-                    }
-                   }
+        ori_cov = {
+            'spatial_reference': {
+                **coverage_data,
+                'projection_string_type': projection_string_type,
+                'projection_string': projection_string_text,
+                'datum': datum,
+            }
+        }
     if ori_cov:
         return ori_cov
 
@@ -1213,8 +1196,7 @@ def combine_metadata(extracted_core_meta, extracted_specific_meta):
 
     # add relation of type 'references' (applies only to NetCDF resource type)
     if extracted_core_meta.get('references'):
-        relation = {'relation': {'type': 'references',
-                                 'value': extracted_core_meta['references']}}
+        relation = {'relation': {'type': 'references', 'value': extracted_core_meta['references']}}
         metadata.update(relation)
 
     # add rights (applies only to NetCDF resource type)

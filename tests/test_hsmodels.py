@@ -1,15 +1,21 @@
-import pytest
 import json
 import os
 
-from hsmodels.schemas.aggregations import GeographicRasterMetadataIn, GeographicFeatureMetadataIn, \
-MultidimensionalMetadataIn, ReferencedTimeSeriesMetadataIn, TimeSeriesMetadataIn
+import pytest
+from hsmodels.schemas.aggregations import (
+    GeographicFeatureMetadataIn,
+    GeographicRasterMetadataIn,
+    MultidimensionalMetadataIn,
+    ReferencedTimeSeriesMetadataIn,
+    TimeSeriesMetadataIn,
+)
 
 
 def _load_json(filename):
     with open(os.path.join("tests", "outputs", filename)) as f:
         expected_str = f.read()
         return json.loads(expected_str)
+
 
 def test_netcdf_extraction():
     json_metadata = _load_json("netcdf.json")
@@ -27,6 +33,7 @@ def test_netcdf_extraction():
     del model_json["additional_metadata"]
     assert json_metadata == model_json
 
+
 def test_rasters_extraction():
     json_metadata = _load_json("raster.json")
     model = GeographicRasterMetadataIn(**json_metadata)
@@ -38,6 +45,7 @@ def test_rasters_extraction():
     del model_json["additional_metadata"]
 
     assert json_metadata == model_json
+
 
 def test_raster_single_extraction():
     json_metadata = _load_json("raster-single.json")
@@ -51,6 +59,7 @@ def test_raster_single_extraction():
 
     assert json_metadata == model_json
 
+
 def test_features_watersheds_extraction():
     json_metadata = _load_json("feature.json")
     model = GeographicFeatureMetadataIn(**json_metadata)
@@ -63,6 +72,7 @@ def test_features_watersheds_extraction():
 
     assert json_metadata == model_json
 
+
 def test_reftimeseries_extraction():
     json_metadata = _load_json("reftimeseries.json")
     model = ReferencedTimeSeriesMetadataIn(**json_metadata)
@@ -74,6 +84,7 @@ def test_reftimeseries_extraction():
     del model_json["additional_metadata"]
 
     assert json_metadata == model_json
+
 
 def test_timeseries_sqlite_extraction():
     json_metadata = _load_json("timeseries.json")
@@ -88,6 +99,7 @@ def test_timeseries_sqlite_extraction():
 
     assert json_metadata == model_json
 
+
 def test_timeseries_csv_extraction():
     json_metadata = _load_json("timeseries-csv.json")
     model = TimeSeriesMetadataIn(**json_metadata)
@@ -99,6 +111,7 @@ def test_timeseries_csv_extraction():
     del model_json["additional_metadata"]
 
     assert json_metadata == model_json
+
 
 def test_feature_states_extraction():
     json_metadata = _load_json("feature-states.json")

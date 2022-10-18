@@ -21,6 +21,7 @@ def extract_referenced_timeseries_metadata(res_json_file):
 
     return metadata
 
+
 def _validate_json_file(res_json_file):
     with open(res_json_file, 'r') as f:
         json_data = json.loads(f.read())
@@ -34,6 +35,7 @@ def _validate_json_file(res_json_file):
 
     _validate_json_data(json_data)
     return json_data
+
 
 def _validate_json_data(json_data):
     # Here we are validating the followings:
@@ -140,6 +142,7 @@ def _check_for_empty_string(item_to_chk, item_name):
     if item_to_chk is not None and not item_to_chk.strip():
         raise ValueError("{} has a value of empty string".format(item_name))
 
+
 TS_SCHEMA = {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -150,11 +153,7 @@ TS_SCHEMA = {
                 "title": {"type": ["string", "null"]},
                 "abstract": {"type": ["string", "null"]},
                 "fileVersion": {"type": ["string", "null"]},
-                "keyWords": {
-                    "type": ["array", "null"],
-                    "items": {"type": "string"},
-                    "uniqueItems": True
-                },
+                "keyWords": {"type": ["array", "null"], "items": {"type": "string"}, "uniqueItems": True},
                 "symbol": {"type": ["string", "null"]},
                 "referencedTimeSeries": {
                     "type": "array",
@@ -167,62 +166,69 @@ TS_SCHEMA = {
                                 "siteCode": {"type": "string"},
                                 "siteName": {"type": ["string", "null"]},
                                 "latitude": {"type": "number", "minimum": -90, "maximum": 90},
-                                "longitude": {"type": "number", "minimum": -180, "maximum": 180}
+                                "longitude": {"type": "number", "minimum": -180, "maximum": 180},
                             },
                             "required": ["siteCode", "siteName", "latitude", "longitude"],
-                            "additionalProperties": False
+                            "additionalProperties": False,
                         },
                         "variable": {
                             "type": "object",
                             "properties": {
                                 "variableCode": {"type": "string"},
-                                "variableName": {"type": ["string", "null"]}
+                                "variableName": {"type": ["string", "null"]},
                             },
                             "required": ["variableCode", "variableName"],
-                            "additionalProperties": False
+                            "additionalProperties": False,
                         },
                         "method": {
                             "type": "object",
                             "properties": {
                                 "methodDescription": {"type": ["string", "null"]},
-                                "methodLink": {"type": ["string", "null"]}
+                                "methodLink": {"type": ["string", "null"]},
                             },
                             "required": ["methodDescription", "methodLink"],
-                            "additionalProperties": False
+                            "additionalProperties": False,
                         },
                         "requestInfo": {
                             "type": "object",
                             "properties": {
                                 "netWorkName": {"type": "string"},
                                 "refType": {"enum": ["WOF", "WPS", "DirectFile"]},
-                                "returnType": {"enum": ["WaterML 1.1", "WaterML 2.0",
-                                                        "TimeseriesML"]},
+                                "returnType": {"enum": ["WaterML 1.1", "WaterML 2.0", "TimeseriesML"]},
                                 "serviceType": {"enum": ["SOAP", "REST"]},
-                                "url": {"type": "string"}
+                                "url": {"type": "string"},
                             },
-                            "required": ["networkName", "refType", "returnType", "serviceType",
-                                         "url"],
-                            "additionalProperties": False
+                            "required": ["networkName", "refType", "returnType", "serviceType", "url"],
+                            "additionalProperties": False,
                         },
                         "sampleMedium": {"type": ["string", "null"]},
-                        "valueCount": {"type": ["number", "null"]}
+                        "valueCount": {"type": ["number", "null"]},
                     },
-                    "required": ["beginDate", "endDate", "requestInfo",
-                                 "site", "sampleMedium", "valueCount", "variable", "method"],
-                    "additionalProperties": False
-                }
+                    "required": [
+                        "beginDate",
+                        "endDate",
+                        "requestInfo",
+                        "site",
+                        "sampleMedium",
+                        "valueCount",
+                        "variable",
+                        "method",
+                    ],
+                    "additionalProperties": False,
+                },
             },
-            "required": ["title", "abstract", "fileVersion", "keyWords", "symbol",
-                         "referencedTimeSeries"],
-            "additionalProperties": False
+            "required": ["title", "abstract", "fileVersion", "keyWords", "symbol", "referencedTimeSeries"],
+            "additionalProperties": False,
         }
     },
     "required": ["timeSeriesReferenceFile"],
-    "additionalProperties": False
+    "additionalProperties": False,
 }
+
 
 def is_aware(value):
     return value.utcoffset() is not None
+
 
 def make_naive(value, timezone=pytz.utc):
     """
@@ -237,32 +243,44 @@ def make_naive(value, timezone=pytz.utc):
         value = timezone.normalize(value)
     return value.replace(tzinfo=None)
 
+
 def period_coverage(json_data):
     # add file level temporal coverage
-    start_date = min([parser.parse(series['beginDate']) for series in
-                      json_data['timeSeriesReferenceFile']['referencedTimeSeries']])
-    end_date = max([parser.parse(series['endDate']) for series in
-                    json_data['timeSeriesReferenceFile']['referencedTimeSeries']])
+    start_date = min(
+        [parser.parse(series['beginDate']) for series in json_data['timeSeriesReferenceFile']['referencedTimeSeries']]
+    )
+    end_date = max(
+        [parser.parse(series['endDate']) for series in json_data['timeSeriesReferenceFile']['referencedTimeSeries']]
+    )
     if is_aware(start_date):
         start_date = make_naive(start_date)
     if is_aware(end_date):
         end_date = make_naive(end_date)
     return {'start': start_date.isoformat(), 'end': end_date.isoformat()}
 
+
 def spatial_coverage(json_data):
-        # add file level spatial coverage
+    # add file level spatial coverage
     # check if we have single site or multiple sites
     sites = set([series['site']['siteCode'] for series in json_data['timeSeriesReferenceFile']['referencedTimeSeries']])
     if len(sites) == 1:
         series = json_data['timeSeriesReferenceFile']['referencedTimeSeries'][0]
-        value_dict = {'east': series['site']['longitude'],
-                      'north': series['site']['latitude'],
-                      'projection': 'Unknown',
-                      'units': "Decimal degrees"}
+        value_dict = {
+            'east': series['site']['longitude'],
+            'north': series['site']['latitude'],
+            'projection': 'Unknown',
+            'units': "Decimal degrees",
+        }
         return {'type': 'point', **value_dict}
     else:
-        bbox = {'northlimit': -90, 'southlimit': 90, 'eastlimit': -180, 'westlimit': 180,
-                'projection': 'Unknown', 'units': "Decimal degrees"}
+        bbox = {
+            'northlimit': -90,
+            'southlimit': 90,
+            'eastlimit': -180,
+            'westlimit': 180,
+            'projection': 'Unknown',
+            'units': "Decimal degrees",
+        }
         for series in json_data['timeSeriesReferenceFile']['referencedTimeSeries']:
             latitude = float(series['site']['latitude'])
             if bbox['northlimit'] < latitude:
