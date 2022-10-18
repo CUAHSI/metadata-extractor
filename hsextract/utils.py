@@ -55,6 +55,10 @@ def _extract_metadata(type: str, filepath):
             metadata = extract_timeseries_metadata(filepath)
     elif type == "reftimeseries":
         metadata = extract_referenced_timeseries_metadata(filepath)
+    elif type == "user_meta":
+        with open(filepath) as f:
+            metadata = json.loads(f.read())
+        metadata["files"] = [filepath]
 
     return filepath, metadata
 
