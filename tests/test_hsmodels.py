@@ -37,10 +37,6 @@ def test_rasters_extraction():
     del model_json["language"]
     del model_json["additional_metadata"]
 
-    model_json["band_information"]["maximum_value"] = float(model_json["band_information"]["maximum_value"])
-    model_json["band_information"]["minimum_value"] = float(model_json["band_information"]["minimum_value"])
-    model_json["band_information"]["no_data_value"] = float(model_json["band_information"]["no_data_value"])
-
     assert json_metadata == model_json
 
 def test_raster_single_extraction():
@@ -53,10 +49,6 @@ def test_raster_single_extraction():
     del model_json["language"]
     del model_json["additional_metadata"]
 
-    model_json["band_information"]["maximum_value"] = float(model_json["band_information"]["maximum_value"])
-    model_json["band_information"]["minimum_value"] = float(model_json["band_information"]["minimum_value"])
-    model_json["band_information"]["no_data_value"] = float(model_json["band_information"]["no_data_value"])
-
     assert json_metadata == model_json
 
 def test_features_watersheds_extraction():
@@ -68,9 +60,6 @@ def test_features_watersheds_extraction():
     del model_json["subjects"]
     del model_json["language"]
     del model_json["additional_metadata"]
-
-    for fi in model_json["field_information"]:
-        fi["field_type_code"] = int(fi["field_type_code"])
 
     assert json_metadata == model_json
 
@@ -97,9 +86,6 @@ def test_timeseries_sqlite_extraction():
     del model_json["language"]
     del model_json["additional_metadata"]
 
-    for result in model_json['time_series_results']:
-        result['variable']['no_data_value'] = float(result['variable']['no_data_value'])
-
     assert json_metadata == model_json
 
 def test_timeseries_csv_extraction():
@@ -123,7 +109,5 @@ def test_feature_states_extraction():
 
     del model_json["language"]
     del model_json["additional_metadata"]
-    for fi in model_json["field_information"]:
-        fi["field_type_code"] = int(fi["field_type_code"])
 
     assert json_metadata == model_json
