@@ -10,8 +10,6 @@ from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata, extract_metadata_csv
 from hsextract.file_utils import file_metadata
 
-from pathlib import PurePath
-
 
 def _to_metadata_path(filepath: str):
     filepath = filepath + ".json"
