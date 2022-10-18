@@ -572,12 +572,13 @@ def extract_metadata_csv(csv_file_name):
         # save the series names along with number of data points for each series
         # columns starting with the 2nd column are data series names
         time_series_results = []
-        value_counts = {}
         for data_col_name in header[1:]:
             time_series_results.append({"series_id": data_col_name, "value_count": data_row_count})
 
         metadata_dict.update({"time_series_results": time_series_results})
-        metadata_dict.update({"period_coverage": {'start': start_date_str, 'end': end_date_str}})
+        start_date = parser.parse(start_date_str)
+        end_date = parser.parse(end_date_str)
+        metadata_dict.update({"period_coverage": {'start': start_date.isoformat(), 'end': end_date.isoformat()}})
     
     metadata_dict["files"] = [csv_file_name]
     
