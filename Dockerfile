@@ -23,7 +23,7 @@ COPY hsextract hsextract
 
 ENV PYTHONPATH "${PYTHONPATH}:/app/"
 
-RUN echo Wa1r4XOFeTkxPUim:iweANBKNCuIMMJwgrX02LPxBbb85hQGD > /etc/s3cred
+RUN echo bMQyzR3HHkMy78Fm:ci8wFNR5cJ8T0zP3lEX8Tl6aFXwEXRzK > /etc/s3cred
 RUN chmod 600 /etc/s3cred
 
 RUN mkdir /s3

@@ -9,6 +9,10 @@ abs_path=/Users/scootna/projects/metadata-extractor/tests/test_files
 ### Run the Docker container with necessary permissions
 ```shell
 docker run -it -p 9000:9000 --cap-add SYS_ADMIN --device /dev/fuse --entrypoint /bin/bash hsextract
+```
+
+Docker shell commands
+```shell
 s3fs demo-composite /s3 -o passwd_file=/etc/s3cred,use_path_request_style,url=https://play.min.io:9000
 python3 /app/hsextract/main.py extract /s3
 ```
