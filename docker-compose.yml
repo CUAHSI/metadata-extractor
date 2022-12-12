@@ -3,9 +3,16 @@ version: '3.4'
 services:
   hsextract:
     image: hsextract
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
     build:
       context: .
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile
     volumes:
       - ./hsextract:/app/hsextract
-      - ./tests:/app/tests
+    environment:
+      - S3_BUCKET=testbucket
+      - MINIO_KEY=WfnTVHEZjXY8ABz2
+      - MINIO_SECRET_KEY=WdFEIE3g21iSPu56nhfXTgSu4C6fEE7H
+      - MNT_POINT=s3

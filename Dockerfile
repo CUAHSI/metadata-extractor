@@ -23,11 +23,10 @@ COPY hsextract hsextract
 
 ENV PYTHONPATH "${PYTHONPATH}:/app/"
 
-RUN echo bMQyzR3HHkMy78Fm:ci8wFNR5cJ8T0zP3lEX8Tl6aFXwEXRzK > /etc/s3cred
-RUN chmod 600 /etc/s3cred
+ARG MNT_POINT=s3
+RUN mkdir -p "$MNT_POINT"
 
-RUN mkdir /s3
-# TODO pull out bucket name, minio server key/token to be passed in later
-#RUN s3fs demo-composite /s3 -o passwd_file=/etc/s3cred,use_path_request_style,url=https://play.min.io:9000
+COPY run.sh run.sh
+CMD ./run.sh
 
 ENTRYPOINT ["python", "hsextract/main.py"] 
