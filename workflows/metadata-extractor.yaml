@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: metadata-extractor-
+  labels:
+    workflows.argoproj.io/archive-strategy: "false"
+  annotations:
+    workflows.argoproj.io/description: |
+      Examines a bucket and extracts metadata
+data:
+  S3_BUCKET: "testbucket"
+  MINIO_KEY: "WfnTVHEZjXY8ABz2"
+  MINIO_SECRET_KEY: "WdFEIE3g21iSPu56nhfXTgSu4C6fEE7H"
+  MNT_POINT: s3
+spec:
+  entrypoint: metadata-extractor
+  templates:
+  - name: metadata-extractor
+    container:
+      image: scootna/metadata-extractor:latest
+      privileged: true
+      cap_add:
+        - SYS_ADMIN
+      command: [python3]
+      args: ["/app/hsextract/main.py", "extract", "s3"]
