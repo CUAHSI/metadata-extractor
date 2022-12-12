@@ -27,6 +27,4 @@ ARG MNT_POINT=s3
 RUN mkdir -p "$MNT_POINT"
 
 COPY run.sh run.sh
-CMD ./run.sh
-
-ENTRYPOINT ["python", "hsextract/main.py"] 
+CMD bash run.sh && python3 hsextract/main.py extract "$MNT_POINT"

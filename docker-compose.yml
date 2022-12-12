@@ -9,8 +9,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - ./hsextract:/app/hsextract
     environment:
       - S3_BUCKET=testbucket
       - MINIO_KEY=WfnTVHEZjXY8ABz2
