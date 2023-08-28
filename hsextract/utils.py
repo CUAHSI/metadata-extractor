@@ -1,6 +1,7 @@
 import asyncio
 import os
 import json
+from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
 
 from hsextract.listing.utils import prepare_files
 from hsextract.raster.utils import extract_from_tif_file
@@ -32,11 +33,13 @@ def extract_metadata(type: str, filepath):
     except Exception as e:
         return None
     if extracted_metadata:
+        adapter = HydroshareMetadataAdapter()
+        catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
         all_file_metadata = []
         for f in extracted_metadata["files"]:
             all_file_metadata.append(file_metadata(f))
-        extracted_metadata["files"] = all_file_metadata
-    return extracted_metadata
+        catalog_record["files"] = all_file_metadata
+    return catalog_record
 
 
 def _extract_metadata(type: str, filepath):

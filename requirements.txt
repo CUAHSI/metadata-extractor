@@ -12,3 +12,6 @@ pyproj
 jsonschema
 python-dateutil
 pytz
+requests
+pydantic==1.10
+pydantic[email]==1.10
