@@ -110,20 +110,17 @@ class SpatialCoveragePoint(BaseModel):
 
 
 class ContentFile(BaseModel):
-    file_name: str
-    url: HttpUrl
+    path: str
     size: int
-    content_type: str
-    logical_file_type: str
-    modified_time: datetime
+    mime_type: str = None
     checksum: str
 
     def to_dataset_media_object(self):
         media_object = schema.MediaObject.construct()
-        media_object.contentUrl = self.url
-        media_object.encodingFormat = self.content_type
+        media_object.contentUrl = f"https:/nosetup.hydroshare.org/{self.path}"
+        media_object.encodingFormat = self.mime_type
         media_object.contentSize = f"{self.size/1000.00} KB"
-        media_object.name = self.file_name
+        media_object.name = self.path.split("/")[-1]
         return media_object
 
 
@@ -183,7 +180,7 @@ class _HydroshareResourceMetadata(BaseModel):
     period_coverage: Optional[TemporalCoverage]
     relations: List[Relation] = []
     citation: Optional[str]
-    content_files: List[ContentFile] = []
+    files: List[ContentFile] = []
 
     def to_dataset_creators(self):
         creators = []
@@ -199,7 +196,7 @@ class _HydroshareResourceMetadata(BaseModel):
 
     def to_dataset_associated_media(self):
         media_objects = []
-        for content_file in self.content_files:
+        for content_file in self.files:
             media_objects.append(content_file.to_dataset_media_object())
         return media_objects
 

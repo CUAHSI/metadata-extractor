@@ -34,11 +34,11 @@ def extract_metadata(type: str, filepath):
         return None
     if extracted_metadata:
         adapter = HydroshareMetadataAdapter()
-        catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
         all_file_metadata = []
         for f in extracted_metadata["files"]:
             all_file_metadata.append(file_metadata(f))
-        catalog_record["files"] = all_file_metadata
+        extracted_metadata["files"] = all_file_metadata
+        catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
     return catalog_record
 
 
