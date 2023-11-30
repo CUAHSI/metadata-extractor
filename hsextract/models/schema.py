@@ -323,7 +323,7 @@ class Place(SchemaBaseModel):
 
 class MediaObject(SchemaBaseModel):
     type: str = Field(alias="@type", default="MediaObject", description="An item that encodes the record.")
-    contentUrl: HttpUrl = Field(
+    contentUrl: str = Field(
         title="Content URL",
         description="The direct URL link to access or download the actual content of the media object.")
     encodingFormat: str = Field(
