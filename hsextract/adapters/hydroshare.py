@@ -7,7 +7,6 @@ from hsextract.models import schema
 from hsextract.models.schema import CoreMetadataDOC
 
 
-
 class Creator(BaseModel):
     name: Optional[str]
     email: Optional[EmailStr]
@@ -155,7 +154,7 @@ class Rights(BaseModel):
         return _license
 
 
-class HydroshareMetadataAdapter():
+class HydroshareMetadataAdapter:
     @staticmethod
     def to_catalog_record(metadata: dict):
         """Converts hydroshare resource metadata to a catalog dataset record"""
@@ -180,7 +179,7 @@ class _HydroshareResourceMetadata(BaseModel):
     period_coverage: Optional[TemporalCoverage]
     relations: List[Relation] = []
     citation: Optional[str]
-    files: List[ContentFile] = []
+    content_files: List[ContentFile] = []
 
     def to_dataset_creators(self):
         creators = []
@@ -196,7 +195,7 @@ class _HydroshareResourceMetadata(BaseModel):
 
     def to_dataset_associated_media(self):
         media_objects = []
-        for content_file in self.files:
+        for content_file in self.content_files:
             media_objects.append(content_file.to_dataset_media_object())
         return media_objects
 

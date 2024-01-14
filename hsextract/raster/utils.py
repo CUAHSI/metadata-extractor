@@ -24,13 +24,13 @@ def extract_from_tif_file(tif_file):
         tif_files = [os.path.join(full_path, f) for f in tif_files] + [tif_file]
     # file validation and metadaadatta extraction
     file_type_metadata = extract_metadata_from_vrt(filename)
-    file_type_metadata["files"] = tif_files
+    file_type_metadata["content_files"] = tif_files
 
     return file_type_metadata
 
 
 def create_vrt_file(tif_file):
-    """ tif_file exists in temp directory - retrieved from irods """
+    """tif_file exists in temp directory - retrieved from irods"""
 
     # create vrt file
     temp_dir = tempfile.gettempdir()
@@ -246,7 +246,6 @@ def get_wgs84_coverage_info(raster_dataset):
     original_coverage_info = get_original_coverage_info(raster_dataset)
 
     if proj and (None not in list(original_coverage_info.values())):
-
         original_cs = osr.SpatialReference()
         # create wgs84 geographic coordinate system
         wgs84_cs = osr.SpatialReference()
@@ -349,7 +348,6 @@ def get_cell_info(raster_file_name):
 
 
 def get_band_info(raster_file_name):
-
     raster_dataset = gdal.Open(raster_file_name, GA_ReadOnly)
 
     # get raster band count

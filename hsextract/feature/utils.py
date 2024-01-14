@@ -21,7 +21,7 @@ def extract_metadata_and_files(feature_path):
     files = []
     for f in shape_files:
         files.append(f)
-    meta_dict["files"] = files
+    meta_dict["content_files"] = files
     return meta_dict
 
 
