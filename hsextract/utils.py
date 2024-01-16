@@ -15,16 +15,16 @@ from hsextract.timeseries.utils import extract_metadata as extract_timeseries_me
 from hsextract.file_utils import file_metadata
 
 
-def _to_metadata_path(filepath: str):
-    if not filepath.endswith('hs_user_meta.json'):
+def _to_metadata_path(filepath: str, user_metadata_filename: str):
+    if not filepath.endswith(user_metadata_filename):
         filepath = filepath + ".json"
     return os.path.join(".hs", filepath)
 
 
-def extract_metadata_with_file_path(type: str, filepath):
+def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_filename: str):
     extracted_metadata = extract_metadata(type, filepath)
     if extracted_metadata:
-        metadata_path = _to_metadata_path(filepath)
+        metadata_path = _to_metadata_path(filepath, user_metadata_filename)
         os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
         with open(metadata_path, "w") as f:
             f.write(json.dumps(extracted_metadata, indent=2))
@@ -76,11 +76,11 @@ def _extract_metadata(type: str, filepath):
     return filepath, metadata
 
 
-async def list_and_extract(path: str):
+async def list_and_extract(path: str, user_metadata_filename: str):
     current_directory = os.getcwd()
     try:
         os.chdir(path)
-        sorted_files, categorized_files = prepare_files()
+        sorted_files, categorized_files = prepare_files(user_metadata_filename)
 
         netcdf_files = categorized_files["netcdf"]
         del categorized_files["netcdf"]
@@ -88,7 +88,9 @@ async def list_and_extract(path: str):
         for category, files in categorized_files.items():
             for file in files:
                 tasks.append(
-                    asyncio.get_running_loop().run_in_executor(None, extract_metadata_with_file_path, category, file)
+                    asyncio.get_running_loop().run_in_executor(
+                        None, extract_metadata_with_file_path, category, file, user_metadata_filename
+                    )
                 )
 
         for file in sorted_files:
@@ -100,25 +102,25 @@ async def list_and_extract(path: str):
 
         # The netcdf library does not seem to be thread safe, running them in this thread
         for file in netcdf_files:
-            results.append(extract_metadata_with_file_path("netcdf", file))
+            results.append(extract_metadata_with_file_path("netcdf", file, user_metadata_filename))
 
         metadata_manifest = [
             {file_path: f"{file_path}.json"}
             for file_path, extracted in results
-            if extracted == True and not file_path.endswith("hs_user_meta.json")
+            if extracted == True and not file_path.endswith(user_metadata_filename)
         ]
         dataset_metadata_files = [
             file_path
             for file_path, extracted in results
-            if extracted == True and file_path.endswith("hs_user_meta.json")
+            if extracted == True and file_path.endswith(user_metadata_filename)
         ]
 
         all_files_with_metadata = [file_metadata for file_metadata, extracted in results if extracted is None]
 
         # write an empty json file if one is not provided
-        if "hs_user_meta.json" not in dataset_metadata_files:
-            dataset_metadata_files.append("hs_user_meta.json")
-            with open(f".hs/hs_user_meta.json", "w+") as f:
+        if user_metadata_filename not in dataset_metadata_files:
+            dataset_metadata_files.append(user_metadata_filename)
+            with open(f".hs/{user_metadata_filename}", "w+") as f:
                 f.write("{}")
 
         for dataset_metadata_file in dataset_metadata_files:

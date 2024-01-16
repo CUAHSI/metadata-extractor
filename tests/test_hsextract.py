@@ -112,7 +112,6 @@ def cleanup_metadata():
 
 @pytest.mark.asyncio
 async def test_threaded_metadata_extraction(cleanup_metadata):
-
     await list_and_extract("tests/test_files")
 
     assert os.path.exists("tests/test_files/.hs")

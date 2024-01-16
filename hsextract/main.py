@@ -1,6 +1,5 @@
 import typer
 import json
-import os
 
 from asyncio import run as aiorun
 
@@ -46,13 +45,13 @@ def netcdf(path: str):
     print(json.dumps(metadata_dict, indent=2))
 
 
-async def _extract(path: str):
-    await list_and_extract(path)
+async def _extract(path: str, user_metadata_filename: str):
+    await list_and_extract(path, user_metadata_filename)
 
 
 @app.command()
-def extract(path: str):
-    aiorun(_extract(path))
+def extract(path: str, user_metadata_filename: str = "hs_user_meta.json"):
+    aiorun(_extract(path, user_metadata_filename))
 
 
 if __name__ == "__main__":
