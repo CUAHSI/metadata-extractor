@@ -40,7 +40,8 @@ def extract_metadata(type: str, filepath):
     adapter = HydroshareMetadataAdapter()
     all_file_metadata = []
     for f in extracted_metadata["content_files"]:
-        all_file_metadata.append(file_metadata(f))
+        f_md, _ = file_metadata(f)
+        all_file_metadata.append(f_md)
     extracted_metadata["content_files"] = all_file_metadata
     catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
     return catalog_record
@@ -90,6 +91,9 @@ async def list_and_extract(path: str):
                     asyncio.get_running_loop().run_in_executor(None, extract_metadata_with_file_path, category, file)
                 )
 
+        for file in sorted_files:
+            tasks.append(asyncio.get_running_loop().run_in_executor(None, file_metadata, file))
+
         results = []
         if tasks:
             results.extend(await asyncio.gather(*tasks))
@@ -101,11 +105,22 @@ async def list_and_extract(path: str):
         metadata_manifest = [
             {file_path: f"{file_path}.json"}
             for file_path, extracted in results
-            if extracted and not file_path.endswith("hs_user_meta.json")
+            if extracted == True and not file_path.endswith("hs_user_meta.json")
         ]
         dataset_metadata_files = [
-            file_path for file_path, extracted in results if extracted and file_path.endswith("hs_user_meta.json")
+            file_path
+            for file_path, extracted in results
+            if extracted == True and file_path.endswith("hs_user_meta.json")
         ]
+
+        all_files_with_metadata = [file_metadata for file_metadata, extracted in results if extracted is None]
+
+        # write an empty json file if one is not provided
+        if "hs_user_meta.json" not in dataset_metadata_files:
+            dataset_metadata_files.append("hs_user_meta.json")
+            with open(f".hs/hs_user_meta.json", "w+") as f:
+                f.write("{}")
+
         for dataset_metadata_file in dataset_metadata_files:
             dirname, _ = os.path.split(dataset_metadata_file)
             has_part_files = [
@@ -137,23 +152,8 @@ async def list_and_extract(path: str):
                         f.write(json.dumps(metadata_json, indent=2))
                 else:
                     with open(".hs/dataset_metadata.json", "w") as f:
+                        metadata_json["associatedMedia"] = all_files_with_metadata
                         f.write(json.dumps(metadata_json, indent=2))
 
-            # metadata_path = os.path.join(".hs", "metadata_manifest.json")
-            # os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
-            # with open(metadata_path, "w") as f:
-            #    f.write(json.dumps(metadata_manifest, indent=2))
-        ''' TODO inject checksums into metadata files
-        file_tasks = []
-        for file in sorted_files:
-            file_tasks.append(asyncio.get_running_loop().run_in_executor(None, file_metadata, file))
-
-        if file_tasks:
-            metadata_path = os.path.join(".hs", "file_manifest.json")
-            os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
-            files_with_metadata = await asyncio.gather(*file_tasks)
-            with open(metadata_path, "w") as f:
-                f.write(json.dumps(files_with_metadata, indent=2))
-        '''
     finally:
         os.chdir(current_directory)

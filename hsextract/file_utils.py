@@ -14,4 +14,4 @@ def file_metadata(path: str):
     size = os.path.getsize(path)
     mime_type = mimetypes.guess_type(path)[0]
     # path = path[:]
-    return {"path": path, "size": size, "checksum": checksum, "mime_type": mime_type}
+    return {"path": path, "size": size, "checksum": checksum, "mime_type": mime_type}, None

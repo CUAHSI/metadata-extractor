@@ -333,6 +333,7 @@ class MediaObject(SchemaBaseModel):
         "unit of measurement.",
     )
     name: str = Field(description="The name of the media object (file).")
+    checksum: str = Field(description="The MD5 checksum of the file")
 
     @validator('contentSize')
     def validate_content_size(cls, v):
