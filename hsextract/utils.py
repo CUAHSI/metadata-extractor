@@ -146,7 +146,7 @@ async def list_and_extract(path: str, user_metadata_filename: str):
                     "@type": "CreativeWork",
                     "name": dataset_metadata_files_metadata[metadata]["name"],
                     "description": dataset_metadata_files_metadata[metadata]["description"],
-                    "contentUrl": f"{metadata[4:]}",
+                    "contentUrl": metadata,
                 }
                 for metadata in dataset_metadata_files
                 if metadata.startswith(dirname) and metadata != dataset_metadata_file
