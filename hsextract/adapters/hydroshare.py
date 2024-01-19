@@ -1,6 +1,6 @@
 import requests
 from datetime import datetime
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 from pydantic import BaseModel, EmailStr, HttpUrl
 from hsextract.adapters.utils import RepositoryType
 from hsextract.models import schema
@@ -179,7 +179,7 @@ class _HydroshareResourceMetadata(BaseModel):
     period_coverage: Optional[TemporalCoverage]
     relations: List[Relation] = []
     citation: Optional[str]
-    content_files: List[ContentFile] = []
+    associatedMedia: List[Any] = []
 
     def to_dataset_creators(self):
         creators = []
@@ -194,10 +194,7 @@ class _HydroshareResourceMetadata(BaseModel):
         return grants
 
     def to_dataset_associated_media(self):
-        media_objects = []
-        for content_file in self.content_files:
-            media_objects.append(content_file.to_dataset_media_object())
-        return media_objects
+        return self.associatedMedia
 
     def to_dataset_is_part_of(self):
         return self._to_dataset_part_relations("IsPartOf")

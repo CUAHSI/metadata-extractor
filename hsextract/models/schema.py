@@ -378,10 +378,14 @@ class CoreMetadata(SchemaBaseModel):
         enum=["Dataset", "Notebook", "Software Source Code"],
     )
     name: str = Field(
-        title="Name or title", description="A text string with a descriptive name or title for the resource."
+        default=None,
+        title="Name or title",
+        description="A text string with a descriptive name or title for the resource.",
     )
     description: str = Field(
-        title="Description or abstract", description="A text string containing a description/abstract for the resource."
+        default=None,
+        title="Description or abstract",
+        description="A text string containing a description/abstract for the resource.",
     )
     url: HttpUrl = Field(
         title="URL",
