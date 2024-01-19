@@ -83,7 +83,7 @@ def _extract_metadata(type: str, filepath):
     return metadata
 
 
-async def list_and_extract(path: str, user_metadata_filename: str):
+async def list_and_extract(path: str, user_metadata_filename: str, base_url: str):
     current_directory = os.getcwd()
     try:
         os.chdir(path)
@@ -146,7 +146,7 @@ async def list_and_extract(path: str, user_metadata_filename: str):
                     "@type": "CreativeWork",
                     "name": dataset_metadata_files_metadata[metadata]["name"],
                     "description": dataset_metadata_files_metadata[metadata]["description"],
-                    "contentUrl": metadata,
+                    "contentUrl": base_url + metadata,
                 }
                 for metadata in dataset_metadata_files
                 if metadata.startswith(dirname) and metadata != dataset_metadata_file
@@ -159,13 +159,18 @@ async def list_and_extract(path: str, user_metadata_filename: str):
                             "@type": "CreativeWork",
                             "name": metadata_json["name"] if "name" in metadata_json else None,
                             "description": metadata_json["description"] if "description" in metadata_json else None,
-                            "contentUrl": has_part_file[4:],
+                            "contentUrl": base_url + has_part_file[4:],
                         }
                     )
             with open(dataset_metadata_file, "r") as f:
                 metadata_json = json.loads(f.read())
 
             metadata_json["hasPart"] = has_part
+            associated_media = []
+            for md in metadata_json["associatedMedia"]:
+                md["contentUrl"] = base_url + md["contentUrl"]
+                associated_media.append(md)
+            metadata_json["associatedMedia"] = associated_media
 
             with open(dataset_metadata_file, "w") as f:
                 f.write(json.dumps(metadata_json, indent=2))

@@ -45,13 +45,13 @@ def netcdf(path: str):
     print(json.dumps(metadata_dict, indent=2))
 
 
-async def _extract(path: str, user_metadata_filename: str):
-    await list_and_extract(path, user_metadata_filename)
+async def _extract(path: str, user_metadata_filename: str, base_url: str):
+    await list_and_extract(path, user_metadata_filename, base_url)
 
 
 @app.command()
-def extract(path: str, user_metadata_filename: str = "hs_user_meta.json"):
-    aiorun(_extract(path, user_metadata_filename))
+def extract(path: str, base_url: str, user_metadata_filename: str = "hs_user_meta.json"):
+    aiorun(_extract(path, user_metadata_filename, base_url))
 
 
 if __name__ == "__main__":
