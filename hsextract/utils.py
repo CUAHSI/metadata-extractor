@@ -71,8 +71,10 @@ def _extract_metadata(type: str, filepath):
     elif type == "reftimeseries":
         metadata = extract_referenced_timeseries_metadata(filepath)
     elif type == "user_meta":
-        with open(filepath) as f:
-            metadata = json.loads(f.read())
+        metadata = {}
+        if os.path.exists(filepath):
+            with open(filepath) as f:
+                metadata = json.loads(f.read())
         metadata_file_dir, filename = os.path.split(filepath)
         metadata["content_files"] = [
             str(f)
@@ -91,6 +93,10 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
         netcdf_files = categorized_files["netcdf"]
         del categorized_files["netcdf"]
         tasks = []
+
+        if "user_meta" not in categorized_files or user_metadata_filename not in categorized_files["user_meta"]:
+            categorized_files["user_meta"].append(user_metadata_filename)
+
         for category, files in categorized_files.items():
             for file in files:
                 tasks.append(
@@ -120,12 +126,6 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
             for file_path, extracted in results
             if extracted == True and file_path.endswith("dataset_metadata.json")
         ]
-
-        # write an empty json file if one is not provided
-        if ".hs/dataset_metadata.json" not in dataset_metadata_files:
-            dataset_metadata_files.append(".hs/dataset_metadata.json")
-            with open(f".hs/dataset_metadata.json", "w+") as f:
-                f.write("{}")
 
         dataset_metadata_files_metadata = {}
         for dataset_metadata_file in dataset_metadata_files:
@@ -166,11 +166,13 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                 metadata_json = json.loads(f.read())
 
             metadata_json["hasPart"] = has_part
-            associated_media = []
-            for md in metadata_json["associatedMedia"]:
-                md["contentUrl"] = base_url + md["contentUrl"]
-                associated_media.append(md)
-            metadata_json["associatedMedia"] = associated_media
+
+            if "associatedMedia" in metadata_json:
+                associated_media = []
+                for md in metadata_json["associatedMedia"]:
+                    md["contentUrl"] = base_url + md["contentUrl"]
+                    associated_media.append(md)
+                metadata_json["associatedMedia"] = associated_media
 
             with open(dataset_metadata_file, "w") as f:
                 f.write(json.dumps(metadata_json, indent=2))
