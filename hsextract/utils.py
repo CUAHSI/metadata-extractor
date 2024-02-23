@@ -119,12 +119,12 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
         metadata_manifest = [
             {file_path: f"{file_path}.json"}
             for file_path, extracted in results
-            if extracted == True and not file_path.endswith("dataset_metadata.json")
+            if extracted and not file_path.endswith("dataset_metadata.json")
         ]
         dataset_metadata_files = [
             file_path
             for file_path, extracted in results
-            if extracted == True and file_path.endswith("dataset_metadata.json")
+            if extracted and file_path.endswith("dataset_metadata.json")
         ]
 
         dataset_metadata_files_metadata = {}
@@ -146,7 +146,7 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                     "@type": "CreativeWork",
                     "name": dataset_metadata_files_metadata[metadata]["name"],
                     "description": dataset_metadata_files_metadata[metadata]["description"],
-                    "contentUrl": base_url + metadata,
+                    "url": os.path.join(base_url, metadata),
                 }
                 for metadata in dataset_metadata_files
                 if metadata.startswith(dirname) and metadata != dataset_metadata_file
@@ -159,7 +159,7 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                             "@type": "CreativeWork",
                             "name": metadata_json["name"] if "name" in metadata_json else None,
                             "description": metadata_json["description"] if "description" in metadata_json else None,
-                            "contentUrl": base_url + has_part_file[4:],
+                            "url": os.path.join(base_url, has_part_file[4:]),
                         }
                     )
             with open(dataset_metadata_file, "r") as f:
@@ -169,8 +169,35 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
 
             if "associatedMedia" in metadata_json:
                 associated_media = []
+                has_parts_metadata = []
+                for has_part_file in has_part_files:
+                    with open(has_part_file, "r") as f:
+                        has_parts_metadata.append({has_part_file: json.loads(f.read())})
                 for md in metadata_json["associatedMedia"]:
-                    md["contentUrl"] = base_url + md["contentUrl"]
+                    content_file_path = md["contentUrl"]
+                    md["contentUrl"] = os.path.join(base_url, md["contentUrl"])
+                    # add isPartOf to the associatedMedia to link the content file to the metadata file
+                    cont_file_dirname, _ = os.path.split(content_file_path)
+                    for has_part_meta_item in has_parts_metadata:
+                        has_part_file = list(has_part_meta_item.keys())[0]
+                        meta_file_dirname, _ = os.path.split(has_part_file)
+                        # remove the leading ".hs/" from the metadata file dirname for comparison
+                        meta_file_dirname = meta_file_dirname[4:]
+                        if cont_file_dirname == meta_file_dirname:
+                            has_part_metadata = has_part_meta_item[has_part_file]
+                            if "associatedMedia" in has_part_metadata:
+                                for md_ in has_part_metadata["associatedMedia"]:
+                                    if md_["contentUrl"] == content_file_path:
+                                        is_part_of = {
+                                            "@type": "CreativeWork",
+                                            "name": has_part_metadata.get("name", None),
+                                            "description": has_part_metadata.get("description", None),
+                                            "url": os.path.join(base_url, has_part_file),
+                                        }
+                                        md["isPartOf"] = is_part_of
+                                        break
+                            break
+
                     associated_media.append(md)
                 metadata_json["associatedMedia"] = associated_media
 
