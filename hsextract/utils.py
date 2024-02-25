@@ -159,7 +159,7 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                             "@type": "CreativeWork",
                             "name": metadata_json["name"] if "name" in metadata_json else None,
                             "description": metadata_json["description"] if "description" in metadata_json else None,
-                            "url": os.path.join(base_url, has_part_file[4:]),
+                            "url": os.path.join(base_url, has_part_file),
                         }
                     )
             with open(dataset_metadata_file, "r") as f:
