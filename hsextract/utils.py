@@ -204,5 +204,20 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
             with open(dataset_metadata_file, "w") as f:
                 f.write(json.dumps(metadata_json, indent=2))
 
+        # add base_url to the contentUrl of the associatedMedia for the metadata_manifest files
+        for meta_manifest_item in metadata_manifest:
+            meta_manifest_file = list(meta_manifest_item.keys())[0]
+            with open(meta_manifest_file, "r") as f:
+                metadata = json.loads(f.read())
+                if "associatedMedia" in metadata:
+                    associated_media = []
+                    for md in metadata["associatedMedia"]:
+                        if not md["contentUrl"].startswith(base_url):
+                            md["contentUrl"] = os.path.join(base_url, md["contentUrl"])
+                        associated_media.append(md)
+                    metadata["associatedMedia"] = associated_media
+            with open(meta_manifest_file, "w") as f:
+                f.write(json.dumps(metadata, indent=2))
+
     finally:
         os.chdir(current_directory)
