@@ -178,6 +178,7 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                     md["contentUrl"] = os.path.join(base_url, md["contentUrl"])
                     # add isPartOf to the associatedMedia to link the content file to the metadata file
                     cont_file_dirname, _ = os.path.split(content_file_path)
+                    is_parts_of = []
                     for has_part_meta_item in has_parts_metadata:
                         has_part_file = list(has_part_meta_item.keys())[0]
                         meta_file_dirname, _ = os.path.split(has_part_file)
@@ -194,10 +195,9 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                                             "description": has_part_metadata.get("description", None),
                                             "url": os.path.join(base_url, has_part_file),
                                         }
-                                        md["isPartOf"] = is_part_of
+                                        is_parts_of.append(is_part_of)
                                         break
-                            break
-
+                    md["isPartOf"] = is_parts_of
                     associated_media.append(md)
                 metadata_json["associatedMedia"] = associated_media
 
