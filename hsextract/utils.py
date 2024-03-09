@@ -175,6 +175,8 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                         has_parts_metadata.append({has_part_file: json.loads(f.read())})
                 for md in metadata_json["associatedMedia"]:
                     content_file_path = md["contentUrl"]
+                    # set the name attribute of the associatedMedia to the content file name
+                    md["name"] = os.path.basename(content_file_path)
                     md["contentUrl"] = os.path.join(base_url, md["contentUrl"])
                     # add isPartOf to the associatedMedia to link the content file to the metadata file
                     cont_file_dirname, _ = os.path.split(content_file_path)
@@ -205,6 +207,7 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                 f.write(json.dumps(metadata_json, indent=2))
 
         # add base_url to the contentUrl of the associatedMedia for the metadata_manifest files
+        # and set the name attribute of the associatedMedia to the content file name
         for meta_manifest_item in metadata_manifest:
             meta_manifest_file = list(meta_manifest_item.keys())[0]
             with open(meta_manifest_file, "r") as f:
@@ -212,6 +215,8 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                 if "associatedMedia" in metadata:
                     associated_media = []
                     for md in metadata["associatedMedia"]:
+                        # set the name attribute of the associatedMedia to the content file name
+                        md["name"] = os.path.basename(md["contentUrl"])
                         if not md["contentUrl"].startswith(base_url):
                             md["contentUrl"] = os.path.join(base_url, md["contentUrl"])
                         associated_media.append(md)
