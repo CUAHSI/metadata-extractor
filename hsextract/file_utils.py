@@ -14,4 +14,12 @@ def file_metadata(path: str):
     checksum = d.hexdigest()
     size = f"{os.path.getsize(path)/1000.00} KB"
     mime_type = mimetypes.guess_type(path)[0]
-    return {"contentUrl": path, "contentSize": size, "sha256": checksum, "encodingFormat": mime_type}, None
+    file_name = os.path.basename(path)
+    file_meta = {
+        "contentUrl": path,
+        "contentSize": size,
+        "sha256": checksum,
+        "encodingFormat": mime_type,
+        "name": file_name
+    }
+    return file_meta, None

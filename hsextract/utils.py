@@ -5,7 +5,7 @@ import logging
 
 from pathlib import Path
 
-from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
+from hsextract.adapters.hydroshare import HydroshareMetadataAdapter, NetCDFAggregationMetadataAdapter
 from hsextract.listing.utils import prepare_files
 from hsextract.models.schema import CoreMetadataDOC
 from hsextract.raster.utils import extract_from_tif_file
@@ -50,6 +50,8 @@ def extract_metadata(type: str, filepath):
         return json.loads(CoreMetadataDOC.construct(**extracted_metadata).json())
     else:
         extracted_metadata["associatedMedia"] = all_file_metadata
+        if type == "netcdf":
+            adapter = NetCDFAggregationMetadataAdapter()
         catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
         return catalog_record
 

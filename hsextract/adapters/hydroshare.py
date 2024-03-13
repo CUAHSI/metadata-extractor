@@ -1,4 +1,3 @@
-import requests
 from datetime import datetime
 from typing import Any, List, Optional, Union
 from pydantic import BaseModel, EmailStr, HttpUrl
@@ -258,3 +257,78 @@ class _HydroshareResourceMetadata(BaseModel):
         dataset.license = self.to_dataset_license()
         dataset.citation = [self.citation]
         return dataset
+
+
+class Variable(BaseModel):
+    name: str
+    descriptive_name: Optional[str]
+    unit: str
+    type: str
+    shape: str
+    method: Optional[str]
+
+    def to_aggregation_variable(self):
+        _property_value = schema.PropertyValue.construct()
+        _property_value.name = self.name
+        _property_value.unitCode = self.unit
+        _property_value.description = self.descriptive_name
+        _property_value.measurementTechnique = self.method
+        # creating a nested PropertyValue object to account for the shape field of the extracted variable metadata
+        _property_value.value = schema.PropertyValue.construct()
+        _property_value.value.name = "shape"
+        _property_value.value.unitCode = self.type
+        _property_value.value.value = self.shape
+        return _property_value
+
+
+class NetCDFAggregationMetadataAdapter:
+    @staticmethod
+    def to_catalog_record(aggr_metadata: dict):
+        """Converts extracted netcdf aggregation metadata to a catalog dataset record"""
+        nc_aggr_model = _NetCDFAggregationMetadata(**aggr_metadata)
+        return nc_aggr_model.to_catalog_dataset()
+
+
+class _NetCDFAggregationMetadata(BaseModel):
+    title: str
+    abstract: str
+    subjects: Optional[List[str]]
+    variables: List[Variable]
+    spatial_coverage: Optional[Union[SpatialCoverageBox, SpatialCoveragePoint]]
+    period_coverage: Optional[TemporalCoverage]
+    content_files: Optional[List[ContentFile]]
+    # the extracted file (media object) metadata is already in schema.MediaObject format
+    associatedMedia: Optional[List[schema.MediaObject]]
+
+    def to_aggregation_associated_media(self):
+        media_objects = []
+        for content_file in self.content_files:
+            media_objects.append(content_file.to_dataset_media_object())
+        return media_objects
+
+    def to_aggregation_spatial_coverage(self):
+        if self.spatial_coverage:
+            return self.spatial_coverage.to_dataset_spatial_coverage()
+        return None
+
+    def to_aggregation_period_coverage(self):
+        if self.period_coverage:
+            return self.period_coverage.to_dataset_temporal_coverage()
+        return None
+
+    def to_aggregation_keywords(self):
+        if self.subjects:
+            return self.subjects
+        return None
+
+    def to_catalog_dataset(self):
+        aggregation_metadata = schema.NetCDFAggregationMetadata.construct()
+        aggregation_metadata.name = self.title
+        aggregation_metadata.description = self.abstract
+        aggregation_metadata.keywords = self.to_aggregation_keywords()
+        aggregation_metadata.spatialCoverage = self.to_aggregation_spatial_coverage()
+        aggregation_metadata.temporalCoverage = self.to_aggregation_period_coverage()
+        aggregation_metadata.variableMeasured = [v.to_aggregation_variable() for v in self.variables]
+        aggregation_metadata.additionalProperty = []
+        aggregation_metadata.associatedMedia = self.associatedMedia
+        return aggregation_metadata
