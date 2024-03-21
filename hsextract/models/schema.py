@@ -301,68 +301,6 @@ class GeoShape(SchemaBaseModel):
         return v
 
 
-class Place(SchemaBaseModel):
-    type: str = Field(alias="@type", default="Place", description="Represents the focus area of the record's content.")
-    name: Optional[str] = Field(description="Name of the place.")
-    geo: Optional[Union[GeoCoordinates, GeoShape]] = Field(
-        description="Specifies the geographic coordinates of the place in the form of a point location, line, "
-        "or area coverage extent."
-    )
-
-    @root_validator
-    def validate_geo_or_name_required(cls, values):
-        name = values.get('name', None)
-        geo = values.get('geo', None)
-        if not name and not geo:
-            raise ValueError('Either place name or geo location of the place must be provided')
-        return values
-
-
-class MediaObject(SchemaBaseModel):
-    type: str = Field(alias="@type", default="MediaObject", description="An item that encodes the record.")
-    contentUrl: str = Field(
-        title="Content URL",
-        description="The direct URL link to access or download the actual content of the media object.",
-    )
-    encodingFormat: str = Field(
-        title="Encoding format", description="Represents the specific file format in which the media is encoded."
-    )  # TODO enum for encoding formats
-    contentSize: str = Field(
-        title="Content size",
-        description="Represents the file size, expressed in bytes, kilobytes, megabytes, or another "
-        "unit of measurement.",
-    )
-    name: str = Field(description="The name of the media object (file).")
-    sha256: Optional[str] = Field(title="SHA-256", description="The SHA-256 hash of the media object.")
-
-    @validator('contentSize')
-    def validate_content_size(cls, v):
-        v = v.strip()
-        if not v:
-            raise ValueError('empty string')
-
-        match = re.match(r"([0-9.]+)([a-zA-Z]+$)", v.replace(" ", ""))
-        if not match:
-            raise ValueError('invalid format')
-
-        size_unit = match.group(2)
-        if size_unit.upper() not in [
-            'KB',
-            'MB',
-            'GB',
-            'TB',
-            'PB',
-            'KILOBYTES',
-            'MEGABYTES',
-            'GIGABYTES',
-            'TERABYTES',
-            'PETABYTES',
-        ]:
-            raise ValueError('invalid unit')
-
-        return v
-
-
 class PropertyValueBase(SchemaBaseModel):
     type: str = Field(
         alias="@type",
@@ -408,6 +346,73 @@ class PropertyValue(PropertyValueBase):
     # in order for the schema generation (schema.json) to work. Self referencing nested models leads to
     # infinite loop in our custom schema generation code when trying to replace dict with key '$ref'
     value: Union[str, PropertyValueBase, List[PropertyValueBase]] = Field(description="The value of the property.")
+
+
+class Place(SchemaBaseModel):
+    type: str = Field(alias="@type", default="Place", description="Represents the focus area of the record's content.")
+    name: Optional[str] = Field(description="Name of the place.")
+    geo: Optional[Union[GeoCoordinates, GeoShape]] = Field(
+        description="Specifies the geographic coordinates of the place in the form of a point location, line, "
+        "or area coverage extent."
+    )
+    additionalProperty: Optional[List[PropertyValue]] = Field(
+        title="Additional properties",
+        default=[],
+        description="Additional properties of the location/place."
+    )
+
+    @root_validator
+    def validate_geo_or_name_required(cls, values):
+        name = values.get('name', None)
+        geo = values.get('geo', None)
+        if not name and not geo:
+            raise ValueError('Either place name or geo location of the place must be provided')
+        return values
+
+
+class MediaObject(SchemaBaseModel):
+    type: str = Field(alias="@type", default="MediaObject", description="An item that encodes the record.")
+    contentUrl: str = Field(
+        title="Content URL",
+        description="The direct URL link to access or download the actual content of the media object.",
+    )
+    encodingFormat: Optional[str] = Field(
+        title="Encoding format", description="Represents the specific file format in which the media is encoded."
+    )  # TODO enum for encoding formats
+    contentSize: str = Field(
+        title="Content size",
+        description="Represents the file size, expressed in bytes, kilobytes, megabytes, or another "
+        "unit of measurement.",
+    )
+    name: str = Field(description="The name of the media object (file).")
+    sha256: Optional[str] = Field(title="SHA-256", description="The SHA-256 hash of the media object.")
+
+    @validator('contentSize')
+    def validate_content_size(cls, v):
+        v = v.strip()
+        if not v:
+            raise ValueError('empty string')
+
+        match = re.match(r"([0-9.]+)([a-zA-Z]+$)", v.replace(" ", ""))
+        if not match:
+            raise ValueError('invalid format')
+
+        size_unit = match.group(2)
+        if size_unit.upper() not in [
+            'KB',
+            'MB',
+            'GB',
+            'TB',
+            'PB',
+            'KILOBYTES',
+            'MEGABYTES',
+            'GIGABYTES',
+            'TERABYTES',
+            'PETABYTES',
+        ]:
+            raise ValueError('invalid unit')
+
+        return v
 
 
 class CoreMetadata(SchemaBaseModel):
@@ -598,4 +603,13 @@ class NetCDFAggregationMetadata(BaseAggregationMetadata):
     )
     variableMeasured: Optional[List[Union[str, PropertyValue]]] = Field(
         title="Variables measured", description="Measured variables."
+    )
+
+
+class RasterAggregationMetadata(BaseAggregationMetadata):
+    type: str = Field(
+        alias="@type",
+        default="Geo Raster Dataset",
+        const=True,
+        description="Type of aggregation."
     )

@@ -296,15 +296,8 @@ class _NetCDFAggregationMetadata(BaseModel):
     variables: List[Variable]
     spatial_coverage: Optional[Union[SpatialCoverageBox, SpatialCoveragePoint]]
     period_coverage: Optional[TemporalCoverage]
-    content_files: Optional[List[ContentFile]]
     # the extracted file (media object) metadata is already in schema.MediaObject format
     associatedMedia: Optional[List[schema.MediaObject]]
-
-    def to_aggregation_associated_media(self):
-        media_objects = []
-        for content_file in self.content_files:
-            media_objects.append(content_file.to_dataset_media_object())
-        return media_objects
 
     def to_aggregation_spatial_coverage(self):
         if self.spatial_coverage:
@@ -332,3 +325,110 @@ class _NetCDFAggregationMetadata(BaseModel):
         aggregation_metadata.additionalProperty = []
         aggregation_metadata.associatedMedia = self.associatedMedia
         return aggregation_metadata
+
+
+class BandInformation(BaseModel):
+    name: str
+    maximum_value: float
+    minimum_value: float
+    no_data_value: float
+
+    def to_aggregation_band_as_additional_property(self):
+        band = schema.PropertyValue.construct()
+        band.name = self.name
+        band.maxValue = self.maximum_value
+        band.minValue = self.minimum_value
+        band.value = schema.PropertyValue.construct()
+        band.value.name = "no_data_value"
+        band.value.value = self.no_data_value
+        return band
+
+
+class SpatialReference(BaseModel):
+    projection_string: str
+    projection: str
+    datum: str
+    eastlimit: float
+    northlimit: float
+    units: str
+
+    def to_aggregation_spatial_reference_as_additional_property(self):
+        spatial_reference = schema.PropertyValue.construct()
+        spatial_reference.name = "spatial_reference"
+        spatial_reference.value = []
+        proj_str = schema.PropertyValue.construct()
+        proj_str.name = "projection_string"
+        proj_str.value = self.projection_string
+        spatial_reference.value.append(proj_str)
+
+        projection = schema.PropertyValue.construct()
+        projection.name = "projection"
+        projection.value = self.projection
+        spatial_reference.value.append(projection)
+
+        east_limit = schema.PropertyValue.construct()
+        east_limit.name = "eastlimit"
+        east_limit.value = self.eastlimit
+        spatial_reference.value.append(east_limit)
+
+        north_limit = schema.PropertyValue.construct()
+        north_limit.name = "northlimit"
+        north_limit.value = self.northlimit
+        spatial_reference.value.append(north_limit)
+
+        return spatial_reference
+
+
+class _RasterAggregationMetadata(BaseModel):
+    title: Optional[str]
+    spatial_coverage: Optional[Union[SpatialCoverageBox, SpatialCoveragePoint]]
+    period_coverage: Optional[TemporalCoverage]
+    # the extracted file (media object) metadata is already in schema.MediaObject format
+    associatedMedia: Optional[List[schema.MediaObject]]
+    band_information: BandInformation
+    cell_information: dict
+    spatial_reference: SpatialReference
+
+    def to_aggregation_cell_info_as_additional_properties(self):
+        additional_properties = []
+        if self.cell_information:
+            for key, value in self.cell_information.items():
+                prop = schema.PropertyValue.construct()
+                prop.name = key
+                prop.value = value
+                additional_properties.append(prop)
+        return additional_properties
+
+    def to_aggregation_spatial_coverage(self):
+        if self.spatial_coverage:
+            aggr_spatial_coverage = self.spatial_coverage.to_dataset_spatial_coverage()
+            if aggr_spatial_coverage:
+                aggr_spatial_coverage.additionalProperty = [
+                    self.spatial_reference.to_aggregation_spatial_reference_as_additional_property()]
+
+            return aggr_spatial_coverage
+        return None
+
+    def to_aggregation_period_coverage(self):
+        if self.period_coverage:
+            return self.period_coverage.to_dataset_temporal_coverage()
+        return None
+
+    def to_catalog_dataset(self):
+        aggregation_metadata = schema.RasterAggregationMetadata.construct()
+        aggregation_metadata.name = self.title
+        aggregation_metadata.spatialCoverage = self.to_aggregation_spatial_coverage()
+        aggregation_metadata.temporalCoverage = self.to_aggregation_period_coverage()
+        aggregation_metadata.additionalProperty = self.to_aggregation_cell_info_as_additional_properties()
+        aggregation_metadata.additionalProperty.append(
+            self.band_information.to_aggregation_band_as_additional_property())
+        aggregation_metadata.associatedMedia = self.associatedMedia
+        return aggregation_metadata
+
+
+class RasterAggregationMetadataAdapter:
+    @staticmethod
+    def to_catalog_record(aggr_metadata: dict):
+        """Converts extracted raster aggregation metadata to a catalog dataset record"""
+        aggr_model = _RasterAggregationMetadata(**aggr_metadata)
+        return aggr_model.to_catalog_dataset()
