@@ -34,24 +34,27 @@
     "variable_name": "",
     "variable_unit": ""
   },
-  "files": [
+  "associatedMedia": [
     {
-      "path": "rasters/logan1.tif",
-      "size": 100749,
-      "checksum": "bebc0e5333d575b775cda48d6d27a21c",
-      "mime_type": "image/tiff"
+      "contentUrl": "rasters/logan1.tif",
+      "contentSize": "100.749 KB",
+      "sha256": "830f4b50e78e8a8fb0f7eee7369171dacbcaa43cc2c4deb59cef8e4fd2f641c5",
+      "encodingFormat": "image/tiff",
+      "name": "logan1.tif"
     },
     {
-      "path": "rasters/logan2.tif",
-      "size": 98943,
-      "checksum": "7265548b8f345605113bd9539313b4e7",
-      "mime_type": "image/tiff"
+      "contentUrl": "rasters/logan2.tif",
+      "contentSize": "98.943 KB",
+      "sha256": "b5ad48ae6428c23c63ceaa93838eb2b3a688a3ecfbf10f01fcbc25f0d2d16f46",
+      "encodingFormat": "image/tiff",
+      "name": "logan2.tif"
     },
     {
-      "path": "rasters/logan.vrt",
-      "size": 2150,
-      "checksum": "d1f18cc8a0a3c98403625d11a5096bfb",
-      "mime_type": null
+      "contentUrl": "rasters/logan.vrt",
+      "contentSize": "2.175 KB",
+      "sha256": "94a844d49defcafef815258d1d2bc558b464d9454de7e178b25d5377eca789b4",
+      "encodingFormat": null,
+      "name": "logan.vrt"
     }
   ]
 }
