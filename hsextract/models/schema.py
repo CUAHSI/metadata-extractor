@@ -558,17 +558,21 @@ class BaseAggregationMetadata(BaseModel):
     """Base class for aggregation metadata - used for metadata view in UI."""
     type: str = Field(
         alias="@type",
-        default="Aggregation",
+        default="Dataset",
         const=True,
-        description="Type of aggregation."
+        description="The type of aggregation."
     )
+    additionalType: Optional[str] = Field(
+        title="Additional type of aggregation",
+        const=True,
+        description="An additional type for the aggregation.")
     name: Optional[str] = Field(
         description="A text string with a descriptive name or title for the aggregation."
     )
     description: Optional[str] = Field(
         description="A text string containing a description/abstract for the aggregation."
     )
-    keywords: List[str] = Field(
+    keywords: Optional[List[str]] = Field(
         min_items=0,
         description="Keywords or tags used to describe the dataset, delimited by commas."
     )
@@ -595,11 +599,10 @@ class BaseAggregationMetadata(BaseModel):
 
 
 class NetCDFAggregationMetadata(BaseAggregationMetadata):
-    type: str = Field(
-        alias="@type",
+    additionalType: str = Field(
         default="Multidimensional Dataset",
         const=True,
-        description="Type of aggregation."
+        description="Additional type of aggregation."
     )
     variableMeasured: Optional[List[Union[str, PropertyValue]]] = Field(
         title="Variables measured", description="Measured variables."
@@ -607,9 +610,16 @@ class NetCDFAggregationMetadata(BaseAggregationMetadata):
 
 
 class RasterAggregationMetadata(BaseAggregationMetadata):
-    type: str = Field(
-        alias="@type",
+    additionalType: str = Field(
         default="Geo Raster Dataset",
         const=True,
-        description="Type of aggregation."
+        description="Additional type of aggregation."
+    )
+
+
+class FeatureAggregationMetadata(BaseAggregationMetadata):
+    additionalType: str = Field(
+        default="Geo Feature Dataset",
+        const=True,
+        description="Additional type of aggregation."
     )

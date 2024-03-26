@@ -9,6 +9,7 @@ from hsextract.adapters.hydroshare import (
     HydroshareMetadataAdapter,
     NetCDFAggregationMetadataAdapter,
     RasterAggregationMetadataAdapter,
+    FeatureAggregationMetadataAdapter,
 )
 from hsextract.listing.utils import prepare_files
 from hsextract.models.schema import CoreMetadataDOC
@@ -60,9 +61,10 @@ def extract_metadata(type: str, filepath, use_adapter=True):
         if use_adapter:
             if type == 'raster':
                 adapter = RasterAggregationMetadataAdapter()
-            if type == "netcdf":
+            elif type == "netcdf":
                 adapter = NetCDFAggregationMetadataAdapter()
-
+            elif type == "feature":
+                adapter = FeatureAggregationMetadataAdapter()
             catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
             return catalog_record
         else:
