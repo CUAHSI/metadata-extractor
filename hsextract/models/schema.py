@@ -572,6 +572,9 @@ class BaseAggregationMetadata(BaseModel):
     description: Optional[str] = Field(
         description="A text string containing a description/abstract for the aggregation."
     )
+    creator: Optional[List[Union[Creator, Organization]]] = Field(
+        description="Person or Organization that created the dataset."
+    )
     keywords: Optional[List[str]] = Field(
         min_items=0,
         description="Keywords or tags used to describe the dataset, delimited by commas."

@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Any, List, Optional, Union
-from pydantic import BaseModel, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, HttpUrl, validator
 from hsextract.adapters.utils import RepositoryType
 from hsextract.models import schema
 from hsextract.models.schema import CoreMetadataDOC
@@ -13,6 +13,12 @@ class Creator(BaseModel):
     homepage: Optional[HttpUrl]
     address: Optional[str]
     identifiers: Optional[dict] = {}
+
+    @validator("homepage", pre=True)
+    def validate_homepage(cls, v):
+        if v:
+            return v.strip()
+        return None
 
     def to_dataset_creator(self):
         if self.name:
@@ -292,6 +298,7 @@ class NetCDFAggregationMetadataAdapter:
 class _NetCDFAggregationMetadata(BaseModel):
     title: str
     abstract: str
+    creator: Optional[Creator]
     subjects: Optional[List[str]]
     variables: List[Variable]
     spatial_coverage: Optional[Union[SpatialCoverageBox, SpatialCoveragePoint]]
@@ -318,6 +325,7 @@ class _NetCDFAggregationMetadata(BaseModel):
         aggregation_metadata = schema.NetCDFAggregationMetadata.construct()
         aggregation_metadata.name = self.title
         aggregation_metadata.description = self.abstract
+        aggregation_metadata.creator = self.creator.to_dataset_creator()
         aggregation_metadata.keywords = self.to_aggregation_keywords()
         aggregation_metadata.spatialCoverage = self.to_aggregation_spatial_coverage()
         aggregation_metadata.temporalCoverage = self.to_aggregation_period_coverage()
