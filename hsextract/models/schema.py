@@ -556,6 +556,12 @@ class DatasetMetadataDOC(CoreMetadataDOC, DatasetMetadata):
 
 class BaseAggregationMetadata(BaseModel):
     """Base class for aggregation metadata - used for metadata view in UI."""
+
+    context: HttpUrl = Field(
+        alias='@context',
+        default='https://schema.org',
+        description="Specifies the vocabulary employed for understanding the structured data markup.",
+    )
     type: str = Field(
         alias="@type",
         default="Dataset",
