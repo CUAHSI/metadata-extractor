@@ -87,6 +87,8 @@ class SpatialCoverageBox(BaseModel):
     eastlimit: float
     southlimit: float
     westlimit: float
+    projection: Optional[str]
+    units: Optional[str]
 
     def to_dataset_spatial_coverage(self):
         place = schema.Place.construct()
@@ -95,6 +97,18 @@ class SpatialCoverageBox(BaseModel):
 
         place.geo = schema.GeoShape.construct()
         place.geo.box = f"{self.northlimit} {self.eastlimit} {self.southlimit} {self.westlimit}"
+        place.additionalProperty = []
+        if self.projection:
+            projection = schema.PropertyValue.construct()
+            projection.name = "projection"
+            projection.value = self.projection
+            place.additionalProperty.append(projection)
+        if self.units:
+            units = schema.PropertyValue.construct()
+            units.name = "units"
+            units.value = self.units
+            place.additionalProperty.append(units)
+
         return place
 
 
@@ -102,6 +116,8 @@ class SpatialCoveragePoint(BaseModel):
     name: Optional[str]
     north: float
     east: float
+    projection: Optional[str]
+    units: Optional[str]
 
     def to_dataset_spatial_coverage(self):
         place = schema.Place.construct()
@@ -110,6 +126,17 @@ class SpatialCoveragePoint(BaseModel):
         place.geo = schema.GeoCoordinates.construct()
         place.geo.latitude = self.north
         place.geo.longitude = self.east
+        place.additionalProperty = []
+        if self.projection:
+            projection = schema.PropertyValue.construct()
+            projection.name = "projection"
+            projection.value = self.projection
+            place.additionalProperty.append(projection)
+        if self.units:
+            units = schema.PropertyValue.construct()
+            units.name = "units"
+            units.value = self.units
+            place.additionalProperty.append(units)
         return place
 
 
@@ -482,10 +509,9 @@ class _RasterAggregationMetadata(BaseModel):
             coverage_type = "box" if isinstance(self.spatial_coverage, SpatialCoverageBox) else "point"
             aggr_spatial_coverage = self.spatial_coverage.to_dataset_spatial_coverage()
             if aggr_spatial_coverage:
-                aggr_spatial_coverage.additionalProperty = [
-                    self.spatial_reference.to_aggregation_spatial_reference_as_additional_property(
-                        coverage_type=coverage_type)
-                ]
+                spatial_reference = self.spatial_reference.to_aggregation_spatial_reference_as_additional_property(
+                    coverage_type=coverage_type)
+                aggr_spatial_coverage.additionalProperty.append(spatial_reference)
 
             return aggr_spatial_coverage
         return None
@@ -641,10 +667,9 @@ class _FeatureAggregationMetadata(BaseModel):
             coverage_type = "box" if isinstance(self.spatial_coverage, SpatialCoverageBox) else "point"
             aggr_spatial_coverage = self.spatial_coverage.to_dataset_spatial_coverage()
             if aggr_spatial_coverage:
-                aggr_spatial_coverage.additionalProperty = [
-                    self.spatial_reference.to_aggregation_spatial_reference_as_additional_property(
-                        coverage_type=coverage_type)
-                ]
+                spatial_reference = self.spatial_reference.to_aggregation_spatial_reference_as_additional_property(
+                    coverage_type=coverage_type)
+                aggr_spatial_coverage.additionalProperty.append(spatial_reference)
 
             return aggr_spatial_coverage
         return None
@@ -670,7 +695,6 @@ class _FeatureAggregationMetadata(BaseModel):
         aggregation_metadata.temporalCoverage = self.to_aggregation_period_coverage()
         aggregation_metadata.additionalProperty = []
         aggregation_metadata.additionalProperty.append(self.to_aggregation_field_info_as_additional_property())
-
         aggregation_metadata.additionalProperty.append(
             self.geometry_information.to_aggregation_geometry_info_as_additional_property())
         aggregation_metadata.associatedMedia = self.associatedMedia
