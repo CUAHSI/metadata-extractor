@@ -299,6 +299,7 @@ class Variable(BaseModel):
     type: str
     shape: str
     method: Optional[str]
+    missing_value: Optional[str]
 
     def to_aggregation_variable(self):
         _property_value = schema.PropertyValue.construct()
@@ -307,10 +308,18 @@ class Variable(BaseModel):
         _property_value.description = self.descriptive_name
         _property_value.measurementTechnique = self.method
         # creating a nested PropertyValue object to account for the shape field of the extracted variable metadata
-        _property_value.value = schema.PropertyValue.construct()
-        _property_value.value.name = "shape"
-        _property_value.value.unitCode = self.type
-        _property_value.value.value = self.shape
+        shape = schema.PropertyValue.construct()
+        shape.name = "shape"
+        shape.unitCode = self.type
+        shape.value = self.shape
+        if self.missing_value:
+            missing_value = schema.PropertyValue.construct()
+            missing_value.name = "missingValue"
+            missing_value.value = self.missing_value
+            _property_value.value = [shape, missing_value]
+        else:
+            _property_value.value = [shape]
+
         return _property_value
 
 
