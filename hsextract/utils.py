@@ -10,6 +10,7 @@ from hsextract.adapters.hydroshare import (
     NetCDFAggregationMetadataAdapter,
     RasterAggregationMetadataAdapter,
     FeatureAggregationMetadataAdapter,
+    TimeseriesAggregationMetadataAdapter,
 )
 from hsextract.listing.utils import prepare_files
 from hsextract.models.schema import CoreMetadataDOC
@@ -41,6 +42,8 @@ def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_file
 def extract_metadata(type: str, filepath, use_adapter=True):
     # use_adapter is a flag to determine if the metadata should be converted to a catalog record
     # it is set to False in tests when testing for the raw extracted metadata
+
+    extension = os.path.splitext(filepath)[1]
     try:
         extracted_metadata = _extract_metadata(type, filepath)
     except Exception as e:
@@ -65,6 +68,10 @@ def extract_metadata(type: str, filepath, use_adapter=True):
                 adapter = NetCDFAggregationMetadataAdapter()
             elif type == "feature":
                 adapter = FeatureAggregationMetadataAdapter()
+            elif type == "timeseries" and extension == ".sqlite":
+                # TODO: Add support for timeseries csv metadata extraction
+                adapter = TimeseriesAggregationMetadataAdapter()
+
             catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
             return catalog_record
         else:

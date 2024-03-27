@@ -626,3 +626,11 @@ class FeatureAggregationMetadata(BaseAggregationMetadata):
         const=True,
         description="Additional type of aggregation."
     )
+
+
+class TimeseriesAggregationMetadata(BaseAggregationMetadata):
+    additionalType: str = Field(
+        default="Timeseries Dataset",
+        const=True,
+        description="Additional type of aggregation."
+    )
