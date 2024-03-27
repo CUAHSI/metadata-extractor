@@ -64,36 +64,41 @@
   "subjects": [
     "TauDEM"
   ],
-  "files": [
+  "associatedMedia": [
     {
-      "path": "states/states.dbf",
-      "size": 2846,
-      "checksum": "36b7de1ffe2621d8e8437277abebf379",
-      "mime_type": null
+      "contentUrl": "states/states.dbf",
+      "contentSize": "2.846 KB",
+      "sha256": "80e5e3fd777d4d8394dccc0040ec7cb8250f2d5890f1f5c7e153e70ea864e054",
+      "encodingFormat": null,
+      "name": "states.dbf"
     },
     {
-      "path": "states/states.prj",
-      "size": 167,
-      "checksum": "8e24fe15b2c8c640c459006722fa1e7f",
-      "mime_type": null
+      "contentUrl": "states/states.prj",
+      "contentSize": "0.167 KB",
+      "sha256": "84cf5b9a3c1a444f83ac30ff76f8c5035990223027ba69b2f4d628388adcbd65",
+      "encodingFormat": null,
+      "name": "states.prj"
     },
     {
-      "path": "states/states.shp",
-      "size": 222392,
-      "checksum": "58f07b1470f1da15b3f975070800e7ec",
-      "mime_type": "application/x-qgis"
+      "contentUrl": "states/states.shp",
+      "contentSize": "222.392 KB",
+      "sha256": "5dcb0eceff81acfe776b3b08dd733e0b519d361783f82afa31876eff9ff45e88",
+      "encodingFormat": "application/x-qgis",
+      "name": "states.shp"
     },
     {
-      "path": "states/states.shp.xml",
-      "size": 10489,
-      "checksum": "b2b5b64ed97a013c364cf3af354e1bf0",
-      "mime_type": "application/xml"
+      "contentUrl": "states/states.shp.xml",
+      "contentSize": "10.489 KB",
+      "sha256": "3213aa43cf5f6aa9b2c2ea6b9560956f047f907a8187ca6140401d3a187ceffe",
+      "encodingFormat": "application/xml",
+      "name": "states.shp.xml"
     },
     {
-      "path": "states/states.shx",
-      "size": 508,
-      "checksum": "196d5300e56d5077dd812edea0b1a381",
-      "mime_type": "application/x-qgis"
+      "contentUrl": "states/states.shx",
+      "contentSize": "0.508 KB",
+      "sha256": "2697eb17b968d7733813c3d8d6536b706499f7fee3e37ff35e3a6366e0d9ea36",
+      "encodingFormat": "application/x-qgis",
+      "name": "states.shx"
     }
   ]
 }

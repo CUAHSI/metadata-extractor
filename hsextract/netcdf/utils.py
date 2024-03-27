@@ -58,12 +58,13 @@ def get_nc_meta_dict(nc_file_name):
     else:
         nc_dataset = get_nc_dataset(nc_file_name)
 
+    if nc_dataset is None:
+        raise ValueError(f"The file:{nc_file_name} is not valid netcdf file.")
     res_dublin_core_meta = get_dublin_core_meta(nc_dataset)
     res_type_specific_meta = get_type_specific_meta(nc_dataset)
     nc_dataset.close()
 
     md = combine_metadata(res_dublin_core_meta, res_type_specific_meta)
-
     md["content_files"] = [nc_file_name]
     return md
 

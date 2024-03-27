@@ -18,12 +18,13 @@
     "projection": "Unknown",
     "units": "Decimal degrees"
   },
-  "files": [
+  "associatedMedia": [
     {
-      "path": "reftimeseries/multi_sites_formatted_version1.0.refts.json",
-      "size": 2176,
-      "checksum": "5ad44dba2cf0b9ef096dae121b05ba60",
-      "mime_type": "application/json"
+      "contentUrl": "reftimeseries/multi_sites_formatted_version1.0.refts.json",
+      "contentSize": "2.176 KB",
+      "sha256": "5ad44dba2cf0b9ef096dae121b05ba60",
+      "encodingFormat": "application/json",
+      "name": "multi_sites_formatted_version1.0.refts.json"
     }
   ]
 }

@@ -66,54 +66,62 @@
     "feature_count": 5,
     "geometry_type": "POLYGON"
   },
-  "files": [
+  "associatedMedia": [
     {
-      "path": "watersheds/watersheds.cpg",
-      "size": 5,
-      "checksum": "ae3b3df9970b49b6523e608759bc957d",
-      "mime_type": null
+      "contentUrl": "watersheds/watersheds.cpg",
+      "contentSize": "0.005 KB",
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+      "encodingFormat": null,
+      "name": "watersheds.cpg"
     },
     {
-      "path": "watersheds/watersheds.dbf",
-      "size": 666,
-      "checksum": "5f0795b993fb2a78ee67c5836e562123",
-      "mime_type": null
+      "contentUrl": "watersheds/watersheds.dbf",
+      "contentSize": "0.666 KB",
+      "sha256": "c351188821452dd4802e19a27529a2637d1190ea748ee233194e2d08eb8776ea",
+      "encodingFormat": null,
+      "name": "watersheds.dbf"
     },
     {
-      "path": "watersheds/watersheds.prj",
-      "size": 425,
-      "checksum": "5107bb62e2ab8f330d2e58c9a66db212",
-      "mime_type": null
+      "contentUrl": "watersheds/watersheds.prj",
+      "contentSize": "0.425 KB",
+      "sha256": "d8d0a7a0e0b796b5468d4c9827b2ff864b5be38b96df55efdb14b73c3ec0bc12",
+      "encodingFormat": null,
+      "name": "watersheds.prj"
     },
     {
-      "path": "watersheds/watersheds.sbn",
-      "size": 180,
-      "checksum": "2c11856707ebf325113081c82cc8914f",
-      "mime_type": null
+      "contentUrl": "watersheds/watersheds.sbn",
+      "contentSize": "0.18 KB",
+      "sha256": "fc1c6b5bfb502919a3402f2d929bed1dcc9bbbf77679881b9ffb0087be785fc0",
+      "encodingFormat": null,
+      "name": "watersheds.sbn"
     },
     {
-      "path": "watersheds/watersheds.sbx",
-      "size": 124,
-      "checksum": "f68d697732ad065f596fac7472014394",
-      "mime_type": null
+      "contentUrl": "watersheds/watersheds.sbx",
+      "contentSize": "0.124 KB",
+      "sha256": "ffc7a4c8ab42afb049a10a78aa99f2003d457ab0261c4fbdaa1802f0e5a0a54c",
+      "encodingFormat": null,
+      "name": "watersheds.sbx"
     },
     {
-      "path": "watersheds/watersheds.shp",
-      "size": 29228,
-      "checksum": "2bdc7bf81d55fab1ab59b2861e5fbb40",
-      "mime_type": "application/x-qgis"
+      "contentUrl": "watersheds/watersheds.shp",
+      "contentSize": "29.228 KB",
+      "sha256": "258a1a0291179c80df6b20c8577d5b9d7e13a791c60753953fdaeba4ff9587b6",
+      "encodingFormat": "application/x-qgis",
+      "name": "watersheds.shp"
     },
     {
-      "path": "watersheds/watersheds.shp.xml",
-      "size": 821,
-      "checksum": "e5d6d6d7658983fbe7ae75589ec64d06",
-      "mime_type": "application/xml"
+      "contentUrl": "watersheds/watersheds.shp.xml",
+      "contentSize": "0.821 KB",
+      "sha256": "45b01b459b0cc25ce07c8ee184aa9eab16acf1f149a37f31c41f5609f9cde2ef",
+      "encodingFormat": "application/xml",
+      "name": "watersheds.shp.xml"
     },
     {
-      "path": "watersheds/watersheds.shx",
-      "size": 140,
-      "checksum": "27ba8e2b565c810cdda151e70c1ef3cc",
-      "mime_type": "application/x-qgis"
+      "contentUrl": "watersheds/watersheds.shx",
+      "contentSize": "0.14 KB",
+      "sha256": "f66736da63de330216ac27939f725348177f439e120b89ab2cb4612292bf4ab8",
+      "encodingFormat": "application/x-qgis",
+      "name": "watersheds.shx"
     }
   ]
 }

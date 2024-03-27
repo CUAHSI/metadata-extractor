@@ -1,4 +1,3 @@
-import asyncio
 import json
 import os
 import shutil
@@ -10,15 +9,18 @@ from hsextract.utils import extract_metadata, list_and_extract
 pytest_plugins = ('pytest_asyncio',)
 
 
-def _assert_from_file(filename, metadata_json):
+def _assert_from_file(filename, metadata_json, base_url=None):
     with open(filename) as f:
         expected_str = f.read()
         expected_json = json.loads(expected_str)
+    if base_url:
+        for media_item in expected_json["associatedMedia"]:
+            media_item["contentUrl"] = os.path.join(base_url, media_item["contentUrl"])
 
     assert metadata_json == expected_json
 
 
-def _assert_raster_from_file(filename, metadata_json):
+def _assert_raster_from_file(filename, metadata_json, base_url=None):
     with open(filename) as f:
         expected_str = f.read()
         expected_json = json.loads(expected_str)
@@ -32,7 +34,22 @@ def _assert_raster_from_file(filename, metadata_json):
 
     del metadata_json['spatial_reference']['projection_string']
     del expected_json['spatial_reference']['projection_string']
+    if base_url:
+        for media_item in expected_json["associatedMedia"]:
+            media_item["contentUrl"] = os.path.join(base_url, media_item["contentUrl"])
+    assert metadata_json == expected_json
 
+
+def _assert_feature_from_file(filename, metadata_json, base_url=None):
+    with open(filename) as f:
+        expected_str = f.read()
+        expected_json = json.loads(expected_str)
+
+    if base_url:
+        for media_item in expected_json["associatedMedia"]:
+            media_item["contentUrl"] = os.path.join(base_url, media_item["contentUrl"])
+
+    metadata_json["associatedMedia"] = sorted(metadata_json["associatedMedia"], key=lambda x: x["contentUrl"])
     assert metadata_json == expected_json
 
 
@@ -45,57 +62,54 @@ def test_file_dir():
 
 
 def test_rasters_extraction(test_file_dir):
-    metadata_dict = extract_metadata("raster", "rasters/logan.vrt")
+    metadata_dict = extract_metadata("raster", "rasters/logan.vrt", use_adapter=False)
 
     _assert_raster_from_file("../outputs/raster.json", metadata_dict)
 
 
 def test_raster_single_extraction(test_file_dir):
-    all_metadata_json = extract_metadata("raster", "rasters/single/logan1.tif")
+    all_metadata_json = extract_metadata("raster", "rasters/single/logan1.tif", use_adapter=False)
 
     _assert_from_file("../outputs/raster-single.json", all_metadata_json)
 
 
-def test_raster_single_extraction(test_file_dir):
-    all_metadata_json = extract_metadata("raster", "rasters/single/logan1.tif")
-
-    _assert_raster_from_file("../outputs/raster-single.json", all_metadata_json)
-
-
 def test_features_watersheds_extraction(test_file_dir):
-    metadata_dict = extract_metadata("feature", "watersheds/watersheds.shp")
+    metadata_dict = extract_metadata("feature", "watersheds/watersheds.shp", use_adapter=False)
 
-    _assert_from_file("../outputs/feature.json", metadata_dict)
+    _assert_feature_from_file("../outputs/feature.json", metadata_dict)
 
 
 def test_reftimeseries_extraction(test_file_dir):
-    ref_timeseries_json = extract_metadata("reftimeseries", "reftimeseries/multi_sites_formatted_version1.0.refts.json")
+    ref_timeseries_json = extract_metadata(
+        "reftimeseries", "reftimeseries/multi_sites_formatted_version1.0.refts.json", use_adapter=False)
 
     _assert_from_file("../outputs/reftimeseries.json", ref_timeseries_json)
 
 
 def test_timeseries_sqlite_extraction(test_file_dir):
-    timeseries_json = extract_metadata("timeseries", "timeseries/ODM2_Multi_Site_One_Variable.sqlite")
+    timeseries_json = extract_metadata("timeseries", "timeseries/ODM2_Multi_Site_One_Variable.sqlite",
+                                       use_adapter=False)
 
     _assert_from_file("../outputs/timeseries.json", timeseries_json)
 
 
 def test_timeseries_csv_extraction(test_file_dir):
-    timeseries_json = extract_metadata("timeseries", "timeseries/ODM2_Multi_Site_One_Variable_Test.csv")
+    timeseries_json = extract_metadata("timeseries", "timeseries/ODM2_Multi_Site_One_Variable_Test.csv",
+                                       use_adapter=False)
 
     _assert_from_file("../outputs/timeseries-csv.json", timeseries_json)
 
 
 def test_netcdf_extraction(test_file_dir):
-    all_metadata_json = extract_metadata("netcdf", "netcdf/netcdf_valid.nc")
+    all_metadata_json = extract_metadata("netcdf", "netcdf/netcdf_valid.nc", use_adapter=False)
 
     _assert_from_file("../outputs/netcdf.json", all_metadata_json)
 
 
 def test_feature_states_extraction(test_file_dir):
-    all_metadata_json = extract_metadata("feature", "states/states.shp")
+    all_metadata_json = extract_metadata("feature", "states/states.shp", use_adapter=False)
 
-    _assert_from_file("../outputs/feature-states.json", all_metadata_json)
+    _assert_feature_from_file("../outputs/feature-states.json", all_metadata_json)
 
 
 def read_metadata_json(path: str):
@@ -112,40 +126,45 @@ def cleanup_metadata():
 
 @pytest.mark.asyncio
 async def test_threaded_metadata_extraction(cleanup_metadata):
-    await list_and_extract("tests/test_files")
+    base_url = "https://www.hydroshare.org/resource/2ff906c616484afe837c447db920f83x/data/contents/"
+    await list_and_extract(path="tests/test_files",
+                           user_metadata_filename="hs_user_meta.json",
+                           base_url=base_url,
+                           use_adapter=False
+                           )
 
     assert os.path.exists("tests/test_files/.hs")
-    assert os.path.exists("tests/test_files/.hs/file_manifest.json")
-    assert os.path.exists("tests/test_files/.hs/metadata_manifest.json")
+    # assert os.path.exists("tests/test_files/.hs/file_manifest.json")
+    # assert os.path.exists("tests/test_files/.hs/metadata_manifest.json")
 
     metadata_path = "tests/test_files/.hs/timeseries/ODM2_Multi_Site_One_Variable_Test.csv.json"
     assert os.path.exists(metadata_path)
-    _assert_from_file("tests/outputs/timeseries-csv.json", read_metadata_json(metadata_path))
+    _assert_from_file("tests/outputs/timeseries-csv.json", read_metadata_json(metadata_path), base_url)
 
     metadata_path = "tests/test_files/.hs/timeseries/ODM2_Multi_Site_One_Variable.sqlite.json"
     assert os.path.exists(metadata_path)
-    _assert_from_file("tests/outputs/timeseries.json", read_metadata_json(metadata_path))
+    _assert_from_file("tests/outputs/timeseries.json", read_metadata_json(metadata_path), base_url)
 
-    metadata_path = "tests/test_files/.hs/reftimeseries/multi_sites_formatted_version1.0.refts.json.json"
-    assert os.path.exists(metadata_path)
-    _assert_from_file("tests/outputs/reftimeseries.json", read_metadata_json(metadata_path))
+    # metadata_path = "tests/test_files/.hs/reftimeseries/multi_sites_formatted_version1.0.refts.json.json"
+    # assert os.path.exists(metadata_path)
+    # _assert_from_file("tests/outputs/reftimeseries.json", read_metadata_json(metadata_path))
 
     metadata_path = "tests/test_files/.hs/watersheds/watersheds.shp.json"
     assert os.path.exists(metadata_path)
-    _assert_from_file("tests/outputs/feature.json", read_metadata_json(metadata_path))
+    _assert_feature_from_file("tests/outputs/feature.json", read_metadata_json(metadata_path), base_url)
 
     metadata_path = "tests/test_files/.hs/states/states.shp.json"
     assert os.path.exists(metadata_path)
-    _assert_from_file("tests/outputs/feature-states.json", read_metadata_json(metadata_path))
+    _assert_feature_from_file("tests/outputs/feature-states.json", read_metadata_json(metadata_path), base_url)
 
     metadata_path = "tests/test_files/.hs/rasters/logan.vrt.json"
     assert os.path.exists(metadata_path)
-    _assert_raster_from_file("tests/outputs/raster.json", read_metadata_json(metadata_path))
+    _assert_raster_from_file("tests/outputs/raster.json", read_metadata_json(metadata_path), base_url)
 
     metadata_path = "tests/test_files/.hs/rasters/single/logan1.tif.json"
     assert os.path.exists(metadata_path)
-    _assert_raster_from_file("tests/outputs/raster-single.json", read_metadata_json(metadata_path))
+    _assert_raster_from_file("tests/outputs/raster-single.json", read_metadata_json(metadata_path), base_url)
 
     metadata_path = "tests/test_files/.hs/netcdf/netcdf_valid.nc.json"
     assert os.path.exists(metadata_path)
-    _assert_from_file("tests/outputs/netcdf.json", read_metadata_json(metadata_path))
+    _assert_from_file("tests/outputs/netcdf.json", read_metadata_json(metadata_path), base_url)

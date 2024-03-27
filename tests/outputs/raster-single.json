@@ -34,12 +34,13 @@
     "variable_name": "",
     "variable_unit": ""
   },
-  "files": [
+  "associatedMedia": [
     {
-      "path": "rasters/single/logan1.tif",
-      "size": 100749,
-      "checksum": "bebc0e5333d575b775cda48d6d27a21c",
-      "mime_type": "image/tiff"
+      "contentUrl": "rasters/single/logan1.tif",
+      "contentSize": "100.749 KB",
+      "sha256": "830f4b50e78e8a8fb0f7eee7369171dacbcaa43cc2c4deb59cef8e4fd2f641c5",
+      "encodingFormat": "image/tiff",
+      "name": "logan1.tif"
     }
   ]
 }

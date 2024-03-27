@@ -301,12 +301,13 @@
       }
     }
   ],
-  "files": [
+  "associatedMedia": [
     {
-      "path": "timeseries/ODM2_Multi_Site_One_Variable.sqlite",
-      "size": 1894400,
-      "checksum": "12aa820cbd1d28d926ec6d28f0202659",
-      "mime_type": null
+      "contentUrl": "timeseries/ODM2_Multi_Site_One_Variable.sqlite",
+      "contentSize": "1894.4 KB",
+      "sha256": "2fba6f2ebac562dac6a57acf0fdc5fdfabc9654b3c910aa6ef69cf4385997e19",
+      "encodingFormat": null,
+      "name": "ODM2_Multi_Site_One_Variable.sqlite"
     }
   ]
 }
