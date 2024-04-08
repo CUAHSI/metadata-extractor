@@ -269,6 +269,8 @@ class _HydroshareResourceMetadata(BaseModel):
         return provider
 
     def to_catalog_dataset(self):
+        # TODO: In place of CoreMetadataDOC, may have to use the new HSResourceMetadataDOC
+        #  schema (see cataloapi for this schema)
         dataset = CoreMetadataDOC.construct()
         dataset.provider = self.to_dataset_provider()
         dataset.name = self.title
@@ -361,7 +363,7 @@ class _NetCDFAggregationMetadata(BaseModel):
         aggregation_metadata = schema.NetCDFAggregationMetadata.construct()
         aggregation_metadata.name = self.title
         aggregation_metadata.description = self.abstract
-        aggregation_metadata.creator = self.creator.to_dataset_creator()
+        aggregation_metadata.creator = [self.creator.to_dataset_creator()]
         aggregation_metadata.keywords = self.to_aggregation_keywords()
         aggregation_metadata.spatialCoverage = self.to_aggregation_spatial_coverage()
         aggregation_metadata.temporalCoverage = self.to_aggregation_period_coverage()

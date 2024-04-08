@@ -47,7 +47,7 @@ def extract_metadata(type: str, filepath, use_adapter=True):
     try:
         extracted_metadata = _extract_metadata(type, filepath)
     except Exception as e:
-        logging.exception(f"Failed to extract {type} metadata from {filepath}.")
+        logging.exception(f"Failed to extract {type} metadata from {filepath}. Error: {str(e)}")
         return None
     adapter = HydroshareMetadataAdapter()
     all_file_metadata = []
