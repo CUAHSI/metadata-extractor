@@ -155,6 +155,13 @@ class IsPartOf(CreativeWork):
     )
 
 
+class MediaObjectPartOf(CreativeWork):
+    url: Optional[HttpUrl] = Field(title="URL", description="The URL address to the related metadata document.")
+    description: Optional[str] = Field(
+        description="Information about a related metadata document."
+    )
+
+
 class SubjectOf(CreativeWork):
     url: Optional[HttpUrl] = Field(
         title="URL",
@@ -386,6 +393,10 @@ class MediaObject(SchemaBaseModel):
     )
     name: str = Field(description="The name of the media object (file).")
     sha256: Optional[str] = Field(title="SHA-256", description="The SHA-256 hash of the media object.")
+    isPartOf: Optional[MediaObjectPartOf] = Field(
+        title="Is part of",
+        description="Link to or citation for a related metadata document that this media object is a part of",
+    )
 
     @validator('contentSize')
     def validate_content_size(cls, v):
