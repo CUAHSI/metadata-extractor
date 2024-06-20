@@ -22,6 +22,33 @@ from hsextract.timeseries.utils import extract_metadata as extract_timeseries_me
 from hsextract.file_utils import file_metadata
 
 
+def is_file_path(filepath: str):
+    if not os.path.isfile(filepath):
+        logging.error(f"{filepath} is not a file or doesn't exist.")
+        return False
+    return True
+
+
+def is_dir_path(dirpath: str):
+    if not os.path.isdir(dirpath):
+        logging.error(f"{dirpath} is not a directory or doesn't exist.")
+        return False
+    return True
+
+
+def save_metadata(path: str, metadata_dict: dict):
+    file_name = Path(path).name
+    metadata_file_name = Path(file_name + ".json")
+    # save the metadata file in '.hs' folder relative to the directory of the input file
+    metadata_file_path = Path(path).parent / ".hs" / metadata_file_name
+    # create the '.hs' directory
+    metadata_file_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(metadata_file_path, "w") as f:
+        json.dump(metadata_dict, f, indent=2)
+
+    print(f"Metadata was saved to file path: {metadata_file_path}")
+
+
 def _to_metadata_path(filepath: str, user_metadata_filename: str):
     if not filepath.endswith(user_metadata_filename):
         return os.path.join(".hs", filepath + ".json")
@@ -42,6 +69,9 @@ def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_file
 def extract_metadata(type: str, filepath, use_adapter=True):
     # use_adapter is a flag to determine if the metadata should be converted to a catalog record
     # it is set to False in tests when testing for the raw extracted metadata
+
+    print(f">> Extracting {type} metadata from {filepath}", flush=True)
+    logging.info(f"Extracting {type} metadata from {filepath}")
 
     extension = os.path.splitext(filepath)[1]
     try:
