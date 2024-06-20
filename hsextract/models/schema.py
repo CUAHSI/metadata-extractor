@@ -229,17 +229,16 @@ class TemporalCoverage(SchemaBaseModel):
         title="Start date",
         description="A date/time object containing the instant corresponding to the commencement of the time "
         "interval (ISO8601 formatted date - YYYY-MM-DDTHH:MM).",
-        # TODO: these are failing due to a problem with transpiled dependencies inside cznet-vue-core
-        # formatMaximum={"$data": "1/endDate"},
-        # errorMessage= { "formatMaximum": "must be lesser than or equal to End date" }
+        formatMaximum={"$data": "1/endDate"},
+        errorMessage={"formatMaximum": "must be lesser than or equal to End date"}
     )
     endDate: Optional[datetime] = Field(
         title="End date",
         description="A date/time object containing the instant corresponding to the termination of the time "
         "interval (ISO8601 formatted date - YYYY-MM-DDTHH:MM). If the ending date is left off, "
         "that means the temporal coverage is ongoing.",
-        # formatMinimum={"$data": "1/startDate"},
-        # errorMessage= { "formatMinimum": "must be greater than or equal to Start date" }
+        formatMinimum={"$data": "1/startDate"},
+        errorMessage={"formatMinimum": "must be greater than or equal to Start date"}
     )
 
 
@@ -462,13 +461,13 @@ class CoreMetadata(SchemaBaseModel):
         "assigned by a repository. Multiple identifiers can be entered. Where identifiers can be "
         "encoded as URLs, enter URLs here.",
     )
-    creator: List[Union[Creator, Organization]] = Field(description="Person or Organization that created the resource.")
-    dateCreated: datetime = Field(title="Date created", description="The date on which the resource was created.")
-    keywords: List[str] = Field(
+    creator: Optional[List[Union[Creator, Organization]]] = Field(description="Person or Organization that created the resource.")
+    dateCreated: Optional[datetime] = Field(title="Date created", description="The date on which the resource was created.")
+    keywords: Optional[List[str]] = Field(
         min_items=1, description="Keywords or tags used to describe the dataset, delimited by commas."
     )
-    license: License = Field(description="A license document that applies to the resource.")
-    provider: Union[Organization, Provider] = Field(
+    license: Optional[License] = Field(description="A license document that applies to the resource.")
+    provider: Optional[Union[Organization, Provider]] = Field(
         description="The repository, service provider, organization, person, or service performer that provides"
         " access to the resource."
     )
