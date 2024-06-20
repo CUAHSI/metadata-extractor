@@ -530,20 +530,8 @@ class CoreMetadata(SchemaBaseModel):
     citation: Optional[List[str]] = Field(title="Citation", description="A bibliographic citation for the resource.")
 
 
-class DatasetMetadata(CoreMetadata):
-    # used only for generating the JSON-LD schema for a dataset.
-    variableMeasured: Optional[List[Union[str, PropertyValue]]] = Field(
-        title="Variables measured", description="Measured variables."
-    )
-    additionalProperty: Optional[List[PropertyValue]] = Field(
-        title="Additional properties",
-        default=[],
-        description="Additional properties of the Dataset."
-    )
-    sourceOrganization: Optional[Organization] = Field(
-        title="Source organization",
-        description="The organization that provided the data for this dataset."
-    )
+class HSResourceMetadata(CoreMetadata):
+    pass
 
 
 class CoreMetadataDOC(CoreMetadata):
@@ -560,11 +548,11 @@ class CoreMetadataDOC(CoreMetadata):
         }
 
 
-class DatasetMetadataDOC(CoreMetadataDOC, DatasetMetadata):
+class HSResourceMetadataDOC(CoreMetadataDOC, HSResourceMetadata):
     pass
 
 
-class BaseAggregationMetadata(BaseModel):
+class _BaseAggregationMetadata(BaseModel):
     """Base class for aggregation metadata - used for metadata view in UI."""
 
     context: HttpUrl = Field(
@@ -617,7 +605,7 @@ class BaseAggregationMetadata(BaseModel):
     )
 
 
-class NetCDFAggregationMetadata(BaseAggregationMetadata):
+class NetCDFAggregationMetadata(_BaseAggregationMetadata):
     additionalType: str = Field(
         default="Multidimensional Dataset",
         const=True,
@@ -628,7 +616,7 @@ class NetCDFAggregationMetadata(BaseAggregationMetadata):
     )
 
 
-class RasterAggregationMetadata(BaseAggregationMetadata):
+class RasterAggregationMetadata(_BaseAggregationMetadata):
     additionalType: str = Field(
         default="Geo Raster Dataset",
         const=True,
@@ -636,7 +624,7 @@ class RasterAggregationMetadata(BaseAggregationMetadata):
     )
 
 
-class FeatureAggregationMetadata(BaseAggregationMetadata):
+class FeatureAggregationMetadata(_BaseAggregationMetadata):
     additionalType: str = Field(
         default="Geo Feature Dataset",
         const=True,
@@ -644,7 +632,7 @@ class FeatureAggregationMetadata(BaseAggregationMetadata):
     )
 
 
-class TimeseriesAggregationMetadata(BaseAggregationMetadata):
+class TimeseriesAggregationMetadata(_BaseAggregationMetadata):
     additionalType: str = Field(
         default="Timeseries Dataset",
         const=True,
