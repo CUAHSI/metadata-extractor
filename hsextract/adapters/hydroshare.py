@@ -3,7 +3,7 @@ from typing import Any, List, Optional, Union
 from pydantic import BaseModel, EmailStr, HttpUrl, validator
 from hsextract.adapters.utils import RepositoryType
 from hsextract.models import schema
-from hsextract.models.schema import CoreMetadataDOC
+from hsextract.models.schema import HSResourceMetadataDOC
 
 
 class Creator(BaseModel):
@@ -269,9 +269,7 @@ class _HydroshareResourceMetadata(BaseModel):
         return provider
 
     def to_catalog_dataset(self):
-        # TODO: In place of CoreMetadataDOC, may have to use the new HSResourceMetadataDOC
-        #  schema (see cataloapi for this schema)
-        dataset = CoreMetadataDOC.construct()
+        dataset = HSResourceMetadataDOC.construct()
         dataset.provider = self.to_dataset_provider()
         dataset.name = self.title
         dataset.description = self.abstract
