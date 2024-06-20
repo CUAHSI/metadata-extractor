@@ -1,5 +1,5 @@
 import os
-from textwrap import indent
+import shutil
 from osgeo.gdalconst import GA_ReadOnly
 from osgeo import osr, gdal
 from collections import OrderedDict
@@ -24,6 +24,16 @@ def extract_from_tif_file(tif_file):
         tif_files = [os.path.join(full_path, f) for f in tif_files] + [tif_file]
     # file validation and metadaadatta extraction
     file_type_metadata = extract_metadata_from_vrt(filename)
+
+    # save the new vrt file to the location of the tif file
+    if ext != ".vrt":
+        vrt_file_path = Path(tif_file).parent / f"{Path(tif_file).stem}.vrt"
+        shutil.move(filename, vrt_file_path)
+        log_message = f">> A new vrt file was saved to {vrt_file_path}"
+        print(log_message)
+        logging.info(log_message)
+        tif_files += [str(vrt_file_path)]
+
     file_type_metadata["content_files"] = tif_files
 
     return file_type_metadata
