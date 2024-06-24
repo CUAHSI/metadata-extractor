@@ -1,18 +1,21 @@
-import typer
 import json
-
 from asyncio import run as aiorun
+from typing import Optional
 
-from hsextract.utils import list_and_extract, extract_metadata, is_file_path, is_dir_path, save_metadata
+import typer
 
+from hsextract.utils import list_and_extract, extract_metadata, is_file_path, is_dir_path, save_metadata, is_url
 
 app = typer.Typer()
 
 
-def _extract_metadata(path: str, file_type: str, generate_metadata_file: bool):
+def _extract_metadata(file_type: str, path: str, base_url: Optional[str] = None, generate_metadata_file: bool = False):
     if not is_file_path(path):
         return
-    metadata_dict = extract_metadata(file_type, path)
+    if base_url is not None and not is_url(base_url):
+        return
+
+    metadata_dict = extract_metadata(file_type, path, base_url)
     if metadata_dict is None:
         return
     if generate_metadata_file:
@@ -22,33 +25,33 @@ def _extract_metadata(path: str, file_type: str, generate_metadata_file: bool):
 
 
 @app.command()
-def feature(path: str, generate_metadata_file: bool = False):
-    _extract_metadata(path, "feature", generate_metadata_file)
+def feature(path: str, base_url: Optional[str] = None, generate_metadata_file: bool = False):
+    _extract_metadata("feature", path, base_url, generate_metadata_file)
 
 
 @app.command()
-def raster(path: str, generate_metadata_file: bool = False):
-    _extract_metadata(path, "raster", generate_metadata_file)
+def raster(path: str, base_url: Optional[str] = None, generate_metadata_file: bool = False):
+    _extract_metadata("raster", path, base_url, generate_metadata_file)
 
 
 @app.command()
-def reftimeseries(path: str, generate_metadata_file: bool = False):
-    _extract_metadata(path, "reftimeseries", generate_metadata_file)
+def reftimeseries(path: str, base_url: Optional[str] = None, generate_metadata_file: bool = False):
+    _extract_metadata("reftimeseries", path, base_url, generate_metadata_file)
 
 
 @app.command()
-def timeseries(path: str, generate_metadata_file: bool = False):
-    _extract_metadata(path, "timeseries", generate_metadata_file)
+def timeseries(path: str, base_url: Optional[str] = None, generate_metadata_file: bool = False):
+    _extract_metadata("timeseries", path, base_url, generate_metadata_file)
 
 
 @app.command()
-def timeseriescsv(path: str, generate_metadata_file: bool = False):
-    _extract_metadata(path, "timeseries", generate_metadata_file)
+def timeseriescsv(path: str, base_url: Optional[str] = None, generate_metadata_file: bool = False):
+    _extract_metadata("timeseries", path, base_url, generate_metadata_file)
 
 
 @app.command()
-def netcdf(path: str, generate_metadata_file: bool = False):
-    _extract_metadata(path, "netcdf", generate_metadata_file)
+def netcdf(path: str, base_url: Optional[str] = None, generate_metadata_file: bool = False):
+    _extract_metadata("netcdf", path, base_url, generate_metadata_file)
 
 
 async def _extract(path: str, user_metadata_filename: str, base_url: str):
