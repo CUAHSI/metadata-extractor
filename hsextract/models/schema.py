@@ -155,6 +155,13 @@ class IsPartOf(CreativeWork):
     )
 
 
+class MediaObjectPartOf(CreativeWork):
+    url: Optional[HttpUrl] = Field(title="URL", description="The URL address to the related metadata document.")
+    description: Optional[str] = Field(
+        description="Information about a related metadata document."
+    )
+
+
 class SubjectOf(CreativeWork):
     url: Optional[HttpUrl] = Field(
         title="URL",
@@ -222,17 +229,16 @@ class TemporalCoverage(SchemaBaseModel):
         title="Start date",
         description="A date/time object containing the instant corresponding to the commencement of the time "
         "interval (ISO8601 formatted date - YYYY-MM-DDTHH:MM).",
-        # TODO: these are failing due to a problem with transpiled dependencies inside cznet-vue-core
-        # formatMaximum={"$data": "1/endDate"},
-        # errorMessage= { "formatMaximum": "must be lesser than or equal to End date" }
+        formatMaximum={"$data": "1/endDate"},
+        errorMessage={"formatMaximum": "must be lesser than or equal to End date"}
     )
     endDate: Optional[datetime] = Field(
         title="End date",
         description="A date/time object containing the instant corresponding to the termination of the time "
         "interval (ISO8601 formatted date - YYYY-MM-DDTHH:MM). If the ending date is left off, "
         "that means the temporal coverage is ongoing.",
-        # formatMinimum={"$data": "1/startDate"},
-        # errorMessage= { "formatMinimum": "must be greater than or equal to Start date" }
+        formatMinimum={"$data": "1/startDate"},
+        errorMessage={"formatMinimum": "must be greater than or equal to Start date"}
     )
 
 
@@ -301,12 +307,64 @@ class GeoShape(SchemaBaseModel):
         return v
 
 
+class PropertyValueBase(SchemaBaseModel):
+    type: str = Field(
+        alias="@type",
+        default="PropertyValue",
+        const="PropertyValue",
+        description="A property-value pair.",
+    )
+    propertyID: Optional[str] = Field(
+        title="Property ID", description="The ID of the property."
+    )
+    name: str = Field(description="The name of the property.")
+    value: str = Field(description="The value of the property.")
+    unitCode: Optional[str] = Field(
+        title="Measurement unit", description="The unit of measurement for the value."
+    )
+    description: Optional[str] = Field(description="A description of the property.")
+    minValue: Optional[float] = Field(
+        title="Minimum value", description="The minimum allowed value for the property."
+    )
+    maxValue: Optional[float] = Field(
+        title="Maximum value", description="The maximum allowed value for the property."
+    )
+    measurementTechnique: Optional[str] = Field(
+        title="Measurement technique", description="A technique or technology used in a measurement."
+    )
+
+    class Config:
+        title = "PropertyValue"
+
+    @root_validator
+    def validate_min_max_values(cls, values):
+        min_value = values.get("minValue", None)
+        max_value = values.get("maxValue", None)
+        if min_value is not None and max_value is not None:
+            if min_value > max_value:
+                raise ValueError("Minimum value must be less than or equal to maximum value")
+
+        return values
+
+
+class PropertyValue(PropertyValueBase):
+    # using PropertyValueBase model instead of PropertyValue model as one of the types for the value field
+    # in order for the schema generation (schema.json) to work. Self referencing nested models leads to
+    # infinite loop in our custom schema generation code when trying to replace dict with key '$ref'
+    value: Union[str, PropertyValueBase, List[PropertyValueBase]] = Field(description="The value of the property.")
+
+
 class Place(SchemaBaseModel):
     type: str = Field(alias="@type", default="Place", description="Represents the focus area of the record's content.")
     name: Optional[str] = Field(description="Name of the place.")
     geo: Optional[Union[GeoCoordinates, GeoShape]] = Field(
         description="Specifies the geographic coordinates of the place in the form of a point location, line, "
         "or area coverage extent."
+    )
+    additionalProperty: Optional[List[PropertyValue]] = Field(
+        title="Additional properties",
+        default=[],
+        description="Additional properties of the location/place."
     )
 
     @root_validator
@@ -324,7 +382,7 @@ class MediaObject(SchemaBaseModel):
         title="Content URL",
         description="The direct URL link to access or download the actual content of the media object.",
     )
-    encodingFormat: str = Field(
+    encodingFormat: Optional[str] = Field(
         title="Encoding format", description="Represents the specific file format in which the media is encoded."
     )  # TODO enum for encoding formats
     contentSize: str = Field(
@@ -333,7 +391,11 @@ class MediaObject(SchemaBaseModel):
         "unit of measurement.",
     )
     name: str = Field(description="The name of the media object (file).")
-    checksum: str = Field(description="The MD5 checksum of the file")
+    sha256: Optional[str] = Field(title="SHA-256", description="The SHA-256 hash of the media object.")
+    isPartOf: Optional[MediaObjectPartOf] = Field(
+        title="Is part of",
+        description="Link to or citation for a related metadata document that this media object is a part of",
+    )
 
     @validator('contentSize')
     def validate_content_size(cls, v):
@@ -399,13 +461,13 @@ class CoreMetadata(SchemaBaseModel):
         "assigned by a repository. Multiple identifiers can be entered. Where identifiers can be "
         "encoded as URLs, enter URLs here.",
     )
-    creator: List[Union[Creator, Organization]] = Field(description="Person or Organization that created the resource.")
-    dateCreated: datetime = Field(title="Date created", description="The date on which the resource was created.")
-    keywords: List[str] = Field(
+    creator: Optional[List[Union[Creator, Organization]]] = Field(description="Person or Organization that created the resource.")
+    dateCreated: Optional[datetime] = Field(title="Date created", description="The date on which the resource was created.")
+    keywords: Optional[List[str]] = Field(
         min_items=1, description="Keywords or tags used to describe the dataset, delimited by commas."
     )
-    license: License = Field(description="A license document that applies to the resource.")
-    provider: Union[Organization, Provider] = Field(
+    license: Optional[License] = Field(description="A license document that applies to the resource.")
+    provider: Optional[Union[Organization, Provider]] = Field(
         description="The repository, service provider, organization, person, or service performer that provides"
         " access to the resource."
     )
@@ -468,8 +530,7 @@ class CoreMetadata(SchemaBaseModel):
     citation: Optional[List[str]] = Field(title="Citation", description="A bibliographic citation for the resource.")
 
 
-class DatasetSchema(CoreMetadata):
-    # used only for generating the JSON-LD schema for a dataset.
+class HSResourceMetadata(CoreMetadata):
     pass
 
 
@@ -485,3 +546,95 @@ class CoreMetadataDOC(CoreMetadata):
                 year=dt.year, month=dt.month, day=dt.day, hour=dt.hour, minute=dt.minute, second=dt.second
             ),
         }
+
+
+class HSResourceMetadataDOC(CoreMetadataDOC, HSResourceMetadata):
+    pass
+
+
+class _BaseAggregationMetadata(BaseModel):
+    """Base class for aggregation metadata - used for metadata view in UI."""
+
+    context: HttpUrl = Field(
+        alias='@context',
+        default='https://schema.org',
+        description="Specifies the vocabulary employed for understanding the structured data markup.",
+    )
+    type: str = Field(
+        alias="@type",
+        default="Dataset",
+        const=True,
+        description="The type of aggregation."
+    )
+    additionalType: Optional[str] = Field(
+        title="Additional type of aggregation",
+        const=True,
+        description="An additional type for the aggregation.")
+    name: Optional[str] = Field(
+        description="A text string with a descriptive name or title for the aggregation."
+    )
+    description: Optional[str] = Field(
+        description="A text string containing a description/abstract for the aggregation."
+    )
+    creator: Optional[List[Union[Creator, Organization]]] = Field(
+        description="Person or Organization that created the dataset."
+    )
+    keywords: Optional[List[str]] = Field(
+        min_items=0,
+        description="Keywords or tags used to describe the dataset, delimited by commas."
+    )
+    associatedMedia: Optional[List[MediaObject]] = Field(
+        title="Aggregation content",
+        description="A media object that encodes this aggregation."
+    )
+    spatialCoverage: Optional[Place] = Field(
+        description="The spatialCoverage of a CreativeWork indicates the place(s) which are the focus of the content. "
+                    "It is a sub property of contentLocation intended primarily for more technical and "
+                    "detailed materials. For example with a Dataset, it indicates areas that the dataset "
+                    "describes: a dataset of New York weather would have spatialCoverage which was the "
+                    "place: the state of New York."
+    )
+    temporalCoverage: Optional[TemporalCoverage] = Field(
+        title="Temporal coverage",
+        description="The time period that applies to all of the content within the aggregation."
+    )
+    additionalProperty: Optional[List[PropertyValue]] = Field(
+        title="Additional properties",
+        default=[],
+        description="Additional properties of the aggregation."
+    )
+
+
+class NetCDFAggregationMetadata(_BaseAggregationMetadata):
+    additionalType: str = Field(
+        default="Multidimensional Dataset",
+        const=True,
+        description="Additional type of aggregation."
+    )
+    variableMeasured: Optional[List[Union[str, PropertyValue]]] = Field(
+        title="Variables measured", description="Measured variables."
+    )
+
+
+class RasterAggregationMetadata(_BaseAggregationMetadata):
+    additionalType: str = Field(
+        default="Geo Raster Dataset",
+        const=True,
+        description="Additional type of aggregation."
+    )
+
+
+class FeatureAggregationMetadata(_BaseAggregationMetadata):
+    additionalType: str = Field(
+        default="Geo Feature Dataset",
+        const=True,
+        description="Additional type of aggregation."
+    )
+
+
+class TimeseriesAggregationMetadata(_BaseAggregationMetadata):
+    additionalType: str = Field(
+        default="Timeseries Dataset",
+        const=True,
+        description="Additional type of aggregation."
+    )

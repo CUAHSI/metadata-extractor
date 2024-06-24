@@ -2,10 +2,17 @@ import asyncio
 import os
 import json
 import logging
-
+from typing import Optional
+from urllib.parse import urlparse
 from pathlib import Path
 
-from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
+from hsextract.adapters.hydroshare import (
+    HydroshareMetadataAdapter,
+    NetCDFAggregationMetadataAdapter,
+    RasterAggregationMetadataAdapter,
+    FeatureAggregationMetadataAdapter,
+    TimeseriesAggregationMetadataAdapter,
+)
 from hsextract.listing.utils import prepare_files
 from hsextract.models.schema import CoreMetadataDOC
 from hsextract.raster.utils import extract_from_tif_file
@@ -16,6 +23,47 @@ from hsextract.timeseries.utils import extract_metadata as extract_timeseries_me
 from hsextract.file_utils import file_metadata
 
 
+def is_url(url: str):
+    try:
+        result = urlparse(url)
+        valid = all([result.scheme, result.netloc])
+        if not valid:
+            logging.error(f"{url} is not a valid URL.")
+        return valid
+    except ValueError:
+        logging.error(f"{url} is not a valid URL.")
+        return False
+
+
+def is_file_path(filepath: str):
+    if not os.path.isfile(filepath):
+        logging.error(f"{filepath} is not a file or doesn't exist.")
+        return False
+    return True
+
+
+def is_dir_path(dirpath: str):
+    if not os.path.isdir(dirpath):
+        logging.error(f"{dirpath} is not a directory or doesn't exist.")
+        return False
+    return True
+
+
+def save_metadata(path: str, metadata_dict: dict):
+    file_name = Path(path).name
+    metadata_file_name = Path(file_name + ".json")
+    # save the metadata file in '.hs' folder relative to the directory of the input file
+    metadata_file_path = Path(path).parent / ".hs" / metadata_file_name
+    # create the '.hs' directory
+    metadata_file_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(metadata_file_path, "w") as f:
+        json.dump(metadata_dict, f, indent=2)
+
+    message = f"Metadata was saved to file path: {metadata_file_path}"
+    print(message, flush=True)
+    logging.info(message)
+
+
 def _to_metadata_path(filepath: str, user_metadata_filename: str):
     if not filepath.endswith(user_metadata_filename):
         return os.path.join(".hs", filepath + ".json")
@@ -23,8 +71,8 @@ def _to_metadata_path(filepath: str, user_metadata_filename: str):
     return os.path.join(".hs", dirname, "dataset_metadata.json")
 
 
-def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_filename: str):
-    extracted_metadata = extract_metadata(type, filepath)
+def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_filename: str, use_adapter=True):
+    extracted_metadata = extract_metadata(type=type, filepath=filepath, use_adapter=use_adapter)
     if extracted_metadata:
         filepath = _to_metadata_path(filepath, user_metadata_filename)
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
@@ -33,25 +81,47 @@ def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_file
     return filepath, extracted_metadata is not None
 
 
-def extract_metadata(type: str, filepath):
+def extract_metadata(type: str, filepath: str, base_url: Optional[str] = None, use_adapter=True):
+    # use_adapter is a flag to determine if the metadata should be converted to a catalog record
+    # it is set to False in tests when testing for the raw extracted metadata
+
+    message = f"Extracting {type} metadata from {filepath}"
+    print(message, flush=True)
+    logging.info(message)
+
+    extension = os.path.splitext(filepath)[1]
     try:
         extracted_metadata = _extract_metadata(type, filepath)
     except Exception as e:
-        logging.exception(f"Failed to extract {type} metadata from {filepath}.")
+        logging.exception(f"Failed to extract {type} metadata from {filepath}. Error: {str(e)}")
         return None
     adapter = HydroshareMetadataAdapter()
     all_file_metadata = []
     for f in extracted_metadata["content_files"]:
-        f_md, _ = file_metadata(f)
+        f_md, _ = file_metadata(path=f, base_url=base_url)
         all_file_metadata.append(f_md)
     del extracted_metadata["content_files"]
     if type == "user_meta":
         extracted_metadata["associatedMedia"] = all_file_metadata
+        # user specified metadata is not extracted - so always use the core metadata adapter
         return json.loads(CoreMetadataDOC.construct(**extracted_metadata).json())
     else:
         extracted_metadata["associatedMedia"] = all_file_metadata
-        catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
-        return catalog_record
+        if use_adapter:
+            if type == 'raster':
+                adapter = RasterAggregationMetadataAdapter()
+            elif type == "netcdf":
+                adapter = NetCDFAggregationMetadataAdapter()
+            elif type == "feature":
+                adapter = FeatureAggregationMetadataAdapter()
+            elif type == "timeseries" and extension == ".sqlite":
+                # TODO: Add support for timeseries csv metadata extraction
+                adapter = TimeseriesAggregationMetadataAdapter()
+
+            catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
+            return catalog_record
+        else:
+            return extracted_metadata
 
 
 def _extract_metadata(type: str, filepath):
@@ -59,6 +129,8 @@ def _extract_metadata(type: str, filepath):
     metadata = None
     if type == "raster":
         metadata = extract_from_tif_file(filepath)
+        # convert ordered dict to dict
+        metadata["cell_information"] = dict(metadata["cell_information"])
     elif type == "feature":
         metadata = extract_metadata_and_files(filepath)
     elif type == "netcdf":
@@ -85,7 +157,10 @@ def _extract_metadata(type: str, filepath):
     return metadata
 
 
-async def list_and_extract(path: str, user_metadata_filename: str, base_url: str):
+async def list_and_extract(path: str, user_metadata_filename: str, base_url: str, use_adapter=True):
+    if not is_url(base_url):
+        return
+
     current_directory = os.getcwd()
     try:
         os.chdir(path)
@@ -101,7 +176,8 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
             for file in files:
                 tasks.append(
                     asyncio.get_running_loop().run_in_executor(
-                        None, extract_metadata_with_file_path, category, file, user_metadata_filename
+                        None, extract_metadata_with_file_path, category, file, user_metadata_filename,
+                        use_adapter
                     )
                 )
 
@@ -114,7 +190,7 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
 
         # The netcdf library does not seem to be thread safe, running them in this thread
         for file in netcdf_files:
-            results.append(extract_metadata_with_file_path("netcdf", file, user_metadata_filename))
+            results.append(extract_metadata_with_file_path("netcdf", file, user_metadata_filename, use_adapter))
 
         metadata_manifest = [
             {file_path: f"{file_path}.json"}
@@ -224,5 +300,8 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
             with open(meta_manifest_file, "w") as f:
                 f.write(json.dumps(metadata, indent=2))
 
+        message = f"Generated metadata files saved at {path}/.hs"
+        print(message, flush=True)
+        logging.info(message)
     finally:
         os.chdir(current_directory)

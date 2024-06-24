@@ -81,12 +81,13 @@
     "projection_string": "+proj=tmerc +y_0=0.0 +x_0=500000.0 +k_0=0.9996 +lat_0=0.0 +lon_0=-111.0",
     "datum": ""
   },
-  "files": [
+  "associatedMedia": [
     {
-      "path": "netcdf/netcdf_valid.nc",
-      "size": 4869898,
-      "checksum": "970c1171f2445d6d76b606feaa5f2e5c",
-      "mime_type": "application/x-netcdf"
+      "contentUrl": "netcdf/netcdf_valid.nc",
+      "contentSize": 4869898,
+      "sha256": "970c1171f2445d6d76b606feaa5f2e5c",
+      "encodingFormat": "application/x-netcdf",
+      "name": "netcdf_valid.nc"
     }
   ]
 }
