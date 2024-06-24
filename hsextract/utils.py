@@ -2,7 +2,8 @@ import asyncio
 import os
 import json
 import logging
-
+from typing import Optional
+from urllib.parse import urlparse
 from pathlib import Path
 
 from hsextract.adapters.hydroshare import (
@@ -20,6 +21,18 @@ from hsextract.netcdf.utils import get_nc_meta_dict
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata, extract_metadata_csv
 from hsextract.file_utils import file_metadata
+
+
+def is_url(url: str):
+    try:
+        result = urlparse(url)
+        valid = all([result.scheme, result.netloc])
+        if not valid:
+            logging.error(f"{url} is not a valid URL.")
+        return valid
+    except ValueError:
+        logging.error(f"{url} is not a valid URL.")
+        return False
 
 
 def is_file_path(filepath: str):
@@ -57,7 +70,7 @@ def _to_metadata_path(filepath: str, user_metadata_filename: str):
 
 
 def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_filename: str, use_adapter=True):
-    extracted_metadata = extract_metadata(type, filepath, use_adapter)
+    extracted_metadata = extract_metadata(type=type, filepath=filepath, use_adapter=use_adapter)
     if extracted_metadata:
         filepath = _to_metadata_path(filepath, user_metadata_filename)
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
@@ -142,6 +155,9 @@ def _extract_metadata(type: str, filepath):
 
 
 async def list_and_extract(path: str, user_metadata_filename: str, base_url: str, use_adapter=True):
+    if not is_url(base_url):
+        return
+
     current_directory = os.getcwd()
     try:
         os.chdir(path)
@@ -281,5 +297,8 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
             with open(meta_manifest_file, "w") as f:
                 f.write(json.dumps(metadata, indent=2))
 
+        message = f"Generated metadata files saved at {path}/.hs"
+        print(message, flush=True)
+        logging.info(message)
     finally:
         os.chdir(current_directory)
