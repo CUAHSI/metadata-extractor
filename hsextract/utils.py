@@ -59,7 +59,9 @@ def save_metadata(path: str, metadata_dict: dict):
     with open(metadata_file_path, "w") as f:
         json.dump(metadata_dict, f, indent=2)
 
-    print(f"Metadata was saved to file path: {metadata_file_path}")
+    message = f"Metadata was saved to file path: {metadata_file_path}"
+    print(message, flush=True)
+    logging.info(message)
 
 
 def _to_metadata_path(filepath: str, user_metadata_filename: str):
@@ -79,12 +81,13 @@ def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_file
     return filepath, extracted_metadata is not None
 
 
-def extract_metadata(type: str, filepath, use_adapter=True):
+def extract_metadata(type: str, filepath: str, base_url: Optional[str] = None, use_adapter=True):
     # use_adapter is a flag to determine if the metadata should be converted to a catalog record
     # it is set to False in tests when testing for the raw extracted metadata
 
-    print(f">> Extracting {type} metadata from {filepath}", flush=True)
-    logging.info(f"Extracting {type} metadata from {filepath}")
+    message = f"Extracting {type} metadata from {filepath}"
+    print(message, flush=True)
+    logging.info(message)
 
     extension = os.path.splitext(filepath)[1]
     try:
@@ -95,7 +98,7 @@ def extract_metadata(type: str, filepath, use_adapter=True):
     adapter = HydroshareMetadataAdapter()
     all_file_metadata = []
     for f in extracted_metadata["content_files"]:
-        f_md, _ = file_metadata(f)
+        f_md, _ = file_metadata(path=f, base_url=base_url)
         all_file_metadata.append(f_md)
     del extracted_metadata["content_files"]
     if type == "user_meta":
