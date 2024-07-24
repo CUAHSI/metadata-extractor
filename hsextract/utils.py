@@ -23,8 +23,8 @@ def _to_metadata_path(filepath: str, user_metadata_filename: str):
     return os.path.join(".hs", dirname, "dataset_metadata.json")
 
 
-def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_filename: str):
-    extracted_metadata = extract_metadata(type, filepath)
+def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_filename: str, base_url: str):
+    extracted_metadata = extract_metadata(type, filepath, base_url)
     if extracted_metadata:
         filepath = _to_metadata_path(filepath, user_metadata_filename)
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
@@ -33,12 +33,13 @@ def extract_metadata_with_file_path(type: str, filepath: str, user_metadata_file
     return filepath, extracted_metadata is not None
 
 
-def extract_metadata(type: str, filepath):
+def extract_metadata(type: str, filepath, base_url: str):
     try:
         extracted_metadata = _extract_metadata(type, filepath)
     except Exception as e:
         logging.exception(f"Failed to extract {type} metadata from {filepath}.")
         return None
+    extracted_metadata["url"] = base_url + filepath
     adapter = HydroshareMetadataAdapter()
     all_file_metadata = []
     for f in extracted_metadata["content_files"]:
@@ -101,7 +102,7 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
             for file in files:
                 tasks.append(
                     asyncio.get_running_loop().run_in_executor(
-                        None, extract_metadata_with_file_path, category, file, user_metadata_filename
+                        None, extract_metadata_with_file_path, category, file, user_metadata_filename, base_url
                     )
                 )
 
@@ -114,7 +115,7 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
 
         # The netcdf library does not seem to be thread safe, running them in this thread
         for file in netcdf_files:
-            results.append(extract_metadata_with_file_path("netcdf", file, user_metadata_filename))
+            results.append(extract_metadata_with_file_path("netcdf", file, user_metadata_filename, base_url))
 
         metadata_manifest = [
             {file_path: f"{file_path}.json"}
@@ -122,9 +123,7 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
             if extracted and not file_path.endswith("dataset_metadata.json")
         ]
         dataset_metadata_files = [
-            file_path
-            for file_path, extracted in results
-            if extracted and file_path.endswith("dataset_metadata.json")
+            file_path for file_path, extracted in results if extracted and file_path.endswith("dataset_metadata.json")
         ]
 
         dataset_metadata_files_metadata = {}
@@ -144,7 +143,9 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
             has_part = [
                 {
                     "@type": "CreativeWork",
-                    "name": dataset_metadata_files_metadata[metadata]["name"],
+                    "name": dataset_metadata_files_metadata[metadata]["name"]
+                    if dataset_metadata_files_metadata[metadata]["name"]
+                    else "Not Found and name is required",
                     "description": dataset_metadata_files_metadata[metadata]["description"],
                     "url": os.path.join(base_url, metadata),
                 }
@@ -154,10 +155,13 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
             for has_part_file in has_part_files:
                 with open(has_part_file, "r") as f:
                     metadata_json = json.loads(f.read())
+                    name = metadata_json["name"]
+                    if not name:
+                        name = "Not Found and name is required"
                     has_part.append(
                         {
                             "@type": "CreativeWork",
-                            "name": metadata_json["name"] if "name" in metadata_json else None,
+                            "name": name,
                             "description": metadata_json["description"] if "description" in metadata_json else None,
                             "url": os.path.join(base_url, has_part_file),
                         }

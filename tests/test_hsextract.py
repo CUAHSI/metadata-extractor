@@ -45,55 +45,67 @@ def test_file_dir():
 
 
 def test_rasters_extraction(test_file_dir):
-    metadata_dict = extract_metadata("raster", "rasters/logan.vrt")
+    metadata_dict = extract_metadata("raster", "rasters/logan.vrt", "https://www.hydroshare.org/resource/s3")
 
     _assert_raster_from_file("../outputs/raster.json", metadata_dict)
 
 
 def test_raster_single_extraction(test_file_dir):
-    all_metadata_json = extract_metadata("raster", "rasters/single/logan1.tif")
+    all_metadata_json = extract_metadata(
+        "raster", "rasters/single/logan1.tif", "https://www.hydroshare.org/resource/s3"
+    )
 
     _assert_from_file("../outputs/raster-single.json", all_metadata_json)
 
 
 def test_raster_single_extraction(test_file_dir):
-    all_metadata_json = extract_metadata("raster", "rasters/single/logan1.tif")
+    all_metadata_json = extract_metadata(
+        "raster", "rasters/single/logan1.tif", "https://www.hydroshare.org/resource/s3"
+    )
 
     _assert_raster_from_file("../outputs/raster-single.json", all_metadata_json)
 
 
 def test_features_watersheds_extraction(test_file_dir):
-    metadata_dict = extract_metadata("feature", "watersheds/watersheds.shp")
+    metadata_dict = extract_metadata("feature", "watersheds/watersheds.shp", "https://www.hydroshare.org/resource/s3")
 
     _assert_from_file("../outputs/feature.json", metadata_dict)
 
 
 def test_reftimeseries_extraction(test_file_dir):
-    ref_timeseries_json = extract_metadata("reftimeseries", "reftimeseries/multi_sites_formatted_version1.0.refts.json")
+    ref_timeseries_json = extract_metadata(
+        "reftimeseries",
+        "reftimeseries/multi_sites_formatted_version1.0.refts.json",
+        "https://www.hydroshare.org/resource/s3",
+    )
 
     _assert_from_file("../outputs/reftimeseries.json", ref_timeseries_json)
 
 
 def test_timeseries_sqlite_extraction(test_file_dir):
-    timeseries_json = extract_metadata("timeseries", "timeseries/ODM2_Multi_Site_One_Variable.sqlite")
+    timeseries_json = extract_metadata(
+        "timeseries", "timeseries/ODM2_Multi_Site_One_Variable.sqlite", "https://www.hydroshare.org/resource/s3"
+    )
 
     _assert_from_file("../outputs/timeseries.json", timeseries_json)
 
 
 def test_timeseries_csv_extraction(test_file_dir):
-    timeseries_json = extract_metadata("timeseries", "timeseries/ODM2_Multi_Site_One_Variable_Test.csv")
+    timeseries_json = extract_metadata(
+        "timeseries", "timeseries/ODM2_Multi_Site_One_Variable_Test.csv", "https://www.hydroshare.org/resource/s3"
+    )
 
     _assert_from_file("../outputs/timeseries-csv.json", timeseries_json)
 
 
 def test_netcdf_extraction(test_file_dir):
-    all_metadata_json = extract_metadata("netcdf", "netcdf/netcdf_valid.nc")
+    all_metadata_json = extract_metadata("netcdf", "netcdf/netcdf_valid.nc", "https://www.hydroshare.org/resource/s3")
 
     _assert_from_file("../outputs/netcdf.json", all_metadata_json)
 
 
 def test_feature_states_extraction(test_file_dir):
-    all_metadata_json = extract_metadata("feature", "states/states.shp")
+    all_metadata_json = extract_metadata("feature", "states/states.shp", "https://www.hydroshare.org/resource/s3")
 
     _assert_from_file("../outputs/feature-states.json", all_metadata_json)
 

@@ -10,38 +10,38 @@ app = typer.Typer()
 
 
 @app.command()
-def feature(path: str):
-    metadata_dict = extract_metadata("feature", path)
+def feature(path: str, base_url: str):
+    metadata_dict = extract_metadata("feature", path, base_url)
     print(json.dumps(metadata_dict, indent=2))
 
 
 @app.command()
-def raster(path: str):
-    metadata_dict = extract_metadata("raster", path)
+def raster(path: str, base_url: str):
+    metadata_dict = extract_metadata("raster", path, base_url)
     print(json.dumps(metadata_dict, indent=2))
 
 
 @app.command()
-def reftimeseries(path: str):
-    metadata_dict = extract_metadata("reftimeseries", path)
+def reftimeseries(path: str, base_url: str):
+    metadata_dict = extract_metadata("reftimeseries", path, base_url)
     print(json.dumps(metadata_dict, indent=2))
 
 
 @app.command()
-def timeseries(path: str):
-    metadata_dict = extract_metadata("timeseries", path)
+def timeseries(path: str, base_url: str):
+    metadata_dict = extract_metadata("timeseries", path, base_url)
     print(json.dumps(metadata_dict, indent=2))
 
 
 @app.command()
-def timeseriescsv(path: str):
-    metadata_dict = extract_metadata("timeseries", path)
+def timeseriescsv(path: str, base_url: str):
+    metadata_dict = extract_metadata("timeseries", path, base_url)
     print(json.dumps(metadata_dict, indent=2))
 
 
 @app.command()
-def netcdf(path: str):
-    metadata_dict = extract_metadata("netcdf", path)
+def netcdf(path: str, base_url: str):
+    metadata_dict = extract_metadata("netcdf", path, base_url)
     print(json.dumps(metadata_dict, indent=2))
 
 

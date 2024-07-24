@@ -14,4 +14,14 @@ def file_metadata(path: str):
     checksum = d.hexdigest()
     size = f"{os.path.getsize(path)/1000.00} KB"
     mime_type = mimetypes.guess_type(path)[0]
-    return {"contentUrl": path, "contentSize": size, "sha256": checksum, "encodingFormat": mime_type}, None
+    _, extension = os.path.splitext(path)
+    mime_type = mime_type if mime_type else extension
+    _, name = os.path.split(path)
+    return {
+        "@type": "DataDownload",
+        "name": name,
+        "contentUrl": path,
+        "contentSize": size,
+        "sha256": checksum,
+        "encodingFormat": mime_type,
+    }, None

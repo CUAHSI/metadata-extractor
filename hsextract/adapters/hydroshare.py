@@ -139,7 +139,7 @@ class Relation(BaseModel):
         description, url = self.value.rsplit(',', 1)
         relation.description = description.strip()
         relation.url = url.strip()
-        relation.name = self.value
+        relation.name = self.value if self.value else "No name found and is required"
         return relation
 
 
