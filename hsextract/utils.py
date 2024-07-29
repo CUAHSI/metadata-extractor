@@ -39,7 +39,11 @@ def extract_metadata(type: str, filepath, base_url: str):
     except Exception as e:
         logging.exception(f"Failed to extract {type} metadata from {filepath}.")
         return None
-    extracted_metadata["url"] = base_url + filepath
+    if filepath.endswith("hs_user_meta.json"):
+        path = os.path.dirname(filepath)
+        extracted_metadata["url"] = base_url + path
+    else:
+        extracted_metadata["url"] = base_url + filepath
     adapter = HydroshareMetadataAdapter()
     all_file_metadata = []
     for f in extracted_metadata["content_files"]:
@@ -84,6 +88,11 @@ def _extract_metadata(type: str, filepath):
         ]
 
     return metadata
+
+
+def read_metadata(path: str):
+    with open(path, "r") as f:
+        return json.loads(f.read())
 
 
 async def list_and_extract(path: str, user_metadata_filename: str, base_url: str):
@@ -147,25 +156,30 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                     if dataset_metadata_files_metadata[metadata]["name"]
                     else "Not Found and name is required",
                     "description": dataset_metadata_files_metadata[metadata]["description"],
-                    "url": os.path.join(base_url, metadata),
+                    # "url": os.path.join(base_url, metadata),
+                    "url": read_metadata(metadata)["url"],
                 }
                 for metadata in dataset_metadata_files
                 if metadata.startswith(dirname) and metadata != dataset_metadata_file
             ]
             for has_part_file in has_part_files:
-                with open(has_part_file, "r") as f:
-                    metadata_json = json.loads(f.read())
-                    name = metadata_json["name"]
-                    if not name:
-                        name = "Not Found and name is required"
-                    has_part.append(
-                        {
-                            "@type": "CreativeWork",
-                            "name": name,
-                            "description": metadata_json["description"] if "description" in metadata_json else None,
-                            "url": os.path.join(base_url, has_part_file),
-                        }
-                    )
+                metadata_json = read_metadata(has_part_file)
+                name = metadata_json["name"]
+                if not name:
+                    name = "Not Found and name is required"
+                has_part.append(
+                    {
+                        "@type": "CreativeWork",
+                        "name": name,
+                        "description": metadata_json["description"] if "description" in metadata_json else None,
+                        "url": metadata_json["url"],
+                    }
+                )
+            for has_part_file in has_part_files:
+                metadata_json = read_metadata(has_part_file)
+                with open(has_part_file, "w") as f:
+                    metadata_json["isPartOf"] = [base_url]
+                    f.write(json.dumps(metadata_json, indent=2))
             with open(dataset_metadata_file, "r") as f:
                 metadata_json = json.loads(f.read())
 
@@ -197,11 +211,11 @@ async def list_and_extract(path: str, user_metadata_filename: str, base_url: str
                                             "@type": "CreativeWork",
                                             "name": has_part_metadata.get("name", None),
                                             "description": has_part_metadata.get("description", None),
-                                            "url": os.path.join(base_url, has_part_file),
+                                            # "url": os.path.join(base_url, has_part_file),
+                                            "url": read_metadata(has_part_file)["url"],
                                         }
                                         is_parts_of.append(is_part_of)
                                         break
-                    md["isPartOf"] = is_parts_of
                     associated_media.append(md)
                 metadata_json["associatedMedia"] = associated_media
 
