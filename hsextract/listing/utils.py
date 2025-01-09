@@ -49,7 +49,7 @@ def categorize_files(files, user_metadata_filename):
         if f.endswith(".sqlite"):
             categorized_files["timeseries"].append(f)
 
-        if f.endswith(user_metadata_filename):
+        if os.path.basename(f) == user_metadata_filename:
             categorized_files["user_meta"].append(f)
 
     for vrt_file in categorized_files["raster"]:

@@ -16,8 +16,8 @@ from hsextract.timeseries.utils import extract_metadata as extract_timeseries_me
 from hsextract.timeseries.utils import extract_metadata_csv
 
 
-def _to_metadata_path(filepath: str, user_metadata_filename: str, output_path: str):
-    if not filepath.endswith(user_metadata_filename):
+def _to_metadata_path(type: str, filepath: str, output_path: str):
+    if type is not "user_meta":
         return os.path.join(output_path, filepath + ".json")
     dirname, _ = os.path.split(filepath)
     return os.path.join(output_path, dirname, "dataset_metadata.json")
@@ -26,22 +26,22 @@ def _to_metadata_path(filepath: str, user_metadata_filename: str, output_path: s
 def extract_metadata_with_file_path(
     type: str, input_path: str, user_metadata_filename: str, output_path: str, output_base_url: str
 ):
-    extracted_metadata = extract_metadata(type, input_path, output_base_url)
+    extracted_metadata = extract_metadata(type, input_path, output_base_url, user_metadata_filename)
     if extracted_metadata:
-        input_path = _to_metadata_path(input_path, user_metadata_filename, output_path)
+        input_path = _to_metadata_path(type, input_path, output_path)
         os.makedirs(os.path.dirname(input_path), exist_ok=True)
         with open(input_path, "w") as f:
             f.write(json.dumps(extracted_metadata, indent=2))
     return input_path, extracted_metadata is not None
 
 
-def extract_metadata(type: str, input_path: str, output_base_url: str):
+def extract_metadata(type: str, input_path: str, output_base_url: str, user_metadata_filename: str):
     try:
         extracted_metadata = _extract_metadata(type, input_path)
     except Exception as e:
         logging.exception(f"Failed to extract {type} metadata from {input_path}.")
         return None
-    if input_path.endswith("hs_user_meta.json"):
+    if os.path.basename(input_path) == user_metadata_filename:
         path = os.path.dirname(input_path)
         extracted_metadata["url"] = os.path.join(output_base_url, path, "dataset_metadata.json")
     else:
@@ -58,6 +58,13 @@ def extract_metadata(type: str, input_path: str, output_base_url: str):
     else:
         extracted_metadata["associatedMedia"] = all_file_metadata
         catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
+
+        # check for user metadata attached content types
+        user_meta_content_type_path = input_path + "." + user_metadata_filename
+        if os.path.exists(user_meta_content_type_path):
+            with open(user_meta_content_type_path, "r") as f:
+                user_metadata = json.loads(f.read())
+            catalog_record.update(user_metadata)
         return catalog_record
 
 
