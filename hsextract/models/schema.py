@@ -1,10 +1,10 @@
-import re
 import json
-from datetime import datetime, date
+import re
+from datetime import date, datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, validator, root_validator
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
 
 orcid_pattern = "\\b\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]\\b"
 orcid_pattern_placeholder = "e.g. '0000-0001-2345-6789'"
@@ -20,9 +20,9 @@ class SchemaBaseModel(BaseModel):
                 if 'format' in prop and prop['format'] == 'uri':
                     # using a regex for url matching
                     prop.pop('format')
-                    prop[
-                        'pattern'
-                    ] = "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$"
+                    prop['pattern'] = (
+                        "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$"
+                    )
                     prop['errorMessage'] = {"pattern": "must match format \"url\""}
 
 

@@ -1,10 +1,9 @@
-import xmltodict
 import os
-
-from osgeo import ogr, osr
 from pathlib import Path
-from bs4 import BeautifulSoup
 
+import xmltodict
+from bs4 import BeautifulSoup
+from osgeo import ogr, osr
 
 UNKNOWN_STR = "unknown"
 TITLE_MAX_LENGTH = 300

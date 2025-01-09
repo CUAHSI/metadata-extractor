@@ -1,57 +1,27 @@
-import typer
-import json
-
 from asyncio import run as aiorun
 
-from hsextract.utils import list_and_extract, extract_metadata
+import typer
 
+from hsextract.utils import list_and_extract
 
 app = typer.Typer()
 
 
-@app.command()
-def feature(path: str, base_url: str):
-    metadata_dict = extract_metadata("feature", path, base_url)
-    print(json.dumps(metadata_dict, indent=2))
+async def _extract(
+    input_path: str, output_path: str, input_base_url: str, output_base_url: str, user_metadata_filename: str
+):
+    await list_and_extract(input_path, output_path, input_base_url, output_base_url, user_metadata_filename)
 
 
 @app.command()
-def raster(path: str, base_url: str):
-    metadata_dict = extract_metadata("raster", path, base_url)
-    print(json.dumps(metadata_dict, indent=2))
-
-
-@app.command()
-def reftimeseries(path: str, base_url: str):
-    metadata_dict = extract_metadata("reftimeseries", path, base_url)
-    print(json.dumps(metadata_dict, indent=2))
-
-
-@app.command()
-def timeseries(path: str, base_url: str):
-    metadata_dict = extract_metadata("timeseries", path, base_url)
-    print(json.dumps(metadata_dict, indent=2))
-
-
-@app.command()
-def timeseriescsv(path: str, base_url: str):
-    metadata_dict = extract_metadata("timeseries", path, base_url)
-    print(json.dumps(metadata_dict, indent=2))
-
-
-@app.command()
-def netcdf(path: str, base_url: str):
-    metadata_dict = extract_metadata("netcdf", path, base_url)
-    print(json.dumps(metadata_dict, indent=2))
-
-
-async def _extract(path: str, user_metadata_filename: str, base_url: str):
-    await list_and_extract(path, user_metadata_filename, base_url)
-
-
-@app.command()
-def extract(path: str, base_url: str, user_metadata_filename: str = "hs_user_meta.json"):
-    aiorun(_extract(path, user_metadata_filename, base_url))
+def extract(
+    input_path: str,
+    output_path: str,
+    input_base_url: str = "https://hydroshare.org/resource/resource_id/data/contents/",
+    output_base_url: str = "https://hydroshare.org/resource/resource_id/data/extracted_metadata",
+    user_metadata_filename: str = "hs_user_meta.json",
+):
+    aiorun(_extract(input_path, output_path, input_base_url, output_base_url, user_metadata_filename))
 
 
 if __name__ == "__main__":

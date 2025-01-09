@@ -1,8 +1,7 @@
-from multiprocessing.sharedctypes import Value
 import os
-
-from pathlib import Path
 from collections import defaultdict
+from multiprocessing.sharedctypes import Value
+from pathlib import Path
 
 from hsextract.raster.utils import list_tif_files
 

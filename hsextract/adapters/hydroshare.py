@@ -1,7 +1,9 @@
-import requests
 from datetime import datetime
 from typing import Any, List, Optional, Union
+
+import requests
 from pydantic import BaseModel, EmailStr, HttpUrl
+
 from hsextract.adapters.utils import RepositoryType
 from hsextract.models import schema
 from hsextract.models.schema import CoreMetadataDOC

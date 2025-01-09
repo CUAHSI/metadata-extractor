@@ -1,10 +1,10 @@
-import pytz
 import json
 import ssl
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 import jsonschema
+import pytz
 from dateutil import parser
 
 

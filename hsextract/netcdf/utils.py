@@ -22,14 +22,13 @@ Reference code
 http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html
 """
 
+import json
+import re
+from collections import OrderedDict
 
 import dateutil.parser
-import re
 import netCDF4
 import numpy
-import json
-
-from collections import OrderedDict
 from osgeo import osr
 from pyproj import Transformer
 

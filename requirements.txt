@@ -3,7 +3,7 @@ xmltodict
 GDAL
 dnspython
 beautifulsoup4
-turfpy
+turfpy==0.0.7
 geojson
 typer[all]
 PyCRS

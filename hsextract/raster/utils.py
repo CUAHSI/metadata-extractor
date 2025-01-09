@@ -1,15 +1,16 @@
+import logging
 import os
-from textwrap import indent
-from osgeo.gdalconst import GA_ReadOnly
-from osgeo import osr, gdal
+import re
+import tempfile
+import xml.etree.ElementTree as ET
 from collections import OrderedDict
 from pathlib import Path
-import re
-import logging
-from pycrs.parse import from_unknown_wkt
+from textwrap import indent
+
 import numpy
-import xml.etree.ElementTree as ET
-import tempfile
+from osgeo import gdal, osr
+from osgeo.gdalconst import GA_ReadOnly
+from pycrs.parse import from_unknown_wkt
 
 
 def extract_from_tif_file(tif_file):
