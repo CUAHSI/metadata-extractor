@@ -3,6 +3,7 @@ from asyncio import run as aiorun
 import typer
 
 from hsextract.utils import list_and_extract
+from typing_extensions import Annotated
 
 app = typer.Typer()
 
@@ -17,9 +18,9 @@ async def _extract(
 def extract(
     input_path: str,
     output_path: str,
-    input_base_url: str = "https://hydroshare.org/resource/resource_id/data/contents/",
-    output_base_url: str = "https://hydroshare.org/resource/resource_id/data/extracted_metadata",
-    user_metadata_filename: str = "hs_user_meta.json",
+    input_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/resource_id/data/contents/",
+    output_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/resource_id/data/extracted_metadata",
+    user_metadata_filename: Annotated[str, typer.Argument()] = "hs_user_meta.json",
 ):
     aiorun(_extract(input_path, output_path, input_base_url, output_base_url, user_metadata_filename))
 
