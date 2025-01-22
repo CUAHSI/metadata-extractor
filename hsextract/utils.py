@@ -17,7 +17,7 @@ from hsextract.timeseries.utils import extract_metadata_csv
 
 
 def _to_metadata_path(type: str, filepath: str, output_path: str):
-    if type is not "user_meta":
+    if type != "user_meta":
         return os.path.join(output_path, filepath + ".json")
     dirname, _ = os.path.split(filepath)
     return os.path.join(output_path, dirname, "dataset_metadata.json")

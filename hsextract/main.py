@@ -1,5 +1,6 @@
 from asyncio import run as aiorun
 
+from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
 import typer
 
 from hsextract.utils import list_and_extract
@@ -19,9 +20,14 @@ def extract(
     input_path: str,
     output_path: str,
     input_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/resource_id/data/contents/",
-    output_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/resource_id/data/extracted_metadata",
+    output_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/resource_id/extracted_metadata",
     user_metadata_filename: Annotated[str, typer.Argument()] = "hs_user_meta.json",
+    retrieve_metadata_resource_id: Annotated[str, typer.Argument()] = None,
 ):
+    if retrieve_metadata_resource_id:
+        adapter = HydroshareMetadataAdapter()
+        adapter.retrieve_user_metadata(retrieve_metadata_resource_id, input_path)
+
     aiorun(_extract(input_path, output_path, input_base_url, output_base_url, user_metadata_filename))
 
 

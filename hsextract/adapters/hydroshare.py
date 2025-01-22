@@ -1,3 +1,6 @@
+import json
+import os
+
 from datetime import datetime
 from typing import Any, List, Optional, Union
 
@@ -5,6 +8,7 @@ import requests
 from pydantic import BaseModel, EmailStr, HttpUrl
 
 from hsextract.adapters.utils import RepositoryType
+from hsextract.exceptions import RepositoryException
 from hsextract.models import schema
 from hsextract.models.schema import CoreMetadataDOC
 
@@ -162,6 +166,20 @@ class HydroshareMetadataAdapter:
         """Converts hydroshare resource metadata to a catalog dataset record"""
         hs_metadata_model = _HydroshareResourceMetadata(**metadata)
         return hs_metadata_model.to_catalog_dataset()
+
+    def retrieve_user_metadata(self, record_id: str, input_path: str):
+        hs_meta_url = f"https://hydroshare.org/hsapi2/resource/{record_id}/json/"
+
+        def make_request(url) -> Union[dict, List[dict]]:
+            response = requests.get(url)
+            if response.status_code != 200:
+                raise RepositoryException(status_code=response.status_code, detail=response.text)
+            return response.json()
+
+        metadata = make_request(hs_meta_url)
+        metadata = self.to_catalog_record(metadata).dict()
+        with open(os.path.join(input_path, "hs_user_meta.json"), "w") as f:
+            json.dump(metadata, f, indent=4, default=str)
 
 
 class _HydroshareResourceMetadata(BaseModel):
