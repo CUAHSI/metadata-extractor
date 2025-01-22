@@ -1,10 +1,10 @@
-import pytz
 import json
 import ssl
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 import jsonschema
+import pytz
 from dateutil import parser
 
 
@@ -17,7 +17,7 @@ def extract_referenced_timeseries_metadata(res_json_file):
     metadata["period_coverage"] = period_coverage(json_data)
     metadata["spatial_coverage"] = spatial_coverage(json_data)
 
-    metadata["files"] = [res_json_file]
+    metadata["content_files"] = [res_json_file]
 
     return metadata
 

@@ -17,7 +17,6 @@ def validate_odm2_db_file(sqlite_file_path):
     try:
         con = sqlite3.connect(sqlite_file_path)
         with con:
-
             # TODO: check that each of the core tables has the necessary columns
 
             # check that the uploaded file has all the tables from ODM2Core and the CV tables
@@ -159,7 +158,6 @@ def validate_csv_file(csv_file_path):
 
 
 def create_cv_lookup_models(sql_cur):
-
     table_names = [
         'CV_VariableType',
         'CV_VariableName',
@@ -260,7 +258,7 @@ def extract_metadata(sqlite_file_name):
             time_series_results.append(result_json)
 
         as_json["time_series_results"] = time_series_results
-        as_json["files"] = [sqlite_file_name]
+        as_json["content_files"] = [sqlite_file_name]
         return as_json
 
 
@@ -598,6 +596,6 @@ def extract_metadata_csv(csv_file_name):
         end_date = parser.parse(end_date_str)
         metadata_dict.update({"period_coverage": {'start': start_date.isoformat(), 'end': end_date.isoformat()}})
 
-    metadata_dict["files"] = [csv_file_name]
+    metadata_dict["content_files"] = [csv_file_name]
 
     return metadata_dict

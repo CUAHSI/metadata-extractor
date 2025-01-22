@@ -1,58 +1,34 @@
-import typer
-import json
-import os
-
 from asyncio import run as aiorun
 
-from hsextract.utils import list_and_extract, extract_metadata
+from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
+import typer
 
+from hsextract.utils import list_and_extract
+from typing_extensions import Annotated
 
 app = typer.Typer()
 
 
-@app.command()
-def feature(path: str):
-    metadata_dict = extract_metadata("feature", path)
-    print(json.dumps(metadata_dict, indent=2))
+async def _extract(
+    input_path: str, output_path: str, input_base_url: str, output_base_url: str, user_metadata_filename: str
+):
+    await list_and_extract(input_path, output_path, input_base_url, output_base_url, user_metadata_filename)
 
 
 @app.command()
-def raster(path: str):
-    metadata_dict = extract_metadata("raster", path)
-    print(json.dumps(metadata_dict, indent=2))
+def extract(
+    input_path: str,
+    output_path: str,
+    input_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/resource_id/data/contents/",
+    output_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/resource_id/extracted_metadata",
+    user_metadata_filename: Annotated[str, typer.Argument()] = "hs_user_meta.json",
+    retrieve_metadata_resource_id: Annotated[str, typer.Argument()] = None,
+):
+    if retrieve_metadata_resource_id:
+        adapter = HydroshareMetadataAdapter()
+        adapter.retrieve_user_metadata(retrieve_metadata_resource_id, input_path)
 
-
-@app.command()
-def reftimeseries(path: str):
-    metadata_dict = extract_metadata("reftimeseries", path)
-    print(json.dumps(metadata_dict, indent=2))
-
-
-@app.command()
-def timeseries(path: str):
-    metadata_dict = extract_metadata("timeseries", path)
-    print(json.dumps(metadata_dict, indent=2))
-
-
-@app.command()
-def timeseriescsv(path: str):
-    metadata_dict = extract_metadata("timeseries", path)
-    print(json.dumps(metadata_dict, indent=2))
-
-
-@app.command()
-def netcdf(path: str):
-    metadata_dict = extract_metadata("netcdf", path)
-    print(json.dumps(metadata_dict, indent=2))
-
-
-async def _extract(path: str):
-    await list_and_extract(path)
-
-
-@app.command()
-def extract(path: str):
-    aiorun(_extract(path))
+    aiorun(_extract(input_path, output_path, input_base_url, output_base_url, user_metadata_filename))
 
 
 if __name__ == "__main__":

@@ -1,8 +1,7 @@
-from multiprocessing.sharedctypes import Value
 import os
-
-from pathlib import Path
 from collections import defaultdict
+from multiprocessing.sharedctypes import Value
+from pathlib import Path
 
 from hsextract.raster.utils import list_tif_files
 
@@ -25,7 +24,7 @@ def sort_files(include_hidden: bool = False):
     return sorted_files
 
 
-def categorize_files(files):
+def categorize_files(files, user_metadata_filename):
     categorized_files = defaultdict(list)
 
     for f in files:
@@ -50,7 +49,7 @@ def categorize_files(files):
         if f.endswith(".sqlite"):
             categorized_files["timeseries"].append(f)
 
-        if f.endswith("hs_user_meta.json"):
+        if os.path.basename(f) == user_metadata_filename:
             categorized_files["user_meta"].append(f)
 
     for vrt_file in categorized_files["raster"]:
@@ -67,8 +66,8 @@ def categorize_files(files):
     return categorized_files
 
 
-def prepare_files():
+def prepare_files(user_metadata_filename: str):
     sorted_files = sort_files()
-    categorized_files = categorize_files(sorted_files)
+    categorized_files = categorize_files(sorted_files, user_metadata_filename)
 
     return sorted_files, categorized_files

@@ -1,18 +1,16 @@
-import xmltodict
 import os
-import hashlib
-
-from osgeo import ogr, osr
 from pathlib import Path
-from bs4 import BeautifulSoup
 
+import xmltodict
+from bs4 import BeautifulSoup
+from osgeo import ogr, osr
 
 UNKNOWN_STR = "unknown"
 TITLE_MAX_LENGTH = 300
 
 
 def extract_metadata_and_files(feature_path):
-    shape_files, xml_file, shp_file = get_all_related_shp_files(feature_path)
+    shape_files, xml_file, _ = get_all_related_shp_files(feature_path)
     meta_dict = extract_metadata(feature_path)
     # meta_dict["url"] = shp_file.public_url
     # meta_dict["id"] = hashlib.md5(bytes(shp_file.public_url, 'utf-8')).hexdigest()
@@ -22,7 +20,7 @@ def extract_metadata_and_files(feature_path):
     files = []
     for f in shape_files:
         files.append(f)
-    meta_dict["files"] = files
+    meta_dict["content_files"] = files
     return meta_dict
 
 
@@ -30,7 +28,7 @@ def get_all_related_shp_files(feature_path):
     shape_res_files = []
     xml_file = None
     dir_path = os.path.dirname(feature_path)
-    for f in os.listdir(dir_path):
+    for f in os.listdir(dir_path if dir_path else os.getcwd()):
         f_path = Path(f)
         if str(f_path.suffix).lower() == '.xml' and not str(f_path.name).lower().endswith('.shp.xml'):
             continue

@@ -22,14 +22,13 @@ Reference code
 http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html
 """
 
+import json
+import re
+from collections import OrderedDict
 
 import dateutil.parser
-import re
 import netCDF4
 import numpy
-import json
-
-from collections import OrderedDict
 from osgeo import osr
 from pyproj import Transformer
 
@@ -64,7 +63,7 @@ def get_nc_meta_dict(nc_file_name):
 
     md = combine_metadata(res_dublin_core_meta, res_type_specific_meta)
 
-    md["files"] = [nc_file_name]
+    md["content_files"] = [nc_file_name]
     return md
 
 
