@@ -44,6 +44,11 @@ class Creator(BaseModel):
 
         return creator
 
+class Contributor(Creator):
+
+    def to_dataset_contributor(self):
+        return super().to_dataset_creator()
+
 
 class Award(BaseModel):
     funding_agency_name: str
@@ -183,11 +188,13 @@ class HydroshareMetadataAdapter:
 
 
 class _HydroshareResourceMetadata(BaseModel):
+    type: Optional[str]
     title: Optional[str]
     abstract: Optional[str]
     url: Optional[HttpUrl]
     identifier: Optional[HttpUrl]
     creators: List[Creator] = []
+    contributors: List[Contributor] = []
     created: Optional[datetime]
     modified: Optional[datetime]
     published: Optional[datetime]
@@ -258,6 +265,7 @@ class _HydroshareResourceMetadata(BaseModel):
 
     def to_catalog_dataset(self):
         dataset = CoreMetadataDOC.construct()
+        dataset.additionalType = self.type
         dataset.provider = self.to_dataset_provider()
         dataset.name = self.title
         dataset.description = self.abstract
