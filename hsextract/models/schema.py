@@ -139,6 +139,22 @@ class Published(DefinedTerm):
         description="The description of the item being defined.",
     )
 
+class Public(DefinedTerm):
+    name: str = Field(default="Public")
+    description: str = Field(
+        default="The resource is publicly accessible and can be viewed or downloaded by anyone",
+        readOnly=True,
+        description="The description of the item being defined.",
+    )
+
+class Discoverable(DefinedTerm):
+    name: str = Field(default="Discoverable")
+    description: str = Field(
+        default="The resource is discoverable and can be found through search engines or other discovery mechanisms",
+        readOnly=True,
+        description="The description of the item being defined.",
+    )
+
 
 class HasPart(CreativeWork):
     url: Optional[HttpUrl] = Field(title="URL", description="The URL address to the data resource.")
@@ -430,10 +446,10 @@ class CoreMetadata(SchemaBaseModel):
     inLanguage: Optional[Union[LanguageEnum, InLanguageStr]] = Field(
         title="Language", description="The language of the content of the resource."
     )
-    creativeWorkStatus: Optional[Union[Draft, Incomplete, Obsolete, Published]] = Field(
+    creativeWorkStatus: Optional[Union[Draft, Incomplete, Obsolete, Published, Public, Discoverable]] = Field(
         title="Resource status",
         description="The status of this resource in terms of its stage in a lifecycle. "
-        "Example terms include Incomplete, Draft, Published, and Obsolete.",
+        "Example terms include Incomplete, Draft, Published, Public, Discoverable, and Obsolete.",
     )
     dateModified: Optional[datetime] = Field(
         title="Date modified", description="The date on which the resource was most recently modified or updated."
