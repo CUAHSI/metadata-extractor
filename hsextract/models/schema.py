@@ -393,6 +393,11 @@ class CoreMetadata(SchemaBaseModel):
         " software source code, digital documents, etc.",
         enum=["Dataset", "Notebook", "Software Source Code"],
     )
+    additionalType: Optional[str] = Field(
+        title="Additional type",
+        description="An additional type for the resource. This can be used to further specify the type of the"
+                    " resource (e.g., Composite Resource).",
+    )
     name: str = Field(
         default=None,
         title="Name or title",
