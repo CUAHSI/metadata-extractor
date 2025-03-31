@@ -2,7 +2,7 @@ import json
 import os
 
 from datetime import datetime
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Union, Literal
 
 import requests
 from pydantic import BaseModel, EmailStr, HttpUrl
@@ -174,6 +174,7 @@ class HydroshareMetadataAdapter:
 
     def retrieve_user_metadata(self, record_id: str, input_path: str):
         hs_meta_url = f"https://hydroshare.org/hsapi2/resource/{record_id}/json/"
+        hs_sharing_status_url = f"https://www.hydroshare.org/hsapi2/resource/{record_id}/sharing_status/json/"
 
         def make_request(url) -> Union[dict, List[dict]]:
             response = requests.get(url)
@@ -182,6 +183,8 @@ class HydroshareMetadataAdapter:
             return response.json()
 
         metadata = make_request(hs_meta_url)
+        sharing_status = make_request(hs_sharing_status_url)["sharing_status"]
+        metadata["sharing_status"] = sharing_status
         metadata = self.to_catalog_record(metadata).dict()
         with open(os.path.join(input_path, "hs_user_meta.json"), "w") as f:
             json.dump(metadata, f, indent=4, default=str)
@@ -207,6 +210,7 @@ class _HydroshareResourceMetadata(BaseModel):
     relations: List[Relation] = []
     citation: Optional[str]
     associatedMedia: List[Any] = []
+    sharing_status: Literal["private", "public", "published", "discoverable"]
 
     def to_dataset_creators(self):
         creators = []
@@ -256,6 +260,15 @@ class _HydroshareResourceMetadata(BaseModel):
         if self.rights:
             return self.rights.to_dataset_license()
 
+    def to_dataset_creative_work_status(self):
+        status_defined_terms = {
+            "public": schema.Public,
+            "published": schema.Published,
+            "discoverable": schema.Discoverable,
+            "private": schema.Private,
+        }
+        return status_defined_terms[self.sharing_status].construct()
+
     @staticmethod
     def to_dataset_provider():
         provider = schema.Organization.construct()
@@ -285,4 +298,5 @@ class _HydroshareResourceMetadata(BaseModel):
         dataset.hasPart = self.to_dataset_has_part()
         dataset.license = self.to_dataset_license()
         dataset.citation = [self.citation]
+        dataset.creativeWorkStatus = self.to_dataset_creative_work_status()
         return dataset
