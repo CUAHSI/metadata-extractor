@@ -13,7 +13,7 @@ from hsextract.models import schema
 from hsextract.models.schema import CoreMetadataDOC
 
 
-class Creator(BaseModel):
+class BasePerson(BaseModel):
     name: Optional[str]
     email: Optional[EmailStr]
     organization: Optional[str]
@@ -21,33 +21,40 @@ class Creator(BaseModel):
     address: Optional[str]
     identifiers: Optional[dict] = {}
 
-    def to_dataset_creator(self):
+    def to_dataset_person(self, person_type):
         if self.name:
-            creator = schema.Creator.construct()
-            creator.name = self.name
+            person = person_type.construct()
+            person.name = self.name
             if self.email:
-                creator.email = self.email
+                person.email = self.email
             if self.organization:
                 affiliation = schema.Organization.construct()
                 affiliation.name = self.organization
-                creator.affiliation = affiliation
+                person.affiliation = affiliation
             _ORCID_identifier = self.identifiers.get("ORCID", "")
             if _ORCID_identifier:
-                creator.identifier = _ORCID_identifier
+                person.identifier = _ORCID_identifier
         else:
-            creator = schema.Organization.construct()
-            creator.name = self.organization
+            person = schema.Organization.construct()
+            person.name = self.organization
             if self.homepage:
-                creator.url = self.homepage
+                person.url = self.homepage
             if self.address:
-                creator.address = self.address
+                person.address = self.address
 
-        return creator
+        return person
 
-class Contributor(Creator):
+
+class Creator(BasePerson):
+
+    def to_dataset_creator(self):
+        return self.to_dataset_person(schema.Creator)
+
+
+class Contributor(BasePerson):
 
     def to_dataset_contributor(self):
-        return super().to_dataset_creator()
+        return self.to_dataset_person(schema.Contributor)
 
 
 class Award(BaseModel):
@@ -218,6 +225,12 @@ class _HydroshareResourceMetadata(BaseModel):
             creators.append(creator.to_dataset_creator())
         return creators
 
+    def to_dataset_contributors(self):
+        contributors = []
+        for contributor in self.contributors:
+            contributors.append(contributor.to_dataset_contributor())
+        return contributors
+
     def to_dataset_funding(self):
         grants = []
         for award in self.awards:
@@ -285,6 +298,7 @@ class _HydroshareResourceMetadata(BaseModel):
         dataset.url = self.url
         dataset.identifier = [self.identifier]
         dataset.creator = self.to_dataset_creators()
+        dataset.contributor = self.to_dataset_contributors()
         dataset.dateCreated = self.created
         dataset.dateModified = self.modified
         dataset.datePublished = self.published
