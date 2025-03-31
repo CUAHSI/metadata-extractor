@@ -158,6 +158,14 @@ class Public(DefinedTerm):
         description="The description of the item being defined.",
     )
 
+class Private(DefinedTerm):
+    name: str = Field(default="Private")
+    description: str = Field(
+        default="The resource is private and can only be accessed by authorized users",
+        readOnly=True,
+        description="The description of the item being defined.",
+    )
+
 class Discoverable(DefinedTerm):
     name: str = Field(default="Discoverable")
     description: str = Field(
@@ -465,10 +473,10 @@ class CoreMetadata(SchemaBaseModel):
     inLanguage: Optional[Union[LanguageEnum, InLanguageStr]] = Field(
         title="Language", description="The language of the content of the resource."
     )
-    creativeWorkStatus: Optional[Union[Draft, Incomplete, Obsolete, Published, Public, Discoverable]] = Field(
+    creativeWorkStatus: Optional[Union[Draft, Incomplete, Obsolete, Published, Public, Discoverable, Private]] = Field(
         title="Resource status",
         description="The status of this resource in terms of its stage in a lifecycle. "
-        "Example terms include Incomplete, Draft, Published, Public, Discoverable, and Obsolete.",
+        "Example terms include Incomplete, Draft, Published, Public, Discoverable, Private, and Obsolete.",
     )
     dateModified: Optional[datetime] = Field(
         title="Date modified", description="The date on which the resource was most recently modified or updated."
