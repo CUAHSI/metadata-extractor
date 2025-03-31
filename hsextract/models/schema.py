@@ -82,6 +82,17 @@ class Creator(Person):
     affiliation: Optional[Affiliation] = Field(description="The affiliation of the creator with the organization.")
 
 
+class Contributor(Person):
+    identifier: Optional[str] = Field(
+        description="ORCID identifier for contributor.",
+        pattern=orcid_pattern,
+        options={"placeholder": orcid_pattern_placeholder},
+        errorMessage={"pattern": orcid_pattern_error},
+    )
+    email: Optional[EmailStr] = Field(description="A string containing an email address for the contributor.")
+    affiliation: Optional[Affiliation] = Field(description="The affiliation of the creator with the organization.")
+
+
 class FunderOrganization(Organization):
     @classmethod
     def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
@@ -421,6 +432,9 @@ class CoreMetadata(SchemaBaseModel):
         "encoded as URLs, enter URLs here.",
     )
     creator: List[Union[Creator, Organization]] = Field(description="Person or Organization that created the resource.")
+    contributor: List[Union[Contributor, Organization]] = Field(
+        description="Person or Organization that contributed to the resource."
+    )
     dateCreated: datetime = Field(title="Date created", description="The date on which the resource was created.")
     keywords: List[str] = Field(
         min_items=1, description="Keywords or tags used to describe the dataset, delimited by commas."
