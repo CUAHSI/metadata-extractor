@@ -1,0 +1,123 @@
+{
+  "title": "Virginia Forest - Soil water content, Soil temperature, Electrical conductivity - Jun 2021-Jul 2024",
+  "abstract": "This dataset includes volumetric water content (soil moisture, in cubic meter per cubic meter), soil temperature (degrees C) and soil electrical conductivity (mS/cm) measurements from four monitoring locations at the Virginia Forest site (Virginia Coast) for the CZNet Coastal Cluster. Soil moisture, temperature and conductivity were measured continuously in the field at 15-minute intervals with METER Group TEROS 12 sensors and ZL6 dataloggers. Data was measured in 60-minute intervals from Jun2021-Feb 2022. All four locations have sensors measuring from both a shallow (0.1-0.2 m) and deep (0.2-0.3 m) depth interval. No correction was done to the reported values. Gaps in the record are indicated by blank values.",
+  "language": "eng",
+  "subjects": [
+    "conductivity",
+    "Critical Zone",
+    "soil temperature",
+    "hydrology",
+    "Virginia",
+    "CZNet",
+    "soil moisture",
+    "CCZN",
+    "soil",
+    "Virginia Coast",
+    "volumetric water content"
+  ],
+  "creators": [
+    {
+      "name": "Pratt, Dannielle",
+      "address": "Delaware, US",
+      "organization": "University of Delaware",
+      "email": "depratt@udel.edu",
+      "creator_order": 1,
+      "hydroshare_user_id": 11940,
+      "identifiers": {}
+    },
+    {
+      "name": "Michael, Holly",
+      "organization": "University of Delaware",
+      "email": "hmichael@udel.edu",
+      "creator_order": 2,
+      "hydroshare_user_id": 5813,
+      "identifiers": {}
+    },
+    {
+      "name": "Nordio, Giovanna",
+      "address": "MA, US",
+      "organization": "Boston University",
+      "email": "nordiog@bu.edu",
+      "creator_order": 3,
+      "hydroshare_user_id": 12915,
+      "identifiers": {}
+    },
+    {
+      "name": "Sergio Fagherazzi",
+      "organization": "Boston University",
+      "creator_order": 4,
+      "identifiers": {}
+    }
+  ],
+  "contributors": [
+    {
+      "name": "McQuiggan, Rachel",
+      "address": "Delaware, US",
+      "organization": "University of Delaware;Delaware Geological Survey",
+      "email": "rmcquigg@udel.edu",
+      "hydroshare_user_id": 7133,
+      "identifiers": {}
+    }
+  ],
+  "relations": [
+    {
+      "type": "The content of this resource is part of",
+      "value": "Pratt, D., H. Michael, A. Sprague-Getsy, E. S. Bacmeister (2025). CCZN Metompkin Farm Data, HydroShare, http://www.hydroshare.org/resource/a5bfa246e6bd4a1f9c9539456bcd2834"
+    },
+    {
+      "type": "The content of this resource is part of",
+      "value": "Pratt, D., H. Michael, A. Sprague-Getsy, E. S. Bacmeister, G. Nordio, S. Fagherazzi (2025). CCZN Virginia Forest Data, HydroShare, http://www.hydroshare.org/resource/4de1f9db7f644ace91bf7d6caca80766"
+    },
+    {
+      "type": "This resource is described by",
+      "value": "Dannielle Pratt, Rachel W. McQuiggan, Eva Snell Bacmeister, Amanda Sprague-Getsy, Holly A. Michael, Groundwater and soil moisture data collected in the Coastal Critical Zone of the Delmarva Peninsula, United States, Data in Brief, 2025, 111336, ISSN 2352-3409, https://doi.org/10.1016/j.dib.2025.111336. (https://www.sciencedirect.com/science/article/pii/S235234092500068X)"
+    }
+  ],
+  "additional_metadata": {
+    "Dataset Type": "Multi-time series",
+    "Timestamp": "Times in this dataset are in Eastern Standard Time (EST); YYYY-MM-DD HH:MM:SS; UTC Offset - 5 hours",
+    "Units": "Volumetric water content/soil moisture - cubic meters per cubic meter (m3); Temperature - degrees Celsius (C); Electrical conductance - milliSiemens per centimeter (mS/cm)",
+    "Variables": "Volumetric water content; Temperature; Electrical conductivity",
+    "Sample Medium": "Soil",
+    "Frequency": "15-minute intervals",
+    "Processing Level": "Data was downloaded directly from the ZL6 datalogger using ZENTRA Utility software.",
+    "Method": "Data collected using a Meter Group TEROS 12 sensor and ZL6 datalogger"
+  },
+  "rights": {
+    "statement": "This resource is shared under the Creative Commons Attribution CC BY.",
+    "url": "http://creativecommons.org/licenses/by/4.0/"
+  },
+  "awards": [
+    {
+      "funding_agency_name": "NSF",
+      "title": "Collaborative Research: Network Cluster: The Coastal Critical Zone: Processes that transform landscapes and fluxes between land and sea",
+      "number": "2012484",
+      "funding_agency_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2012484&HistoricalAwards=false"
+    }
+  ],
+  "spatial_coverage": {
+    "type": "box",
+    "name": "Brownsville",
+    "northlimit": 37.4677,
+    "eastlimit": -75.8294,
+    "southlimit": 37.4578,
+    "westlimit": -75.8391,
+    "units": "Decimal degrees",
+    "projection": "WGS 84 EPSG:4326"
+  },
+  "period_coverage": {
+    "start": "2021-06-10T00:00:00",
+    "end": "2024-07-22T15:45:00"
+  },
+  "publisher": {
+    "name": "Consortium of Universities for the Advancement of Hydrologic Science, Inc. (CUAHSI)",
+    "url": "https://www.cuahsi.org/"
+  },
+  "citation": "Pratt, D., H. Michael, G. Nordio, S. Fagherazzi (2025). Virginia Forest - Soil water content, Soil temperature, Electrical conductivity - Jun 2021-Jul 2024, HydroShare, https://doi.org/10.4211/hs.064e5da7690048849e31bf36c524ba7f",
+  "url": "http://www.hydroshare.org/resource/064e5da7690048849e31bf36c524ba7f",
+  "identifier": "http://www.hydroshare.org/resource/064e5da7690048849e31bf36c524ba7f",
+  "created": "2024-09-24T17:44:27.631083Z",
+  "modified": "2025-01-30T20:29:10.377352Z",
+  "published": "2025-01-30T20:29:10.829460Z",
+  "type": "CompositeResource"
+}

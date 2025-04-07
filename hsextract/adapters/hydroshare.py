@@ -2,7 +2,7 @@ import json
 import os
 
 from datetime import datetime
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Union, Literal
 
 import requests
 from pydantic import BaseModel, EmailStr, HttpUrl
@@ -13,7 +13,7 @@ from hsextract.models import schema
 from hsextract.models.schema import CoreMetadataDOC
 
 
-class Creator(BaseModel):
+class BasePerson(BaseModel):
     name: Optional[str]
     email: Optional[EmailStr]
     organization: Optional[str]
@@ -21,28 +21,40 @@ class Creator(BaseModel):
     address: Optional[str]
     identifiers: Optional[dict] = {}
 
-    def to_dataset_creator(self):
+    def to_dataset_person(self, person_type):
         if self.name:
-            creator = schema.Creator.construct()
-            creator.name = self.name
+            person = person_type.construct()
+            person.name = self.name
             if self.email:
-                creator.email = self.email
+                person.email = self.email
             if self.organization:
                 affiliation = schema.Organization.construct()
                 affiliation.name = self.organization
-                creator.affiliation = affiliation
+                person.affiliation = affiliation
             _ORCID_identifier = self.identifiers.get("ORCID", "")
             if _ORCID_identifier:
-                creator.identifier = _ORCID_identifier
+                person.identifier = _ORCID_identifier
         else:
-            creator = schema.Organization.construct()
-            creator.name = self.organization
+            person = schema.Organization.construct()
+            person.name = self.organization
             if self.homepage:
-                creator.url = self.homepage
+                person.url = self.homepage
             if self.address:
-                creator.address = self.address
+                person.address = self.address
 
-        return creator
+        return person
+
+
+class Creator(BasePerson):
+
+    def to_dataset_creator(self):
+        return self.to_dataset_person(schema.Creator)
+
+
+class Contributor(BasePerson):
+
+    def to_dataset_contributor(self):
+        return self.to_dataset_person(schema.Contributor)
 
 
 class Award(BaseModel):
@@ -169,6 +181,7 @@ class HydroshareMetadataAdapter:
 
     def retrieve_user_metadata(self, record_id: str, input_path: str):
         hs_meta_url = f"https://hydroshare.org/hsapi2/resource/{record_id}/json/"
+        hs_sharing_status_url = f"https://www.hydroshare.org/hsapi2/resource/{record_id}/sharing_status/json/"
 
         def make_request(url) -> Union[dict, List[dict]]:
             response = requests.get(url)
@@ -177,17 +190,21 @@ class HydroshareMetadataAdapter:
             return response.json()
 
         metadata = make_request(hs_meta_url)
+        sharing_status = make_request(hs_sharing_status_url)["sharing_status"]
+        metadata["sharing_status"] = sharing_status
         metadata = self.to_catalog_record(metadata).dict()
         with open(os.path.join(input_path, "hs_user_meta.json"), "w") as f:
             json.dump(metadata, f, indent=4, default=str)
 
 
 class _HydroshareResourceMetadata(BaseModel):
+    type: Optional[str]
     title: Optional[str]
     abstract: Optional[str]
     url: Optional[HttpUrl]
     identifier: Optional[HttpUrl]
     creators: List[Creator] = []
+    contributors: List[Contributor] = []
     created: Optional[datetime]
     modified: Optional[datetime]
     published: Optional[datetime]
@@ -200,12 +217,19 @@ class _HydroshareResourceMetadata(BaseModel):
     relations: List[Relation] = []
     citation: Optional[str]
     associatedMedia: List[Any] = []
+    sharing_status: Literal["private", "public", "published", "discoverable"]
 
     def to_dataset_creators(self):
         creators = []
         for creator in self.creators:
             creators.append(creator.to_dataset_creator())
         return creators
+
+    def to_dataset_contributors(self):
+        contributors = []
+        for contributor in self.contributors:
+            contributors.append(contributor.to_dataset_contributor())
+        return contributors
 
     def to_dataset_funding(self):
         grants = []
@@ -249,6 +273,15 @@ class _HydroshareResourceMetadata(BaseModel):
         if self.rights:
             return self.rights.to_dataset_license()
 
+    def to_dataset_creative_work_status(self):
+        status_defined_terms = {
+            "public": schema.Public,
+            "published": schema.Published,
+            "discoverable": schema.Discoverable,
+            "private": schema.Private,
+        }
+        return status_defined_terms[self.sharing_status].construct()
+
     @staticmethod
     def to_dataset_provider():
         provider = schema.Organization.construct()
@@ -258,12 +291,14 @@ class _HydroshareResourceMetadata(BaseModel):
 
     def to_catalog_dataset(self):
         dataset = CoreMetadataDOC.construct()
+        dataset.additionalType = self.type
         dataset.provider = self.to_dataset_provider()
         dataset.name = self.title
         dataset.description = self.abstract
         dataset.url = self.url
         dataset.identifier = [self.identifier]
         dataset.creator = self.to_dataset_creators()
+        dataset.contributor = self.to_dataset_contributors()
         dataset.dateCreated = self.created
         dataset.dateModified = self.modified
         dataset.datePublished = self.published
@@ -277,4 +312,5 @@ class _HydroshareResourceMetadata(BaseModel):
         dataset.hasPart = self.to_dataset_has_part()
         dataset.license = self.to_dataset_license()
         dataset.citation = [self.citation]
+        dataset.creativeWorkStatus = self.to_dataset_creative_work_status()
         return dataset

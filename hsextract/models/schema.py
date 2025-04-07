@@ -82,6 +82,17 @@ class Creator(Person):
     affiliation: Optional[Affiliation] = Field(description="The affiliation of the creator with the organization.")
 
 
+class Contributor(Person):
+    identifier: Optional[str] = Field(
+        description="ORCID identifier for contributor.",
+        pattern=orcid_pattern,
+        options={"placeholder": orcid_pattern_placeholder},
+        errorMessage={"pattern": orcid_pattern_error},
+    )
+    email: Optional[EmailStr] = Field(description="A string containing an email address for the contributor.")
+    affiliation: Optional[Affiliation] = Field(description="The affiliation of the creator with the organization.")
+
+
 class FunderOrganization(Organization):
     @classmethod
     def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
@@ -104,37 +115,34 @@ class DefinedTerm(SchemaBaseModel):
     description: str = Field(description="The description of the item being defined.")
 
 
-class Draft(DefinedTerm):
-    name: str = Field(default="Draft")
-    description: str = Field(
-        default="The resource is in draft state and should not be considered final. Content and metadata may change",
-        readOnly=True,
-        description="The description of the item being defined.",
-    )
-
-
-class Incomplete(DefinedTerm):
-    name: str = Field(default="Incomplete")
-    description: str = Field(
-        default="Data collection is ongoing or the resource is not completed",
-        readOnly=True,
-        description="The description of the item being defined.",
-    )
-
-
-class Obsolete(DefinedTerm):
-    name: str = Field(default="Obsolete")
-    description: str = Field(
-        default="The resource has been replaced by a newer version, or the resource is no longer considered applicable",
-        readOnly=True,
-        description="The description of the item being defined.",
-    )
-
-
 class Published(DefinedTerm):
     name: str = Field(default="Published")
     description: str = Field(
         default="The resource has been permanently published and should be considered final and complete",
+        readOnly=True,
+        description="The description of the item being defined.",
+    )
+
+class Public(DefinedTerm):
+    name: str = Field(default="Public")
+    description: str = Field(
+        default="The resource is publicly accessible and can be viewed or downloaded by anyone",
+        readOnly=True,
+        description="The description of the item being defined.",
+    )
+
+class Private(DefinedTerm):
+    name: str = Field(default="Private")
+    description: str = Field(
+        default="The resource is private and can only be accessed by authorized users",
+        readOnly=True,
+        description="The description of the item being defined.",
+    )
+
+class Discoverable(DefinedTerm):
+    name: str = Field(default="Discoverable")
+    description: str = Field(
+        default="The resource is discoverable and can be found through search engines or other discovery mechanisms",
         readOnly=True,
         description="The description of the item being defined.",
     )
@@ -377,6 +385,11 @@ class CoreMetadata(SchemaBaseModel):
         " software source code, digital documents, etc.",
         enum=["Dataset", "Notebook", "Software Source Code"],
     )
+    additionalType: Optional[str] = Field(
+        title="Additional type",
+        description="An additional type for the resource. This can be used to further specify the type of the"
+                    " resource (e.g., Composite Resource).",
+    )
     name: str = Field(
         default=None,
         title="Name or title",
@@ -400,6 +413,9 @@ class CoreMetadata(SchemaBaseModel):
         "encoded as URLs, enter URLs here.",
     )
     creator: List[Union[Creator, Organization]] = Field(description="Person or Organization that created the resource.")
+    contributor: List[Union[Contributor, Organization]] = Field(
+        description="Person or Organization that contributed to the resource."
+    )
     dateCreated: datetime = Field(title="Date created", description="The date on which the resource was created.")
     keywords: List[str] = Field(
         min_items=1, description="Keywords or tags used to describe the dataset, delimited by commas."
@@ -430,10 +446,10 @@ class CoreMetadata(SchemaBaseModel):
     inLanguage: Optional[Union[LanguageEnum, InLanguageStr]] = Field(
         title="Language", description="The language of the content of the resource."
     )
-    creativeWorkStatus: Optional[Union[Draft, Incomplete, Obsolete, Published]] = Field(
+    creativeWorkStatus: Optional[Union[Published, Public, Discoverable, Private]] = Field(
         title="Resource status",
         description="The status of this resource in terms of its stage in a lifecycle. "
-        "Example terms include Incomplete, Draft, Published, and Obsolete.",
+        "Example terms include Published, Public, Discoverable, and Private.",
     )
     dateModified: Optional[datetime] = Field(
         title="Date modified", description="The date on which the resource was most recently modified or updated."
