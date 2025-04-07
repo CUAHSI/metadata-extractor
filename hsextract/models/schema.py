@@ -115,33 +115,6 @@ class DefinedTerm(SchemaBaseModel):
     description: str = Field(description="The description of the item being defined.")
 
 
-class Draft(DefinedTerm):
-    name: str = Field(default="Draft")
-    description: str = Field(
-        default="The resource is in draft state and should not be considered final. Content and metadata may change",
-        readOnly=True,
-        description="The description of the item being defined.",
-    )
-
-
-class Incomplete(DefinedTerm):
-    name: str = Field(default="Incomplete")
-    description: str = Field(
-        default="Data collection is ongoing or the resource is not completed",
-        readOnly=True,
-        description="The description of the item being defined.",
-    )
-
-
-class Obsolete(DefinedTerm):
-    name: str = Field(default="Obsolete")
-    description: str = Field(
-        default="The resource has been replaced by a newer version, or the resource is no longer considered applicable",
-        readOnly=True,
-        description="The description of the item being defined.",
-    )
-
-
 class Published(DefinedTerm):
     name: str = Field(default="Published")
     description: str = Field(
@@ -473,10 +446,10 @@ class CoreMetadata(SchemaBaseModel):
     inLanguage: Optional[Union[LanguageEnum, InLanguageStr]] = Field(
         title="Language", description="The language of the content of the resource."
     )
-    creativeWorkStatus: Optional[Union[Draft, Incomplete, Obsolete, Published, Public, Discoverable, Private]] = Field(
+    creativeWorkStatus: Optional[Union[Published, Public, Discoverable, Private]] = Field(
         title="Resource status",
         description="The status of this resource in terms of its stage in a lifecycle. "
-        "Example terms include Incomplete, Draft, Published, Public, Discoverable, Private, and Obsolete.",
+        "Example terms include Published, Public, Discoverable, and Private.",
     )
     dateModified: Optional[datetime] = Field(
         title="Date modified", description="The date on which the resource was most recently modified or updated."
