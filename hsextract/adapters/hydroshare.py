@@ -217,7 +217,7 @@ class _HydroshareResourceMetadata(BaseModel):
     relations: List[Relation] = []
     citation: Optional[str]
     associatedMedia: List[Any] = []
-    sharing_status: Literal["private", "public", "published", "discoverable"]
+    sharing_status: Optional[Literal["private", "public", "published", "discoverable"]]
 
     def to_dataset_creators(self):
         creators = []
@@ -280,7 +280,8 @@ class _HydroshareResourceMetadata(BaseModel):
             "discoverable": schema.Discoverable,
             "private": schema.Private,
         }
-        return status_defined_terms[self.sharing_status].construct()
+        if self.sharing_status:
+            return status_defined_terms[self.sharing_status].construct()
 
     @staticmethod
     def to_dataset_provider():
