@@ -14,6 +14,7 @@ from hsextract.raster.utils import extract_from_tif_file
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata_csv
+from hsextract import s3
 
 
 def _to_metadata_path(type: str, filepath: str, output_path: str):
@@ -61,8 +62,8 @@ def extract_metadata(type: str, input_path: str, output_base_url: str, user_meta
 
         # check for user metadata attached content types
         user_meta_content_type_path = input_path + "." + user_metadata_filename
-        if os.path.exists(user_meta_content_type_path):
-            with open(user_meta_content_type_path, "r") as f:
+        if s3.exists(user_meta_content_type_path):
+            with s3.open(user_meta_content_type_path) as f:
                 user_metadata = json.loads(f.read())
             catalog_record.update(user_metadata)
         return catalog_record
@@ -86,37 +87,31 @@ def _extract_metadata(type: str, filepath):
         metadata = extract_referenced_timeseries_metadata(filepath)
     elif type == "user_meta":
         metadata = {}
-        if os.path.exists(filepath):
-            with open(filepath) as f:
+        if s3.exists(filepath):
+            with s3.open(filepath) as f:
                 metadata = json.loads(f.read())
         metadata_file_dir, filename = os.path.split(filepath)
         metadata["content_files"] = [
             str(f)
-            for f in Path(f'./{metadata_file_dir}').rglob('*')
-            if not str(f).endswith(filename) and os.path.isfile(str(f))
+            for f in s3.find(metadata_file_dir)
         ]
 
     return metadata
 
 
 def read_metadata(path: str):
-    with open(path, "r") as f:
+    with s3.open(path) as f:
         return json.loads(f.read())
 
 
 async def list_and_extract(
     input_path: str, output_path: str, input_base_url: str, output_base_url: str, user_metadata_filename: str
 ):
-    current_directory = os.getcwd()
     try:
-        os.chdir(input_path)
-        sorted_files, categorized_files = prepare_files(user_metadata_filename)
+        sorted_files, categorized_files = prepare_files(input_path, user_metadata_filename)
         netcdf_files = categorized_files["netcdf"]
         del categorized_files["netcdf"]
         tasks = []
-
-        if "user_meta" not in categorized_files or user_metadata_filename not in categorized_files["user_meta"]:
-            categorized_files["user_meta"].append(user_metadata_filename)
 
         for category, files in categorized_files.items():
             for file in files:
@@ -222,4 +217,4 @@ async def list_and_extract(
                 f.write(json.dumps(metadata, indent=2))
 
     finally:
-        os.chdir(current_directory)
+        pass

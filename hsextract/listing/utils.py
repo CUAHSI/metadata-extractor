@@ -1,25 +1,12 @@
 import os
 from collections import defaultdict
-from multiprocessing.sharedctypes import Value
-from pathlib import Path
 
 from hsextract.raster.utils import list_tif_files
+from hsextract import s3
 
 
-def _is_not_hidden_file(path):
-    if path.is_dir():
-        return False
-
-    is_not_hidden_file = not any(part.startswith('.') for part in path.parts)
-    return is_not_hidden_file
-
-
-def sort_files(include_hidden: bool = False):
-    if include_hidden:
-        files = [str(p) for p in Path().rglob('*') if not p.is_dir()]
-    else:
-        files = [str(p) for p in Path().rglob('*') if _is_not_hidden_file(p)]
-
+def sort_files(input_path):
+    files = s3.find(input_path)
     sorted_files = sorted(files, key=lambda i: (i, len(i.split("/"))))
     return sorted_files
 
@@ -66,8 +53,8 @@ def categorize_files(files, user_metadata_filename):
     return categorized_files
 
 
-def prepare_files(user_metadata_filename: str):
-    sorted_files = sort_files()
+def prepare_files(input_path, user_metadata_filename: str):
+    sorted_files = sort_files(input_path)
     categorized_files = categorize_files(sorted_files, user_metadata_filename)
 
     return sorted_files, categorized_files
