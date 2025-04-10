@@ -100,7 +100,7 @@ def _extract_metadata(type: str, filepath):
 
 
 def read_metadata(path: str):
-    with s3.open(path) as f:
+    with open(path) as f:
         return json.loads(f.read())
 
 

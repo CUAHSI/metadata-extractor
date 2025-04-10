@@ -1,9 +1,11 @@
 import os
+import tempfile
 from pathlib import Path
 
 import xmltodict
 from bs4 import BeautifulSoup
 from osgeo import ogr, osr
+from hsextract import s3
 
 UNKNOWN_STR = "unknown"
 TITLE_MAX_LENGTH = 300
@@ -28,7 +30,9 @@ def get_all_related_shp_files(feature_path):
     shape_res_files = []
     xml_file = None
     dir_path = os.path.dirname(feature_path)
-    for f in os.listdir(dir_path if dir_path else os.getcwd()):
+    temp_dir = tempfile.gettempdir()
+    for f in s3.glob(os.path.join(dir_path, '*')):
+        print(f)
         f_path = Path(f)
         if str(f_path.suffix).lower() == '.xml' and not str(f_path.name).lower().endswith('.shp.xml'):
             continue
@@ -49,11 +53,13 @@ def get_all_related_shp_files(feature_path):
             ".ixs",
             ".mxs",
         ]:
-            shape_res_files.append(os.path.join(dir_path, f))
+            shape_res_files.append(f)
+            local_copy = os.path.join(temp_dir, os.path.basename(f))
+            s3.get_file(f, local_copy)
         if str(f_path.suffix).lower() == ".xml":
-            xml_file = os.path.join(dir_path, f)
+            xml_file = f
         if str(f_path.suffix).lower() == ".shp":
-            shp_file = os.path.join(dir_path, f)
+            shp_file = f
     return shape_res_files, xml_file, shp_file
 
 
@@ -147,7 +153,9 @@ def parse_shp(shp_file_path):
     shp_metadata_dict = {}
     # read shapefile
     driver = ogr.GetDriverByName('ESRI Shapefile')
-    dataset = driver.Open(shp_file_path)
+    local_copy = os.path.join(tempfile.gettempdir(), os.path.basename(shp_file_path))
+    print("local_copy " + local_copy)
+    dataset = driver.Open(local_copy)
 
     # get layer
     layer = dataset.GetLayer()
@@ -279,7 +287,7 @@ def parse_shp_xml(xml_file):
     :return: a list of metadata dict
     """
     metadata = []
-    with open(xml_file, "r") as f:
+    with s3.open(xml_file, "r") as f:
         xml_file_str = f.read()
     xml_dict = xmltodict.parse(xml_file_str)
     if 'dataIdInfo' in xml_dict['metadata']:

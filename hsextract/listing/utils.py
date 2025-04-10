@@ -1,7 +1,7 @@
 import os
 from collections import defaultdict
 
-from hsextract.raster.utils import list_tif_files
+from hsextract.raster.utils import list_tif_files_s3
 from hsextract import s3
 
 
@@ -41,7 +41,7 @@ def categorize_files(files, user_metadata_filename):
 
     for vrt_file in categorized_files["raster"]:
         vrt_file_dir = os.path.dirname(vrt_file)
-        for tif_file in list_tif_files(vrt_file):
+        for tif_file in list_tif_files_s3(vrt_file):
             try:
                 full_tif_path = os.path.join(vrt_file_dir, tif_file)
                 categorized_files["raster-tif"].remove(full_tif_path)
