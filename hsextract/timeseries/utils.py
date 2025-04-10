@@ -1,8 +1,11 @@
 import csv
 import logging
 import sqlite3
+import tempfile
+import os
 
 from dateutil import parser
+from hsextract import s3
 
 
 def validate_odm2_db_file(sqlite_file_path):
@@ -189,7 +192,10 @@ def extract_metadata(sqlite_file_name):
     :return: extracted_metadata as dictionary
     """
 
-    with sqlite3.connect(sqlite_file_name) as con:
+    temp_dir = tempfile.gettempdir()
+    local_copy = os.path.join(temp_dir, os.path.basename(sqlite_file_name))
+    s3.get_file(sqlite_file_name, local_copy)
+    with sqlite3.connect(local_copy) as con:
         # get the records in python dictionary format
         con.row_factory = sqlite3.Row
         cur = con.cursor()
@@ -572,7 +578,7 @@ def extract_metadata_csv(csv_file_name):
     """Extracts CV metadata from a csv file"""
 
     metadata_dict = {}
-    with open(csv_file_name, 'r') as fl_obj:
+    with s3.open(csv_file_name, 'r') as fl_obj:
         csv_reader = csv.reader(fl_obj, delimiter=',')
         # read the first row - header
         header = next(csv_reader)
