@@ -32,7 +32,6 @@ def get_all_related_shp_files(feature_path):
     dir_path = os.path.dirname(feature_path)
     temp_dir = tempfile.gettempdir()
     for f in s3.glob(os.path.join(dir_path, '*')):
-        print(f)
         f_path = Path(f)
         if str(f_path.suffix).lower() == '.xml' and not str(f_path.name).lower().endswith('.shp.xml'):
             continue
@@ -154,7 +153,6 @@ def parse_shp(shp_file_path):
     # read shapefile
     driver = ogr.GetDriverByName('ESRI Shapefile')
     local_copy = os.path.join(tempfile.gettempdir(), os.path.basename(shp_file_path))
-    print("local_copy " + local_copy)
     dataset = driver.Open(local_copy)
 
     # get layer
