@@ -20,8 +20,8 @@ def extract(
     input_path: str,
     output_path: str,
     retrieve_metadata_resource_id: Annotated[str, typer.Argument()] = None,
+    output_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/extracted_metadata/data/contents",
     input_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource",
-    output_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/extracted_metadata",
     user_metadata_filename: Annotated[str, typer.Argument()] = "hs_user_meta.json",
 ):
     if retrieve_metadata_resource_id:

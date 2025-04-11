@@ -53,9 +53,13 @@ def extract_metadata(type: str, input_path: str, output_base_url: str, user_meta
     except Exception as e:
         logging.exception(f"Failed to extract {type} metadata from {input_path}.")
         return None
-    #if os.path.basename(input_path) == user_metadata_filename:
-        #path = os.path.dirname(input_path)
-        #extracted_metadata["url"] = os.path.join(output_base_url, path, "dataset_metadata.json")
+    if os.path.basename(input_path) == user_metadata_filename:
+        print("input_path " + input_path)
+        if input_path == "/tmp/hs_user_meta.json":
+            path = ""
+        else:
+            path = os.path.dirname("/".join(input_path.strip("/").split('/')[4:]))
+        extracted_metadata["url"] = os.path.join(output_base_url, path, "dataset_metadata.json")
     #else:
         #input_path = "/".join(input_path.strip("/").split('/')[4:])
         #metadata_url = os.path.join(output_base_url, input_path)
