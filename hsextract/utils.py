@@ -3,6 +3,7 @@ import json
 import logging
 import os
 from pathlib import Path
+import pathlib
 
 from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
 from hsextract.feature.utils import extract_metadata_and_files
@@ -18,10 +19,14 @@ from hsextract import s3
 
 
 def _to_metadata_path(type: str, filepath: str, output_path: str):
+    # strip bucket and resource id from path
+    print("OUTPUT_PATH " + output_path)
     if type != "user_meta":
+        output_path = os.path.join(output_path, "/".join(filepath.strip("/").split('/')[2:]))
         return os.path.join(output_path, filepath + ".json")
     if filepath == "/tmp/hs_user_meta.json":
-        return os.path.join(output_path, "dataset_metadata.json")
+        return os.path.join(output_path, "data", "contents", "dataset_metadata.json")
+    output_path = os.path.join(output_path, "/".join(filepath.strip("/").split('/')[2:]))
     dirname, _ = os.path.split(filepath)
     return os.path.join(output_path, dirname, "dataset_metadata.json")
 
