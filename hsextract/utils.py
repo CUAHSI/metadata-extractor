@@ -20,14 +20,16 @@ from hsextract import s3
 def _to_metadata_path(type: str, filepath: str, output_path: str):
     if type != "user_meta":
         return os.path.join(output_path, filepath + ".json")
+    if filepath == "/tmp/hs_user_meta.json":
+        return os.path.join(output_path, "dataset_metadata.json")
     dirname, _ = os.path.split(filepath)
     return os.path.join(output_path, dirname, "dataset_metadata.json")
 
 
 def extract_metadata_with_file_path(
-    type: str, input_path: str, user_metadata_filename: str, output_path: str, output_base_url: str
+    type: str, input_path: str, user_metadata_filename: str, output_path: str, output_base_url: str, base_input_path: str
 ):
-    extracted_metadata = extract_metadata(type, input_path, output_base_url, user_metadata_filename)
+    extracted_metadata = extract_metadata(type, input_path, output_base_url, user_metadata_filename, base_input_path)
     if extracted_metadata:
         input_path = _to_metadata_path(type, input_path, output_path)
         os.makedirs(os.path.dirname(input_path), exist_ok=True)
@@ -36,9 +38,9 @@ def extract_metadata_with_file_path(
     return input_path, extracted_metadata is not None
 
 
-def extract_metadata(type: str, input_path: str, output_base_url: str, user_metadata_filename: str):
+def extract_metadata(type: str, input_path: str, output_base_url: str, user_metadata_filename: str, base_input_path: str):
     try:
-        extracted_metadata = _extract_metadata(type, input_path)
+        extracted_metadata = _extract_metadata(type, input_path, base_input_path)
     except Exception as e:
         logging.exception(f"Failed to extract {type} metadata from {input_path}.")
         return None
@@ -69,7 +71,7 @@ def extract_metadata(type: str, input_path: str, output_base_url: str, user_meta
         return catalog_record
 
 
-def _extract_metadata(type: str, filepath):
+def _extract_metadata(type: str, filepath, base_input_path):
     extension = os.path.splitext(filepath)[1]
     metadata = None
     if type == "raster":
@@ -90,6 +92,10 @@ def _extract_metadata(type: str, filepath):
         if s3.exists(filepath):
             with s3.open(filepath) as f:
                 metadata = json.loads(f.read())
+        elif filepath == "/tmp/hs_user_meta.json":
+            with open(filepath) as f:
+                metadata = json.loads(f.read())
+                filepath = os.path.join(base_input_path, "file.json")
         metadata_file_dir, filename = os.path.split(filepath)
         metadata["content_files"] = [
             str(f)
@@ -124,6 +130,7 @@ async def list_and_extract(
                         user_metadata_filename,
                         output_path,
                         output_base_url,
+                        input_path
                     )
                 )
 
@@ -137,7 +144,7 @@ async def list_and_extract(
         # The netcdf library does not seem to be thread safe, running them in this thread
         for file in netcdf_files:
             results.append(
-                extract_metadata_with_file_path("netcdf", file, user_metadata_filename, output_path, output_base_url)
+                extract_metadata_with_file_path("netcdf", file, user_metadata_filename, output_path, output_base_url, input_path)
             )
 
         metadata_manifest = [

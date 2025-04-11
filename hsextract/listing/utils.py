@@ -3,10 +3,14 @@ from collections import defaultdict
 
 from hsextract.raster.utils import list_tif_files_s3
 from hsextract import s3
+from pathlib import Path
 
 
 def sort_files(input_path):
     files = s3.find(input_path)
+    # temporary workaround until we begin writing these files in the resource
+    if os.path.exists("/tmp/hs_user_meta.json"):
+        files.append("/tmp/hs_user_meta.json")
     sorted_files = sorted(files, key=lambda i: (i, len(i.split("/"))))
     return sorted_files
 
