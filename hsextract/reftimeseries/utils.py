@@ -6,6 +6,7 @@ from urllib.request import Request, urlopen
 import jsonschema
 import pytz
 from dateutil import parser
+from hsextract import s3
 
 
 def extract_referenced_timeseries_metadata(res_json_file):
@@ -23,7 +24,7 @@ def extract_referenced_timeseries_metadata(res_json_file):
 
 
 def _validate_json_file(res_json_file):
-    with open(res_json_file, 'r') as f:
+    with s3.open(res_json_file, 'r') as f:
         json_data = json.loads(f.read())
 
     try:

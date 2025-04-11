@@ -15,3 +15,5 @@ pytz
 requests
 pydantic==1.10
 pydantic[email]==1.10
+s3fs
+typing-extensions==4.1.1

@@ -24,6 +24,8 @@ http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html
 
 import json
 import re
+import tempfile
+import os
 from collections import OrderedDict
 
 import dateutil.parser
@@ -31,6 +33,7 @@ import netCDF4
 import numpy
 from osgeo import osr
 from pyproj import Transformer
+from hsextract import s3
 
 
 def get_nc_meta_json(nc_file_name):
@@ -524,7 +527,10 @@ def get_nc_dataset(nc_file_name):
     Return: the netCDF dataset
     """
     try:
-        nc_dataset = netCDF4.Dataset(nc_file_name, 'r')
+        temp_dir = tempfile.gettempdir()
+        local_copy = os.path.join(temp_dir, os.path.basename(nc_file_name))
+        s3.get_file(nc_file_name, local_copy)
+        nc_dataset = netCDF4.Dataset(local_copy, 'r')
     except Exception:
         nc_dataset = None
 

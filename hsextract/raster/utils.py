@@ -11,16 +11,22 @@ import numpy
 from osgeo import gdal, osr
 from osgeo.gdalconst import GA_ReadOnly
 from pycrs.parse import from_unknown_wkt
+from hsextract import s3
 
 
 def extract_from_tif_file(tif_file):
+    temp_dir = tempfile.gettempdir()
+    local_copy = os.path.join(temp_dir, os.path.basename(tif_file))
+    s3.get_file(tif_file, local_copy)
+
     ext = os.path.splitext(tif_file)[1]
     full_path = os.path.dirname(tif_file)
     if ext != ".vrt":
-        filename = create_vrt_file(tif_file)
-        tif_files = [tif_file]
+        filename = create_vrt_file(local_copy)
+        #s3.put_file(filename, os.path.join(full_path, filename))
+        tif_files = [local_copy]
     else:
-        filename = tif_file
+        filename = local_copy
         tif_files = list_tif_files(filename)
         tif_files = [os.path.join(full_path, f) for f in tif_files] + [tif_file]
     # file validation and metadaadatta extraction
@@ -402,7 +408,7 @@ def raster_file_metadata_extraction(raster_path):
     else:
         # create the .vrt file
         tif_files = [
-            f for f in os.listdir(os.path.dirname(raster_path)) if f.file_name == os.path.basename(raster_path)
+            f for f in s3.glob(raster_path) if os.path.basename(f) == os.path.basename(raster_path)
         ]
         vrt_file = create_vrt_file(raster_path)
 
@@ -411,6 +417,13 @@ def raster_file_metadata_extraction(raster_path):
 
 def list_tif_files(vrt_file):
     with open(vrt_file, "r") as f:
+        vrt_string = f.read()
+    root = ET.fromstring(vrt_string)
+    file_names_in_vrt = [file_name.text for file_name in root.iter('SourceFilename')]
+    return file_names_in_vrt
+
+def list_tif_files_s3(vrt_file):
+    with s3.open(vrt_file, "r") as f:
         vrt_string = f.read()
     root = ET.fromstring(vrt_string)
     file_names_in_vrt = [file_name.text for file_name in root.iter('SourceFilename')]
