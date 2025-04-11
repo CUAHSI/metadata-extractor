@@ -20,15 +20,19 @@ from hsextract import s3
 
 def _to_metadata_path(type: str, filepath: str, output_path: str):
     # strip bucket and resource id from path
-    print("OUTPUT_PATH " + output_path)
     if type != "user_meta":
-        output_path = os.path.join(output_path, "/".join(filepath.strip("/").split('/')[2:]))
-        return os.path.join(output_path, filepath + ".json")
+        output_path = os.path.join(output_path, "/".join(filepath.strip("/").split('/')[4:]))
+        dirname, _ = os.path.split(output_path)
+        return os.path.join(dirname, os.path.basename(filepath) + ".json")
     if filepath == "/tmp/hs_user_meta.json":
-        return os.path.join(output_path, "data", "contents", "dataset_metadata.json")
-    output_path = os.path.join(output_path, "/".join(filepath.strip("/").split('/')[2:]))
-    dirname, _ = os.path.split(filepath)
-    return os.path.join(output_path, dirname, "dataset_metadata.json")
+        return os.path.join(output_path, "dataset_metadata.json")
+    output_path = os.path.join(output_path, "/".join(filepath.strip("/").split('/')[4:]))
+    dirname, _ = os.path.split(output_path)
+    dataset_metadata_path = os.path.join(dirname, "dataset_metadata.json")
+    return dataset_metadata_path
+
+def _strip_bucket(path):
+    return "/".join(path.strip("/").split('/')[1:])
 
 
 def extract_metadata_with_file_path(
@@ -49,11 +53,13 @@ def extract_metadata(type: str, input_path: str, output_base_url: str, user_meta
     except Exception as e:
         logging.exception(f"Failed to extract {type} metadata from {input_path}.")
         return None
-    if os.path.basename(input_path) == user_metadata_filename:
-        path = os.path.dirname(input_path)
-        extracted_metadata["url"] = os.path.join(output_base_url, path, "dataset_metadata.json")
-    else:
-        extracted_metadata["url"] = os.path.join(output_base_url, input_path)
+    #if os.path.basename(input_path) == user_metadata_filename:
+        #path = os.path.dirname(input_path)
+        #extracted_metadata["url"] = os.path.join(output_base_url, path, "dataset_metadata.json")
+    #else:
+        #input_path = "/".join(input_path.strip("/").split('/')[4:])
+        #metadata_url = os.path.join(output_base_url, input_path)
+        #extracted_metadata["url"] = metadata_url
     adapter = HydroshareMetadataAdapter()
     all_file_metadata = []
     for f in extracted_metadata["content_files"]:
@@ -182,6 +188,7 @@ async def list_and_extract(
                 if not name:
                     name = "Not Found and name is required"
                 has_part_file = os.path.relpath(has_part_file, output_path)
+                #has_part_file = _strip_bucket(has_part_file)
                 has_part.append(
                     {
                         "@type": "CreativeWork",
@@ -204,6 +211,7 @@ async def list_and_extract(
             if "associatedMedia" in metadata_json:
                 associated_media = []
                 for md in metadata_json["associatedMedia"]:
+                    md["contentUrl"] = _strip_bucket(md["contentUrl"])
                     md["contentUrl"] = os.path.join(input_base_url, md["contentUrl"])
                     associated_media.append(md)
                 metadata_json["associatedMedia"] = associated_media
@@ -220,11 +228,13 @@ async def list_and_extract(
                     associated_media = []
                     for md in metadata["associatedMedia"]:
                         if not md["contentUrl"].startswith(input_base_url):
+                            md["contentUrl"] = _strip_bucket(md["contentUrl"])
                             md["contentUrl"] = os.path.join(input_base_url, md["contentUrl"])
                         associated_media.append(md)
                     metadata["associatedMedia"] = associated_media
                 if "url" in metadata:
-                    metadata["url"] = os.path.join(output_base_url, os.path.relpath(meta_manifest_file, output_path))
+                    meta_rel_output_path = _strip_bucket(meta_manifest_file)
+                    metadata["url"] = os.path.join(output_base_url, meta_rel_output_path)
             with open(meta_manifest_file, "w") as f:
                 f.write(json.dumps(metadata, indent=2))
 
