@@ -19,7 +19,7 @@ def file_metadata(path: str):
         "name": name,
         "contentUrl": path,
         "contentSize": size,
-        "sha256": checksum,
+        "sha256": str(checksum),
         "encodingFormat": mime_type,
     }, None
 
@@ -41,6 +41,6 @@ def file_metadata_local(path: str):
         "name": name,
         "contentUrl": path,
         "contentSize": size,
-        "sha256": checksum,
+        "sha256": str(checksum),
         "encodingFormat": mime_type,
     }, None
