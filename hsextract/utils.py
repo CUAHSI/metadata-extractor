@@ -73,17 +73,22 @@ def _extract_metadata(type: str, filepath):
     metadata = None
     if type == "raster":
         metadata = extract_from_tif_file(filepath)
+        metadata["type"] = "GeographicRasterAggregation"
     elif type == "feature":
         metadata = extract_metadata_and_files(filepath)
+        metadata["type"] = "GeographicFeatureAggregation"
     elif type == "netcdf":
         metadata = get_nc_meta_dict(filepath)
+        metadata["type"] = "MultidimensionalAggregation"
     elif type == "timeseries":
         if extension == ".csv":
             metadata = extract_metadata_csv(filepath)
         elif extension == ".sqlite":
             metadata = extract_timeseries_metadata(filepath)
+        metadata["type"] = "TimeSeriesAggregation"
     elif type == "reftimeseries":
         metadata = extract_referenced_timeseries_metadata(filepath)
+        metadata["type"] = "ReferencedTimeSeriesAggregation"
     elif type == "user_meta":
         metadata = {}
         if os.path.exists(filepath):
@@ -95,6 +100,9 @@ def _extract_metadata(type: str, filepath):
             for f in Path(f'./{metadata_file_dir}').rglob('*')
             if not str(f).endswith(filename) and os.path.isfile(str(f))
         ]
+        if "type" not in metadata:
+            # Check type to ensure ResourceType isn't overwritten if provided
+            metadata["type"] = "FileSetAggregation"
 
     return metadata
 
