@@ -19,10 +19,10 @@ async def _extract(
 def extract(
     input_path: str,
     output_path: str,
-    input_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/resource_id/data/contents/",
-    output_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/resource_id/extracted_metadata",
-    user_metadata_filename: Annotated[str, typer.Argument()] = "hs_user_meta.json",
     retrieve_metadata_resource_id: Annotated[str, typer.Argument()] = None,
+    output_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource/extracted_metadata/data/contents",
+    input_base_url: Annotated[str, typer.Argument()] = "https://hydroshare.org/resource",
+    user_metadata_filename: Annotated[str, typer.Argument()] = "hs_user_meta.json",
 ):
     if retrieve_metadata_resource_id:
         adapter = HydroshareMetadataAdapter()

@@ -1,5 +1,6 @@
 import json
 import os
+import tempfile
 
 from datetime import datetime
 from typing import Any, List, Optional, Union, Literal
@@ -193,7 +194,7 @@ class HydroshareMetadataAdapter:
         sharing_status = make_request(hs_sharing_status_url)["sharing_status"]
         metadata["sharing_status"] = sharing_status
         metadata = self.to_catalog_record(metadata).dict()
-        with open(os.path.join(input_path, "hs_user_meta.json"), "w") as f:
+        with open(os.path.join(tempfile.gettempdir(), "hs_user_meta.json"), "w") as f:
             json.dump(metadata, f, indent=4, default=str)
 
 
@@ -217,7 +218,7 @@ class _HydroshareResourceMetadata(BaseModel):
     relations: List[Relation] = []
     citation: Optional[str]
     associatedMedia: List[Any] = []
-    sharing_status: Literal["private", "public", "published", "discoverable"]
+    sharing_status: Optional[Literal["private", "public", "published", "discoverable"]]
 
     def to_dataset_creators(self):
         creators = []
@@ -280,7 +281,8 @@ class _HydroshareResourceMetadata(BaseModel):
             "discoverable": schema.Discoverable,
             "private": schema.Private,
         }
-        return status_defined_terms[self.sharing_status].construct()
+        if self.sharing_status:
+            return status_defined_terms[self.sharing_status].construct()
 
     @staticmethod
     def to_dataset_provider():
