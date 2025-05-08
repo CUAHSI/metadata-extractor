@@ -302,7 +302,7 @@ class _HydroshareResourceMetadata(BaseModel):
         dataset.url = self.url
         dataset.identifier = [self.identifier]
         dataset.creator = self.to_dataset_creators()
-        #dataset.contributor = self.to_dataset_contributors()
+        dataset.contributor = self.to_dataset_contributors()
         dataset.dateCreated = self.created
         dataset.dateModified = self.modified
         dataset.datePublished = self.published
