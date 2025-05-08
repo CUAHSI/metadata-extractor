@@ -9,7 +9,7 @@ from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
 from hsextract.feature.utils import extract_metadata_and_files
 from hsextract.file_utils import file_metadata
 from hsextract.listing.utils import prepare_files
-from hsextract.models.schema import CoreMetadataDOC
+from hsextract.hs_cn_schemas.schema.src.core import CoreMetadataDOC
 from hsextract.netcdf.utils import get_nc_meta_dict
 from hsextract.raster.utils import extract_from_tif_file
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata

@@ -6,12 +6,12 @@ from datetime import datetime
 from typing import Any, List, Optional, Union, Literal
 
 import requests
-from pydantic import BaseModel, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, HttpUrl, ConfigDict
 
 from hsextract.adapters.utils import RepositoryType
 from hsextract.exceptions import RepositoryException
-from hsextract.models import schema
-from hsextract.models.schema import CoreMetadataDOC
+from hsextract.hs_cn_schemas.schema.src import base as schema
+from hsextract.hs_cn_schemas.schema.src.core import CoreMetadataDOC
 
 
 class BasePerson(BaseModel):
@@ -199,6 +199,8 @@ class HydroshareMetadataAdapter:
 
 
 class _HydroshareResourceMetadata(BaseModel):
+    model_config = ConfigDict(extra='allow')
+
     type: Optional[str]
     title: Optional[str]
     abstract: Optional[str]
