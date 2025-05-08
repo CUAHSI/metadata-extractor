@@ -11,15 +11,15 @@ from pydantic import BaseModel, EmailStr, HttpUrl, ConfigDict
 from hsextract.adapters.utils import RepositoryType
 from hsextract.exceptions import RepositoryException
 from hsextract.hs_cn_schemas.schema.src import base as schema
-from hsextract.hs_cn_schemas.schema.src.core import CoreMetadataDOC
+from hsextract.hs_cn_schemas.schema.src.dataset import GenericDataset
 
 
 class BasePerson(BaseModel):
-    name: Optional[str]
-    email: Optional[EmailStr]
-    organization: Optional[str]
-    homepage: Optional[HttpUrl]
-    address: Optional[str]
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    organization: Optional[str] = None
+    homepage: Optional[HttpUrl] = None
+    address: Optional[str] = None
     identifiers: Optional[dict] = {}
 
     def to_dataset_person(self, person_type):
@@ -60,9 +60,9 @@ class Contributor(BasePerson):
 
 class Award(BaseModel):
     funding_agency_name: str
-    title: Optional[str]
-    number: Optional[str]
-    funding_agency_url: Optional[HttpUrl]
+    title: Optional[str] = None
+    number: Optional[str] = None
+    funding_agency_url: Optional[HttpUrl] = None
 
     def to_dataset_grant(self):
         grant = schema.Grant.construct()
@@ -96,7 +96,7 @@ class TemporalCoverage(BaseModel):
 
 
 class SpatialCoverageBox(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
     northlimit: float
     eastlimit: float
     southlimit: float
@@ -113,7 +113,7 @@ class SpatialCoverageBox(BaseModel):
 
 
 class SpatialCoveragePoint(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
     north: float
     east: float
 
@@ -167,7 +167,7 @@ class Rights(BaseModel):
     url: HttpUrl
 
     def to_dataset_license(self):
-        _license = schema.License.construct()
+        _license = schema.CreativeWork.construct()
         _license.name = self.statement
         _license.url = self.url
         return _license
@@ -201,26 +201,26 @@ class HydroshareMetadataAdapter:
 class _HydroshareResourceMetadata(BaseModel):
     model_config = ConfigDict(extra='allow')
 
-    type: Optional[str]
-    title: Optional[str]
-    abstract: Optional[str]
-    url: Optional[HttpUrl]
-    identifier: Optional[HttpUrl]
+    type: Optional[str] = None
+    title: Optional[str] = None
+    abstract: Optional[str] = None
+    url: Optional[HttpUrl] = None
+    identifier: Optional[HttpUrl] = None
     creators: List[Creator] = []
     contributors: List[Contributor] = []
-    created: Optional[datetime]
-    modified: Optional[datetime]
-    published: Optional[datetime]
-    subjects: Optional[List[str]]
-    language: Optional[str]
-    rights: Optional[Rights]
+    created: Optional[datetime] = None
+    modified: Optional[datetime] = None
+    published: Optional[datetime] = None
+    subjects: Optional[List[str]] = None
+    language: Optional[str] = None
+    rights: Optional[Rights] = None
     awards: List[Award] = []
-    spatial_coverage: Optional[Union[SpatialCoverageBox, SpatialCoveragePoint]]
-    period_coverage: Optional[TemporalCoverage]
+    spatial_coverage: Optional[Union[SpatialCoverageBox, SpatialCoveragePoint]] = None
+    period_coverage: Optional[TemporalCoverage] = None
     relations: List[Relation] = []
-    citation: Optional[str]
+    citation: Optional[str] = None
     associatedMedia: List[Any] = []
-    sharing_status: Optional[Literal["private", "public", "published", "discoverable"]]
+    sharing_status: Optional[Literal["private", "public", "published", "discoverable"]] = None
 
     def to_dataset_creators(self):
         creators = []
@@ -294,7 +294,7 @@ class _HydroshareResourceMetadata(BaseModel):
         return provider
 
     def to_catalog_dataset(self):
-        dataset = CoreMetadataDOC.construct()
+        dataset = GenericDataset.model_construct()
         dataset.additionalType = self.type
         dataset.provider = self.to_dataset_provider()
         dataset.name = self.title
@@ -302,7 +302,7 @@ class _HydroshareResourceMetadata(BaseModel):
         dataset.url = self.url
         dataset.identifier = [self.identifier]
         dataset.creator = self.to_dataset_creators()
-        dataset.contributor = self.to_dataset_contributors()
+        #dataset.contributor = self.to_dataset_contributors()
         dataset.dateCreated = self.created
         dataset.dateModified = self.modified
         dataset.datePublished = self.published

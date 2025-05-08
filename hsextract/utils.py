@@ -2,14 +2,12 @@ import asyncio
 import json
 import logging
 import os
-from pathlib import Path
-import pathlib
 
 from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
 from hsextract.feature.utils import extract_metadata_and_files
 from hsextract.file_utils import file_metadata
 from hsextract.listing.utils import prepare_files
-from hsextract.hs_cn_schemas.schema.src.core import CoreMetadataDOC
+from hsextract.hs_cn_schemas.schema.src.dataset import GenericDataset
 from hsextract.netcdf.utils import get_nc_meta_dict
 from hsextract.raster.utils import extract_from_tif_file
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
@@ -72,7 +70,7 @@ def extract_metadata(type: str, input_path: str, output_base_url: str, user_meta
     del extracted_metadata["content_files"]
     if type == "user_meta":
         extracted_metadata["associatedMedia"] = all_file_metadata
-        return json.loads(CoreMetadataDOC.construct(**extracted_metadata).json())
+        return json.loads(GenericDataset.construct(**extracted_metadata).json())
     else:
         extracted_metadata["associatedMedia"] = all_file_metadata
         catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())

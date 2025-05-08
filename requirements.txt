@@ -3,7 +3,7 @@ xmltodict
 GDAL
 dnspython
 beautifulsoup4
-turfpy==0.0.7
+turfpy
 geojson
 typer[all]
 PyCRS
@@ -13,7 +13,7 @@ jsonschema
 python-dateutil
 pytz
 requests
-pydantic==1.10
-pydantic[email]==1.10
+pydantic
+pydantic[email]
 s3fs
-typing-extensions==4.1.1
+typing-extensions
