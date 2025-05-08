@@ -1,0 +1,3 @@
+[submodule "hsextract/hs_cn_schemas"]
+	path = hsextract/hs_cn_schemas
+	url = git@github.com:CUAHSI/HydroShare-Cloud-Native-Data.git
