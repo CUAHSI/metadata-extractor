@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Any, List, Optional, Union, Literal
 
 import requests
-from pydantic import BaseModel, EmailStr, HttpUrl, ConfigDict
+from pydantic import BaseModel, EmailStr, HttpUrl, ConfigDict, model_validator
 
 from hsextract.adapters.utils import RepositoryType
 from hsextract.exceptions import RepositoryException
@@ -178,6 +178,14 @@ class HydroshareMetadataAdapter:
     def to_catalog_record(metadata: dict):
         """Converts hydroshare resource metadata to a catalog dataset record"""
         hs_metadata_model = _HydroshareResourceMetadata(**metadata)
+        if metadata["type"] == "CompositeResource":
+            return hs_metadata_model.to_catalog_dataset()
+        elif metadata["type"] == "GeographicFeatureAggregation":
+            # TODO - implement this
+            return hs_metadata_model.to_catalog_dataset()
+        elif metadata["type"] == "GeographicRasterAggregation":
+            # TODO - implement this
+            return hs_metadata_model.to_catalog_dataset()
         return hs_metadata_model.to_catalog_dataset()
 
     def retrieve_user_metadata(self, record_id: str, input_path: str):
@@ -221,6 +229,19 @@ class _HydroshareResourceMetadata(BaseModel):
     citation: Optional[str] = None
     associatedMedia: List[Any] = []
     sharing_status: Optional[Literal["private", "public", "published", "discoverable"]] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def set_extra_columns(cls, data: Any):
+        if isinstance(data, dict):
+            extra_fields = data.keys() - cls.model_fields.keys()
+            if extra_fields:
+                if "extra_columns" not in data:
+                    data["extra_columns"] = {}
+                data["extra_columns"].update(
+                    {field_name: data[field_name] for field_name in extra_fields}
+                )
+        return data
 
     def to_dataset_creators(self):
         creators = []
@@ -294,7 +315,7 @@ class _HydroshareResourceMetadata(BaseModel):
         return provider
 
     def to_catalog_dataset(self):
-        dataset = GenericDataset.model_construct()
+        dataset = GenericDataset.model_construct(**self.extra_columns)
         dataset.additionalType = self.type
         dataset.provider = self.to_dataset_provider()
         dataset.name = self.title
