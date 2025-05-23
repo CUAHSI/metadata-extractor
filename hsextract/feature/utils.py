@@ -6,6 +6,9 @@ import xmltodict
 from bs4 import BeautifulSoup
 from osgeo import ogr, osr
 from hsextract import s3
+import geopandas
+from hsextract.hs_cn_schemas.schema.src import base
+
 
 UNKNOWN_STR = "unknown"
 TITLE_MAX_LENGTH = 300
@@ -255,6 +258,37 @@ def parse_shp(shp_file_path):
         shp_metadata_dict["wgs84_extent_dict"]["southlimit"] = UNKNOWN_STR
         shp_metadata_dict["wgs84_extent_dict"]["projection"] = UNKNOWN_STR
         shp_metadata_dict["wgs84_extent_dict"]["units"] = UNKNOWN_STR
+
+    gdf = geopandas.read_file(local_copy)
+    fields = {}
+    field_names = list(gdf.columns)
+    for fname in field_names:
+        meta = {}
+        meta.update({'dtype': str(gdf[fname].dtype)})
+
+        # try to get min and max values with exception
+        # handling because some fields may not support
+        # reduce, e.g. geometry.
+        try:
+            meta.update({'min_value': gdf[fname].min().item()})
+            meta.update({'max_value': gdf[fname].max().item()})
+        except:
+            pass
+        fields[fname] = meta
+    variables = []
+    for field_name, field_values in fields.items():
+
+        minValue = field_values['min_value'] if 'min_value' in field_values else None
+        maxValue = field_values['max_value'] if 'max_value' in field_values else None
+
+        variable = base.PropertyValue(
+            name = field_name,
+            propertyID = field_name,
+            value = field_values['dtype'],
+            minValue = minValue,
+            maxValue = maxValue)
+        variables.append(variable.dict())
+    shp_metadata_dict["variableMeasured"] = variables
 
     return shp_metadata_dict
 

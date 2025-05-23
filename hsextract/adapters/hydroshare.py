@@ -387,6 +387,16 @@ class _HydroshareResourceMetadata(BaseModel):
         return dataset
 
     def to_catalog_feature(self):
-        dataset = self.to_catalog_dataset()
-        dataset = vector.GeographicVector.model_construct(**dataset.dict())
+        catalog_dataset = self.to_catalog_dataset()
+        dataset = vector.GeographicVector.model_construct(**catalog_dataset.dict())
+        dataset.featureCount = len(self.extra_columns["field_information"])
+        dataset.geometryType = self.extra_columns["geometry_information"]["geometry_type"]
+
+        srs = base.SpatialReference(
+            name = self.extra_columns["spatial_reference"]["projection_name"],
+            srsType="projected",#crs.type_name.split(' ')[0],
+            code=self.extra_columns["spatial_reference"]["datum"],
+            wktString=self.extra_columns["spatial_reference"]["projection_string"]
+        )
+        dataset.spatialCoverage["srs"] = srs
         return dataset
