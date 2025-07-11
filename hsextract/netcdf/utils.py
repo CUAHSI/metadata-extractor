@@ -32,6 +32,9 @@ import numpy
 from osgeo import osr
 from pyproj import Transformer
 from pathlib import Path
+import xarray
+import numpy as np
+from pyproj import CRS
 
 
 def get_nc_meta_json(nc_file_name):
@@ -46,30 +49,248 @@ def get_nc_meta_json(nc_file_name):
     return nc_meta_json
 
 
-def get_nc_meta_dict(nc_file_name):
+def get_nc_meta_dict(filepath):
     """
     (string)-> dict
 
-    Return: the netCDF Dublincore and Type specific Metadata
+    Return: the multidimensional type specific metadata
     """
 
-    if isinstance(nc_file_name, netCDF4.Dataset):
-        nc_dataset = nc_file_name
-    else:
-        nc_dataset = get_nc_dataset(nc_file_name)
+    ds = None
+    if Path(filepath).suffix.lower() == ".nc":
+        ds = xarray.load_dataset(filepath, engine="netcdf4")
+    elif Path(filepath).suffix.lower() == ".zarr":
+        ds = xarray.open_zarr(filepath, consolidated=False)
 
-    res_dublin_core_meta = get_dublin_core_meta(nc_dataset)
-    res_type_specific_meta = get_type_specific_meta(nc_dataset)
+    if ds is None:
+        raise Exception(f"Unsupported multidimensional file: {filepath}")
+
+    res_type_specific_meta = extract_metadata(ds)
 
     # add file name to the res_type_specific_meta
-    res_type_specific_meta["name"] = Path(nc_file_name).name
+    res_type_specific_meta["name"] = Path(filepath).name
 
-    nc_dataset.close()
+    res_type_specific_meta["content_files"] = [filepath]
+    return res_type_specific_meta
 
-    md = combine_metadata(res_dublin_core_meta, res_type_specific_meta)
 
-    md["content_files"] = [nc_file_name]
-    return md
+def extract_metadata(ds: xarray.Dataset, compute_statistics=False) -> dict:
+    """
+    Collects metadata from multidimensional files.
+    """
+
+    bounds = get_spatial_bounds(ds)
+    geo = {
+        "@type": "GeoShape",
+        "box": f"{bounds['lat_min']} {bounds['lon_min']} {bounds['lat_max']} {bounds['lon_max']}",
+        "validate_bbox": False,
+    }
+    crs = get_crs_from_dataset_metadata(ds)
+
+    if crs:
+        srs = dict(
+            name=crs.name,
+            srsType=crs.type_name.split(" ")[0],
+            code=crs.to_string(),
+            wktString=crs.to_wkt(),
+        )
+    else:
+        srs = None
+
+    place = dict(
+        geo=geo,
+        srs=srs,
+    )
+
+    dims = build_dimensions(ds)
+
+    variables = build_variables(ds, compute_statistics)
+
+    coordinates = build_coordinates(ds, dims)
+
+    return dict(
+        coordinates=coordinates,
+        dimensions=list(dims.values()),
+        variableMeasured=variables,
+        spatialCoverage=place,
+    )
+
+
+def get_crs_from_dataset_metadata(ds: xarray.Dataset) -> xarray.Dataset:
+    """
+    Set the CRS of an xarray.Dataset using metadata from a 'crs' or 'spatial_ref' variable.
+
+    Parameters:
+        ds (xarray.Dataset): Input dataset
+
+    Returns:
+        xarray.Dataset: Dataset with CRS set via rioxarray
+    """
+
+    # Identify CRS variable
+    crs_var = None
+    for name in ["crs", "spatial_ref"]:
+        if name in ds.variables:
+            crs_var = ds[name]
+            break
+
+    if crs_var is None:
+        return None
+        # raise ValueError("No CRS variable found (expected 'crs' or 'spatial_ref').")
+
+    attrs = crs_var.attrs
+
+    # Try to extract CRS from known attributes
+    if "epsg_code" in attrs:
+        crs = CRS.from_epsg(int(str(attrs["epsg_code"]).split(":")[-1]))
+    elif "crs_wkt" in attrs:
+        crs = CRS.from_wkt(attrs["crs_wkt"])
+    elif "proj4_params" in attrs:
+        crs = CRS.from_proj4(attrs["proj4_params"])
+    elif (
+        "grid_mapping_name" in attrs
+        and attrs["grid_mapping_name"] == "latitude_longitude"
+    ):
+        crs = CRS.from_epsg(4326)
+    elif "esri_pe_string" in attrs:
+        crs = CRS.from_wkt(attrs["esri_pe_string"])
+    else:
+        return None
+
+    return crs
+
+
+def get_spatial_bounds(ds: xarray.Dataset) -> dict[str, float]:
+
+    def is_lat(coord):
+        std = coord.attrs.get("standard_name", "").lower()
+        units = coord.attrs.get("units", "").lower()
+        axis = coord.attrs.get("axis", "").upper()
+        name = coord.name.lower()
+        return (
+            std == "latitude"
+            or "degrees_north" in units
+            or name in ["lat", "latitude", "y"]
+            or axis == "Y"
+        )
+
+    def is_lon(coord):
+        std = coord.attrs.get("standard_name", "").lower()
+        units = coord.attrs.get("units", "").lower()
+        axis = coord.attrs.get("axis", "").upper()
+        name = coord.name.lower()
+        return (
+            std == "longitude"
+            or "degrees_east" in units
+            or name in ["lon", "longitude", "x"]
+            or axis == "X"
+        )
+
+    lat_coord = None
+    lon_coord = None
+
+    for coord in ds.coords.values():
+        if lat_coord is None and is_lat(coord):
+            lat_coord = coord
+        if lon_coord is None and is_lon(coord):
+            lon_coord = coord
+
+    if lat_coord is None or lon_coord is None:
+        raise ValueError("Could not identify spatial coordinates.")
+
+    # Handle 1D and 2D coordinate cases
+    lat_vals = lat_coord.values
+    lon_vals = lon_coord.values
+
+    bounds = {
+        "lat_min": float(np.nanmin(lat_vals)),
+        "lat_max": float(np.nanmax(lat_vals)),
+        "lon_min": float(np.nanmin(lon_vals)),
+        "lon_max": float(np.nanmax(lon_vals)),
+    }
+
+    return bounds
+
+
+def build_dimensions(ds: xarray.Dataset) -> dict:
+    dims = {}
+    for dimname, size in ds.sizes.items():
+        var = ds.variables.get(dimname, None)
+        attrs = var.attrs if var is not None else {}
+
+        description = attrs.get("long_name", None)
+        units = attrs.get("units", None)
+        resolution = attrs.get("resolution", None)
+
+        dims[dimname] = dict(
+            name=dimname,
+            description=description,
+            # units=units,
+            # resolution=resolution,
+            shape=ds.sizes.get(dimname),
+        )
+    return dims
+
+
+def build_variables(ds: xarray.Dataset, compute_statistics=True) -> list:
+
+    variables = []
+    for varname in ds.variables.keys():
+
+        v = ds[varname]
+
+        # skip if this is a dimension
+        if varname in v.dims:
+            continue
+
+        var_dims = [d for d in v.dims]
+        if len(var_dims) == 0:
+            var_dims = ["Dimensionless"]
+
+        # making this optional because it could be prohibitive
+        # for large files.
+        minValue = None
+        maxValue = None
+        if compute_statistics:
+            minValue = v.min().item() or None
+            maxValue = v.max().item() or None
+
+        variables.append(
+            dict(
+                name=varname,
+                dimensions=var_dims,
+                description=v.attrs.get("long_name", None),
+                unit=v.attrs.get("units", "Unitless"),
+                minValue=minValue,
+                maxValue=maxValue,
+                dataType=str(v.dtype) or None,
+            )
+        )
+    return variables
+
+
+def build_coordinates(ds: xarray.Dataset, dims: dict) -> list:
+    coords = []
+    for coord_name, coord in ds.coords.items():
+
+        coordinate_dimensions = [dim_name for dim_name in coord.dims]
+        coords.append(
+            dict(
+                name=coord_name,
+                description=coord.attrs.get("long_name", None),
+                unit=coord.attrs.get("units", None),
+                # resolution = coord.attrs.get('resolution', None),
+                dimensions=coordinate_dimensions,
+            )
+        )
+    return coords
+
+
+##############################################################
+##############################################################
+##############################################################
+##############################################################
+##############################################################
 
 
 # Functions for dublin core meta

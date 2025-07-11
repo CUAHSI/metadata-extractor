@@ -14,6 +14,7 @@ pydantic>=2
 pydantic[email]
 geopandas
 xarray
+netcdf4
+rioxarray
 pycrs
 gdal
-netcdf4

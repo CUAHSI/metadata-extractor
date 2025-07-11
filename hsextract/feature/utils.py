@@ -86,6 +86,8 @@ def extract_metadata(filepath: str) -> dict:
 
     metadata_dict = {}
 
+    print("filepath:", filepath)
+    print(os.getcwd())
     # get all file names that match the pattern of the input filepath
     search_path = f"{'.'.join(filepath.split('.')[:-1])}.*"
     associated_files = glob(search_path)
@@ -161,22 +163,9 @@ def extract_metadata(filepath: str) -> dict:
         )
         variables.append(variable)
 
-    #    files = []
-    #    for fpath in associated_files:
-    #        files.append(
-    #            dict(
-    #                contentUrl=f"https://hydroshare.org/my-resource/{fpath}",
-    #                name=Path(fpath).name,
-    #                sha256=compute_sha256(Path(fpath)),
-    #                contentSize=f"{os.path.getsize(Path(fpath))/1024} KB",
-    #                encodingFormat=mimetypes.guess_type(Path(fpath))[0],
-    #            )
-    #        )
-
     return dict(
         variableMeasured=variables,
         dimensions=dimensions,
-        #        associatedMedia=files,
         spatialCoverage=place,
     )
 
