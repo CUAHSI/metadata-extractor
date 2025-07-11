@@ -1,8 +1,8 @@
 from asyncio import run as aiorun
 
 
-# TODO: commenting this out because HydroShareMetadataAdapter needs to be upgraded to Pydantic 2
-# from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
+# TODO: HydroShareMetadataAdapter needs to be upgraded to Pydantic 2
+from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
 
 import typer
 
@@ -37,10 +37,10 @@ def extract(
     user_metadata_filename: Annotated[str, typer.Argument()] = "hs_user_meta.json",
     retrieve_metadata_resource_id: Annotated[str, typer.Argument()] = None,
 ):
-    # TODO: commenting this out because HydroShareMetadataAdapter needs to be upgraded to Pydantic 2
-    #    if retrieve_metadata_resource_id:
-    #        adapter = HydroshareMetadataAdapter()
-    #        adapter.retrieve_user_metadata(retrieve_metadata_resource_id, input_path)
+
+    if retrieve_metadata_resource_id:
+        adapter = HydroshareMetadataAdapter()
+        adapter.retrieve_user_metadata(retrieve_metadata_resource_id, input_path)
 
     aiorun(
         _extract(
