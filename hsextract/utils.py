@@ -80,15 +80,20 @@ def extract_metadata(
         return catalog_record
     else:
         print(f"Creating Scientific metadata record for {type}...", end="")
+
         extracted_metadata["associatedMedia"] = all_file_metadata
 
         #        catalog_record = json.loads(
         #            adapter.to_catalog_record(extracted_metadata).json()
         #        )
-        # TODO: Start Here
-        scientific_dataset = adapter.to_scientific_dataset_record(
-            extracted_metadata
-        ).model_dump(mode="json", exclude_none=True)
+
+        scientific_dataset = ScientificDataset(**extracted_metadata).model_dump(
+            mode="json", exclude_none=True
+        )
+
+        # scientific_dataset = adapter.to_scientific_dataset_record(
+        #    extracted_metadata
+        # ).model_dump(mode="json", exclude_none=True)
 
         # check for user metadata attached content types
         user_meta_content_type_path = input_path + "." + user_metadata_filename

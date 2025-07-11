@@ -627,7 +627,7 @@ class MediaObject(SchemaBaseModel):
         default="MediaObject",
         description="An item that encodes the record.",
     )
-    contentUrl: AnyUrl = Field(
+    contentUrl: Union[str, AnyUrl] = Field(
         title="Content URL",
         description="The direct URL link to access or download the actual content of the media object.",
     )

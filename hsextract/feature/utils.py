@@ -5,8 +5,25 @@ import xmltodict
 from bs4 import BeautifulSoup
 from osgeo import ogr, osr
 
+
+import hashlib
+import geopandas
+import mimetypes
+from glob import glob
+
+
 UNKNOWN_STR = "unknown"
 TITLE_MAX_LENGTH = 300
+
+# Add Shapefile MIME type if not already present
+mimetypes.add_type("application/x-esri-shapefile", ".shp")
+mimetypes.add_type("application/x-esri-shx", ".shx")
+mimetypes.add_type("application/x-dbase", ".dbf")
+mimetypes.add_type("text/plain", ".prj")
+mimetypes.add_type("text/plain", ".cpg")
+mimetypes.add_type("text/plain", ".asc")
+mimetypes.add_type("application/geo+json", ".geojson")
+mimetypes.add_type("application/gml+xml", ".gml")
 
 
 def extract_metadata_and_files(feature_path):
@@ -25,12 +42,17 @@ def extract_metadata_and_files(feature_path):
 
 
 def get_all_related_shp_files(feature_path):
+
+    # TODO: This should work with multiple vector file types, e.g. .shp, geojson, gml
+
     shape_res_files = []
     xml_file = None
     dir_path = os.path.dirname(feature_path)
     for f in os.listdir(dir_path if dir_path else os.getcwd()):
         f_path = Path(f)
-        if str(f_path.suffix).lower() == '.xml' and not str(f_path.name).lower().endswith('.shp.xml'):
+        if str(f_path.suffix).lower() == ".xml" and not str(
+            f_path.name
+        ).lower().endswith(".shp.xml"):
             continue
         if str(f_path.suffix).lower() in [
             ".shp",
@@ -57,7 +79,125 @@ def get_all_related_shp_files(feature_path):
     return shape_res_files, xml_file, shp_file
 
 
-def extract_metadata(shp_file):
+def extract_metadata(filepath: str) -> dict:
+    """
+    Collects metadata from vector files.
+    """
+
+    metadata_dict = {}
+
+    # get all file names that match the pattern of the input filepath
+    search_path = f"{'.'.join(filepath.split('.')[:-1])}.*"
+    associated_files = glob(search_path)
+
+    # Read the Shapefile
+    gdf = geopandas.read_file(filepath)
+
+    feature_count = len(gdf)
+
+    dimensions = [
+        dict(
+            name="feature_index",
+            shape=str(feature_count),
+            description="index of spatial features",
+        )
+    ]
+
+    fields = {}
+    field_names = list(gdf.columns)
+    for fname in field_names:
+        meta = {}
+        meta.update({"dtype": str(gdf[fname].dtype)})
+        meta.update({"dimension": dimensions[0]["name"]})
+
+        # try to get min and max values with exception
+        # handling because some fields may not support
+        # reduce, e.g. geometry.
+        try:
+            meta.update({"min_value": gdf[fname].min().item()})
+            meta.update({"max_value": gdf[fname].max().item()})
+        except:
+            pass
+
+        fields[fname] = meta
+
+    # extent
+    extent_west, extent_south, extent_east, extent_north = gdf.total_bounds
+
+    geo = dict(
+        box=f"{extent_south} {extent_west} {extent_north} {extent_east}",
+        validate=False,
+    )
+
+    # srs
+    srs = {}
+    if gdf.crs is not None:
+        crs_type = "Geographic" if gdf.crs.is_geographic else "Projected"
+
+        srs = dict(
+            name=gdf.crs.name,
+            srsType=crs_type,
+            code=gdf.crs.srs,
+            wktString=gdf.crs.to_wkt(),
+        )
+
+    place = dict(
+        geo=geo,
+        srs=srs,
+    )
+
+    variables = []
+    for field_name, field_values in fields.items():
+
+        minValue = field_values["min_value"] if "min_value" in field_values else None
+        maxValue = field_values["max_value"] if "max_value" in field_values else None
+
+        variable = dict(
+            name=field_name,
+            dataType=field_values["dtype"],
+            minValue=minValue,
+            maxValue=maxValue,
+            dimensions=field_values["dimension"],
+        )
+        variables.append(variable)
+
+    #    files = []
+    #    for fpath in associated_files:
+    #        files.append(
+    #            dict(
+    #                contentUrl=f"https://hydroshare.org/my-resource/{fpath}",
+    #                name=Path(fpath).name,
+    #                sha256=compute_sha256(Path(fpath)),
+    #                contentSize=f"{os.path.getsize(Path(fpath))/1024} KB",
+    #                encodingFormat=mimetypes.guess_type(Path(fpath))[0],
+    #            )
+    #        )
+
+    return dict(
+        variableMeasured=variables,
+        dimensions=dimensions,
+        #        associatedMedia=files,
+        spatialCoverage=place,
+    )
+
+
+def compute_sha256(file_path: Path) -> str:
+    """Computes the SHA256 hash of a file.
+
+    Args:
+        file_path: The path to the file.
+
+    Returns:
+        The hexadecimal representation of the SHA256 hash.
+    """
+    sha256_hash = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(chunk)
+    return sha256_hash.hexdigest()
+
+
+def extract_shp_metadata(shp_file):
     """
     Collects metadata from a .shp file specified by *shp_file_full_path*
     :param shp_file_full_path:
@@ -71,7 +211,10 @@ def extract_metadata(shp_file):
     if parsed_md_dict["wgs84_extent_dict"]["westlimit"] != UNKNOWN_STR:
         wgs84_dict = parsed_md_dict["wgs84_extent_dict"]
         # if extent is a point, create point type coverage
-        if wgs84_dict["westlimit"] == wgs84_dict["eastlimit"] and wgs84_dict["northlimit"] == wgs84_dict["southlimit"]:
+        if (
+            wgs84_dict["westlimit"] == wgs84_dict["eastlimit"]
+            and wgs84_dict["northlimit"] == wgs84_dict["southlimit"]
+        ):
             coverage_dict = {
                 "type": "point",
                 "east": wgs84_dict["eastlimit"],
@@ -100,12 +243,14 @@ def extract_metadata(shp_file):
 
     # field
     field_info_array = []
-    field_name_list = parsed_md_dict["field_meta_dict"]['field_list']
+    field_name_list = parsed_md_dict["field_meta_dict"]["field_list"]
     for field_name in field_name_list:
-        field_info_dict_item = parsed_md_dict["field_meta_dict"]["field_attr_dict"][field_name]
+        field_info_dict_item = parsed_md_dict["field_meta_dict"]["field_attr_dict"][
+            field_name
+        ]
         field_info_array.append(field_info_dict_item)
 
-    metadata_dict['field_information'] = field_info_array
+    metadata_dict["field_information"] = field_info_array
 
     # geometry
     geometryinformation = {
@@ -146,7 +291,7 @@ def parse_shp(shp_file_path):
 
     shp_metadata_dict = {}
     # read shapefile
-    driver = ogr.GetDriverByName('ESRI Shapefile')
+    driver = ogr.GetDriverByName("ESRI Shapefile")
     dataset = driver.Open(shp_file_path)
 
     # get layer
@@ -156,13 +301,13 @@ def parse_shp(shp_file_path):
 
     if spatialRef_from_layer is not None:
         shp_metadata_dict["origin_projection_string"] = str(spatialRef_from_layer)
-        prj_name = spatialRef_from_layer.GetAttrValue('projcs')
+        prj_name = spatialRef_from_layer.GetAttrValue("projcs")
         if prj_name is None:
-            prj_name = spatialRef_from_layer.GetAttrValue('geogcs')
+            prj_name = spatialRef_from_layer.GetAttrValue("geogcs")
         shp_metadata_dict["origin_projection_name"] = prj_name
 
-        shp_metadata_dict["origin_datum"] = spatialRef_from_layer.GetAttrValue('datum')
-        shp_metadata_dict["origin_unit"] = spatialRef_from_layer.GetAttrValue('unit')
+        shp_metadata_dict["origin_datum"] = spatialRef_from_layer.GetAttrValue("datum")
+        shp_metadata_dict["origin_unit"] = spatialRef_from_layer.GetAttrValue("unit")
     else:
         shp_metadata_dict["origin_projection_string"] = UNKNOWN_STR
         shp_metadata_dict["origin_projection_name"] = UNKNOWN_STR
@@ -257,14 +402,14 @@ def add_metadata(metadata_dict, xml_file):
     if xml_file:
         shp_xml_metadata_list = parse_shp_xml(xml_file)
         for shp_xml_metadata in shp_xml_metadata_list:
-            if 'description' in shp_xml_metadata:
-                metadata_dict["abstract"] = shp_xml_metadata['description']['abstract']
+            if "description" in shp_xml_metadata:
+                metadata_dict["abstract"] = shp_xml_metadata["description"]["abstract"]
 
-            elif 'title' in shp_xml_metadata:
-                metadata_dict["title"] = shp_xml_metadata['title']['value']
+            elif "title" in shp_xml_metadata:
+                metadata_dict["title"] = shp_xml_metadata["title"]["value"]
 
-            elif 'subject' in shp_xml_metadata:
-                metadata_dict["subjects"] = [shp_xml_metadata['subject']['value']]
+            elif "subject" in shp_xml_metadata:
+                metadata_dict["subjects"] = [shp_xml_metadata["subject"]["value"]]
     return metadata_dict
 
 
@@ -282,38 +427,38 @@ def parse_shp_xml(xml_file):
     with open(xml_file, "r") as f:
         xml_file_str = f.read()
     xml_dict = xmltodict.parse(xml_file_str)
-    if 'dataIdInfo' in xml_dict['metadata']:
-        dataIdInfo_dict = xml_dict['metadata']['dataIdInfo']
-        if 'idCitation' in dataIdInfo_dict:
-            if 'resTitle' in dataIdInfo_dict['idCitation']:
-                if '#text' in dataIdInfo_dict['idCitation']['resTitle']:
-                    title_value = dataIdInfo_dict['idCitation']['resTitle']['#text']
+    if "dataIdInfo" in xml_dict["metadata"]:
+        dataIdInfo_dict = xml_dict["metadata"]["dataIdInfo"]
+        if "idCitation" in dataIdInfo_dict:
+            if "resTitle" in dataIdInfo_dict["idCitation"]:
+                if "#text" in dataIdInfo_dict["idCitation"]["resTitle"]:
+                    title_value = dataIdInfo_dict["idCitation"]["resTitle"]["#text"]
                 else:
-                    title_value = dataIdInfo_dict['idCitation']['resTitle']
+                    title_value = dataIdInfo_dict["idCitation"]["resTitle"]
 
                 title_max_length = TITLE_MAX_LENGTH
                 if len(title_value) > title_max_length:
                     title_value = title_value[: title_max_length - 1]
-                title = {'title': {'value': title_value}}
+                title = {"title": {"value": title_value}}
                 metadata.append(title)
 
-        if 'idAbs' in dataIdInfo_dict:
-            description_value = strip_tags(dataIdInfo_dict['idAbs'])
-            description = {'description': {'abstract': description_value}}
+        if "idAbs" in dataIdInfo_dict:
+            description_value = strip_tags(dataIdInfo_dict["idAbs"])
+            description = {"description": {"abstract": description_value}}
             metadata.append(description)
 
-        if 'searchKeys' in dataIdInfo_dict:
-            searchKeys_dict = dataIdInfo_dict['searchKeys']
-            if 'keyword' in searchKeys_dict:
+        if "searchKeys" in dataIdInfo_dict:
+            searchKeys_dict = dataIdInfo_dict["searchKeys"]
+            if "keyword" in searchKeys_dict:
                 keyword_list = []
                 if type(searchKeys_dict["keyword"]) is list:
                     keyword_list += searchKeys_dict["keyword"]
                 else:
                     keyword_list.append(searchKeys_dict["keyword"])
                 for k in keyword_list:
-                    metadata.append({'subject': {'value': k}})
+                    metadata.append({"subject": {"value": k}})
     return metadata
 
 
 def strip_tags(value):
-    return ''.join(BeautifulSoup(value, features="html.parser").findAll(text=True))
+    return "".join(BeautifulSoup(value, features="html.parser").findAll(text=True))
