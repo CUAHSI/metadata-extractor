@@ -5,12 +5,19 @@ from datetime import datetime
 from typing import Any, List, Optional, Union, Literal
 
 import requests
+from hsextract.reftimeseries.utils import spatial_coverage
 from pydantic import BaseModel, EmailStr, HttpUrl
 
 from hsextract.adapters.utils import RepositoryType
 from hsextract.exceptions import RepositoryException
-from hsextract.models import schema
-from hsextract.models.schema import CoreMetadataDOC
+
+# from hsextract.models import schema
+# from hsextract.models.schema import CoreMetadataDOC
+from hsextract.models import core as schema
+from hsextract.models import base as base_schema
+from hsextract.models.core import CoreMetadata
+from hsextract.models.dataset import ScientificDataset
+from hsextract.models.datavariable import DataVariable, Dimension
 
 
 class BasePerson(BaseModel):
@@ -95,7 +102,7 @@ class TemporalCoverage(BaseModel):
 
 
 class SpatialCoverageBox(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
     northlimit: float
     eastlimit: float
     southlimit: float
@@ -106,13 +113,15 @@ class SpatialCoverageBox(BaseModel):
         if self.name:
             place.name = self.name
 
-        place.geo = schema.GeoShape.construct()
-        place.geo.box = f"{self.northlimit} {self.eastlimit} {self.southlimit} {self.westlimit}"
+        place.geo = base_schema.GeoShape.construct()
+        place.geo.box = (
+            f"{self.northlimit} {self.eastlimit} {self.southlimit} {self.westlimit}"
+        )
         return place
 
 
 class SpatialCoveragePoint(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
     north: float
     east: float
 
@@ -120,7 +129,7 @@ class SpatialCoveragePoint(BaseModel):
         place = schema.Place.construct()
         if self.name:
             place.name = self.name
-        place.geo = schema.GeoCoordinates.construct()
+        place.geo = base_schema.GeoCoordinates.construct()
         place.geo.latitude = self.north
         place.geo.longitude = self.east
         return place
@@ -133,7 +142,7 @@ class ContentFile(BaseModel):
     checksum: str
 
     def to_dataset_media_object(self):
-        media_object = schema.MediaObject.construct()
+        media_object = base_schema.MediaObject.construct()
         media_object.contentUrl = self.path
         media_object.encodingFormat = self.mime_type
         media_object.contentSize = f"{self.size/1000.00} KB"
@@ -154,7 +163,7 @@ class Relation(BaseModel):
         else:
             return relation
 
-        description, url = self.value.rsplit(',', 1)
+        description, url = self.value.rsplit(",", 1)
         relation.description = description.strip()
         relation.url = url.strip()
         relation.name = self.value if self.value else "No name found and is required"
@@ -166,7 +175,8 @@ class Rights(BaseModel):
     url: HttpUrl
 
     def to_dataset_license(self):
-        _license = schema.License.construct()
+        _license = HttpUrl.construct()
+        # _license = schema.License.construct()
         _license.name = self.statement
         _license.url = self.url
         return _license
@@ -175,9 +185,87 @@ class Rights(BaseModel):
 class HydroshareMetadataAdapter:
     @staticmethod
     def to_catalog_record(metadata: dict):
+        print(metadata)
+
+        #        metadata.pop("dimensions", None)  # debugging
+        #        metadata.pop("coordinates", None)  # debugging
         """Converts hydroshare resource metadata to a catalog dataset record"""
         hs_metadata_model = _HydroshareResourceMetadata(**metadata)
         return hs_metadata_model.to_catalog_dataset()
+
+    @staticmethod
+    def to_scientific_dataset_record(metadata: dict):
+        """Converts hydroshare resource metadata into a scientific dataset record"""
+
+        #######################################
+        # build the ScientificDataset object. #
+        #######################################
+        # Note: This should be moved somewhere else in the future.
+        #
+        # Thee metadata fields that are passed in to this function include:
+        # 'period_coverage', 'spatial_coverage', 'variables', 'spatial_reference', 'type', 'url', 'associatedMedia'
+        # each of these will be parsed and added to the ScientificDataset object.
+
+        # period_coverage -> core.temporalCoverage[TemporalCoverage]
+        temporalCoverage = base_schema.TemporalCoverage(
+            startDate=metadata["period_coverage"]["start"],
+            endDate=metadata["period_coverage"]["end"],
+        )
+
+        # spatial_coverage -> core.spatialCoverage[base.Place]
+        # TODO: if crs exists in spatial_coverage use it otherwise set it to None
+        srs = base_schema.SpatialReference(
+            name=" ".join(metadata["spatial_coverage"]["projection"].split(" ")[:-1]),
+            srsType="projected",  # TODO: add crs.type_name in the spatial_reference object
+            code=metadata["spatial_coverage"]["projection"].split(" ")[-1],
+            wktString=metadata["spatial_reference"]["projection_string"],
+        )
+        spatialCoverage = base_schema.Place(
+            geo=base_schema.GeoShape(
+                box=f"{metadata['spatial_coverage']['southlimit']} {metadata['spatial_coverage']['westlimit']} {metadata['spatial_coverage']['northlimit']} {metadata['spatial_coverage']['eastlimit']}",
+                validate_bbox=False,
+            ),
+            srs=srs,
+        )
+
+        dimensions = None
+        if metadata.get("dimensions", None) is not None:
+            dimensions = [Dimension(**d) for d in metadata.get("dimensions")]
+
+        coordinates = None
+        if metadata.get("coordinates", None) is not None:
+            coordinates = [DataVariable(**c) for c in metadata.get("coordinates")]
+
+        variables = []
+        for v in metadata.get("variables", []):
+            dims = v.get("shape", "").split(",")
+            variables.append(
+                DataVariable(
+                    name=v["name"],
+                    dimensions=dims if len(dims) > 0 else [],
+                    description=v.get("description", None),
+                    unit=v.get("unit", None),
+                    dataType=v.get("dataType", None),
+                    # minValue
+                    # maxValue
+                )
+            )
+
+        associated_media = []
+        for a in metadata.get("associatedMedia", []):
+            # TODO: associatedMedia contentUrl is a file path, changing it to a proper URL
+            a["contentUrl"] = metadata["url"]
+            associated_media.append(a)
+
+        return ScientificDataset(
+            variableMeasured=variables,
+            coordinates=coordinates,
+            dimensions=dimensions,
+            associatedMedia=metadata.get("associatedMedia", None),
+            spatialCoverage=spatialCoverage,
+            additionalType=metadata.get("type", None),
+            temporalCoverage=temporalCoverage,
+        )
 
     def retrieve_user_metadata(self, record_id: str, input_path: str):
         hs_meta_url = f"https://hydroshare.org/hsapi2/resource/{record_id}/json/"
@@ -186,7 +274,9 @@ class HydroshareMetadataAdapter:
         def make_request(url) -> Union[dict, List[dict]]:
             response = requests.get(url)
             if response.status_code != 200:
-                raise RepositoryException(status_code=response.status_code, detail=response.text)
+                raise RepositoryException(
+                    status_code=response.status_code, detail=response.text
+                )
             return response.json()
 
         metadata = make_request(hs_meta_url)
@@ -198,26 +288,28 @@ class HydroshareMetadataAdapter:
 
 
 class _HydroshareResourceMetadata(BaseModel):
-    type: Optional[str]
-    title: Optional[str]
-    abstract: Optional[str]
-    url: Optional[HttpUrl]
-    identifier: Optional[HttpUrl]
+    type: Optional[str] = ""
+    title: Optional[str] = ""
+    abstract: Optional[str] = ""
+    url: Optional[HttpUrl] = None
+    identifier: Optional[HttpUrl] = None
     creators: List[Creator] = []
     contributors: List[Contributor] = []
-    created: Optional[datetime]
-    modified: Optional[datetime]
-    published: Optional[datetime]
-    subjects: Optional[List[str]]
-    language: Optional[str]
-    rights: Optional[Rights]
+    created: Optional[datetime] = None
+    modified: Optional[datetime] = None
+    published: Optional[datetime] = None
+    subjects: Optional[List[str]] = None
+    language: Optional[str] = None
+    rights: Optional[Rights] = None
     awards: List[Award] = []
-    spatial_coverage: Optional[Union[SpatialCoverageBox, SpatialCoveragePoint]]
-    period_coverage: Optional[TemporalCoverage]
+    spatial_coverage: Optional[Union[SpatialCoverageBox, SpatialCoveragePoint]] = None
+    period_coverage: Optional[TemporalCoverage] = None
     relations: List[Relation] = []
-    citation: Optional[str]
+    citation: Optional[str] = None
     associatedMedia: List[Any] = []
-    sharing_status: Literal["private", "public", "published", "discoverable"]
+    sharing_status: Literal["private", "public", "published", "discoverable"] = (
+        "private"
+    )
 
     def to_dataset_creators(self):
         creators = []
@@ -275,10 +367,10 @@ class _HydroshareResourceMetadata(BaseModel):
 
     def to_dataset_creative_work_status(self):
         status_defined_terms = {
-            "public": schema.Public,
-            "published": schema.Published,
-            "discoverable": schema.Discoverable,
-            "private": schema.Private,
+            "public": base_schema.Public,
+            "published": base_schema.Published,
+            "discoverable": base_schema.Discoverable,
+            "private": base_schema.Private,
         }
         return status_defined_terms[self.sharing_status].construct()
 
@@ -290,7 +382,7 @@ class _HydroshareResourceMetadata(BaseModel):
         return provider
 
     def to_catalog_dataset(self):
-        dataset = CoreMetadataDOC.construct()
+        dataset = CoreMetadata.construct()
         dataset.additionalType = self.type
         dataset.provider = self.to_dataset_provider()
         dataset.name = self.title
