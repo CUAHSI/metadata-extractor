@@ -11,10 +11,7 @@ from pydantic import BaseModel, EmailStr, HttpUrl, ConfigDict, model_validator
 from hsextract.adapters.utils import RepositoryType
 from hsextract.exceptions import RepositoryException
 from hsextract.hs_cn_schemas.schema.src import base as schema
-from hsextract.hs_cn_schemas.schema.src.dataset import GenericDataset
-from hsextract.hs_cn_schemas.schema.src import raster
-from hsextract.hs_cn_schemas.schema.src import vector
-from hsextract.hs_cn_schemas.schema.src import base
+from hsextract.hs_cn_schemas.schema.src.dataset import ScientificDataset
 
 
 class BasePerson(BaseModel):
@@ -183,10 +180,6 @@ class HydroshareMetadataAdapter:
         hs_metadata_model = _HydroshareResourceMetadata(**metadata)
         if metadata["type"] == "CompositeResource":
             return hs_metadata_model.to_catalog_dataset()
-        elif metadata["type"] == "GeographicFeatureAggregation":
-            return hs_metadata_model.to_catalog_feature()
-        elif metadata["type"] == "GeographicRasterAggregation":
-            return hs_metadata_model.to_catalog_raster()
         return hs_metadata_model.to_catalog_dataset()
 
     def retrieve_user_metadata(self, record_id: str, input_path: str):
@@ -316,7 +309,7 @@ class _HydroshareResourceMetadata(BaseModel):
         return provider
 
     def to_catalog_dataset(self):
-        dataset = GenericDataset.model_construct(**self.extra_columns)
+        dataset = ScientificDataset.model_construct(**self.extra_columns)
         dataset.additionalType = self.type
         dataset.provider = self.to_dataset_provider()
         dataset.name = self.title
@@ -339,64 +332,4 @@ class _HydroshareResourceMetadata(BaseModel):
         dataset.license = self.to_dataset_license()
         dataset.citation = [self.citation]
         dataset.creativeWorkStatus = self.to_dataset_creative_work_status()
-        return dataset
-
-    def to_catalog_raster(self):
-        dataset = self.to_catalog_dataset()
-        dataset = raster.GeographicRaster.model_construct(**dataset.dict())
-        # TODO srs
-            # Encode metadata
-        '''
-        "srs": {
-            "type": "SpatialReference",
-            "name": "WGS 84 / UTM zone 15N",
-            "srsType": "projected",
-            "code": "EPSG:32615",
-            "wktString": "PROJCRS[\"WGS 84 / UTM zone 15N\",BASEGEOGCRS[\"WGS 84\",DATUM[\"World Geodetic System 1984\",ELLIPSOID[\"WGS 84\",6378137,298.257223563,LENGTHUNIT[\"metre\",1]]],PRIMEM[\"Greenwich\",0,ANGLEUNIT[\"degree\",0.0174532925199433]],ID[\"EPSG\",4326]],CONVERSION[\"UTM zone 15N\",METHOD[\"Transverse Mercator\",ID[\"EPSG\",9807]],PARAMETER[\"Latitude of natural origin\",0,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8801]],PARAMETER[\"Longitude of natural origin\",-93,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"Scale factor at natural origin\",0.9996,SCALEUNIT[\"unity\",1],ID[\"EPSG\",8805]],PARAMETER[\"False easting\",500000,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8807]]],CS[Cartesian,2],AXIS[\"easting\",east,ORDER[1],LENGTHUNIT[\"metre\",1]],AXIS[\"northing\",north,ORDER[2],LENGTHUNIT[\"metre\",1]],ID[\"EPSG\",32615]]"
-        }
-        '''
-
-        srs = base.SpatialReference(
-            name = dataset.spatial_reference["projection"],
-            srsType="projected",#crs.type_name.split(' ')[0],
-            code=dataset.spatial_reference["datum"],
-            wktString=dataset.spatial_reference["projection_string"]
-        )
-        del dataset.spatial_reference
-
-        gridvariables = []
-        if dataset.band_information is not list:
-            dataset.band_information = [dataset.band_information]
-        for band_information in dataset.band_information:
-            variable = raster.GridVariable(
-                name = band_information["name"],
-                minValue = band_information["minimum_value"],
-                maxValue = band_information["maximum_value"],
-                noDataValue = band_information["no_data_value"],
-                band = band_information["name"].split("_")[-1])
-            gridvariables.append(variable)
-        del dataset.band_information
-        dataset.rows = dataset.cell_information["rows"]
-        dataset.columns = dataset.cell_information["columns"]
-        dataset.xCellSize = dataset.cell_information["cell_size_x_value"]
-        dataset.yCellSize = dataset.cell_information["cell_size_y_value"]
-        dataset.cellValueType = dataset.cell_information["cell_data_type"]
-        dataset.spatialCoverage["srs"] = srs
-        dataset.variableMeasured = gridvariables
-        del dataset.cell_information
-        return dataset
-
-    def to_catalog_feature(self):
-        catalog_dataset = self.to_catalog_dataset()
-        dataset = vector.GeographicVector.model_construct(**catalog_dataset.dict())
-        dataset.featureCount = len(self.extra_columns["field_information"])
-        dataset.geometryType = self.extra_columns["geometry_information"]["geometry_type"]
-
-        srs = base.SpatialReference(
-            name = self.extra_columns["spatial_reference"]["projection_name"],
-            srsType="projected",#crs.type_name.split(' ')[0],
-            code=self.extra_columns["spatial_reference"]["datum"],
-            wktString=self.extra_columns["spatial_reference"]["projection_string"]
-        )
-        dataset.spatialCoverage["srs"] = srs
         return dataset

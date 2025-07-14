@@ -4,12 +4,15 @@ import logging
 import os
 
 from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
-from hsextract.feature.utils import extract_metadata_and_files
+#from hsextract.feature.utils import extract_metadata_and_files
+from hsextract.feature.hs_cn_extraction import encode_vector_metadata
 from hsextract.file_utils import file_metadata
 from hsextract.listing.utils import prepare_files
-from hsextract.hs_cn_schemas.schema.src.dataset import GenericDataset
-from hsextract.netcdf.utils import get_nc_meta_dict
-from hsextract.raster.utils import extract_from_tif_file
+from hsextract.hs_cn_schemas.schema.src.dataset import ScientificDataset
+#from hsextract.netcdf.utils import get_nc_meta_dict
+from hsextract.netcdf.hs_cn_extraction import encode_netcdf
+#from hsextract.raster.utils import extract_from_tif_file
+from hsextract.raster.hs_cn_extraction import encode_raster_metadata
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata_csv
@@ -58,10 +61,11 @@ def extract_metadata(type: str, input_path: str, output_base_url: str, user_meta
         else:
             path = os.path.dirname("/".join(input_path.strip("/").split('/')[4:]))
         extracted_metadata["url"] = os.path.join(output_base_url, path, "dataset_metadata.json")
-    #else:
-        #input_path = "/".join(input_path.strip("/").split('/')[4:])
-        #metadata_url = os.path.join(output_base_url, input_path)
-        #extracted_metadata["url"] = metadata_url
+
+    if type in ["raster", "feature", "netcdf"]:
+        # updated extaction functions do not need an adapter
+        return json.loads(extracted_metadata.json())
+
     adapter = HydroshareMetadataAdapter()
     all_file_metadata = []
     for f in extracted_metadata["content_files"]:
@@ -70,7 +74,7 @@ def extract_metadata(type: str, input_path: str, output_base_url: str, user_meta
     del extracted_metadata["content_files"]
     if type == "user_meta":
         extracted_metadata["associatedMedia"] = all_file_metadata
-        return json.loads(GenericDataset.construct(**extracted_metadata).json())
+        return json.loads(ScientificDataset.construct(**extracted_metadata).json())
     else:
         extracted_metadata["associatedMedia"] = all_file_metadata
         catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
@@ -88,14 +92,11 @@ def _extract_metadata(type: str, filepath, base_input_path):
     extension = os.path.splitext(filepath)[1]
     metadata = None
     if type == "raster":
-        metadata = extract_from_tif_file(filepath)
-        metadata["type"] = "GeographicRasterAggregation"
+        metadata = encode_raster_metadata(filepath)
     elif type == "feature":
-        metadata = extract_metadata_and_files(filepath)
-        metadata["type"] = "GeographicFeatureAggregation"
+        metadata = encode_vector_metadata(filepath)
     elif type == "netcdf":
-        metadata = get_nc_meta_dict(filepath)
-        metadata["type"] = "MultidimensionalAggregation"
+        metadata = encode_netcdf(filepath)
     elif type == "timeseries":
         if extension == ".csv":
             metadata = extract_metadata_csv(filepath)

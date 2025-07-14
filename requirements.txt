@@ -17,3 +17,5 @@ pydantic
 pydantic[email]
 s3fs
 typing-extensions
+xarray
+rasterio

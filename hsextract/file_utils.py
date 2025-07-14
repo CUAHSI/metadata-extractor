@@ -3,6 +3,7 @@ import os
 from hsextract import s3
 import hashlib
 from functools import partial
+from hsextract.hs_cn_schemas.schema.src.base import MediaObject
 
 
 def file_metadata(path: str):
@@ -14,14 +15,11 @@ def file_metadata(path: str):
     _, extension = os.path.splitext(path)
     mime_type = mime_type if mime_type else extension
     _, name = os.path.split(path)
-    return {
-        "@type": "DataDownload",
-        "name": name,
-        "contentUrl": path,
-        "contentSize": size,
-        "sha256": str(checksum),
-        "encodingFormat": mime_type,
-    }, None
+    return MediaObject(contentUrl = path,
+                       name = name,
+                       sha256 = str(checksum),
+                       contentSize = size,
+                       encodingFormat = mime_type), None
 
 # temporaryily needed for local copy of hs_user_meta
 def file_metadata_local(path: str):
@@ -36,11 +34,8 @@ def file_metadata_local(path: str):
     _, extension = os.path.splitext(path)
     mime_type = mime_type if mime_type else extension
     _, name = os.path.split(path)
-    return {
-        "@type": "DataDownload",
-        "name": name,
-        "contentUrl": path,
-        "contentSize": size,
-        "sha256": str(checksum),
-        "encodingFormat": mime_type,
-    }, None
+    return MediaObject(contentUrl = path,
+                       name = name,
+                       sha256 = str(checksum),
+                       contentSize = size,
+                       encodingFormat = mime_type), None
