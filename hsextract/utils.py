@@ -11,6 +11,7 @@ from hsextract.listing.utils import prepare_files
 from hsextract.hs_cn_schemas.schema.src.dataset import ScientificDataset
 #from hsextract.netcdf.utils import get_nc_meta_dict
 from hsextract.netcdf.hs_cn_extraction import encode_netcdf
+from hsextract.netcdf.hs_cn_extraction import encode_zarr
 #from hsextract.raster.utils import extract_from_tif_file
 from hsextract.raster.hs_cn_extraction import encode_raster_metadata
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
@@ -62,7 +63,7 @@ def extract_metadata(type: str, input_path: str, output_base_url: str, user_meta
             path = os.path.dirname("/".join(input_path.strip("/").split('/')[4:]))
         extracted_metadata["url"] = os.path.join(output_base_url, path, "dataset_metadata.json")
 
-    if type in ["raster", "feature", "netcdf"]:
+    if type in ["raster", "feature", "netcdf", "zarr"]:
         # updated extaction functions do not need an adapter
         return json.loads(extracted_metadata.json())
 
@@ -97,6 +98,8 @@ def _extract_metadata(type: str, filepath, base_input_path):
         metadata = encode_vector_metadata(filepath)
     elif type == "netcdf":
         metadata = encode_netcdf(filepath)
+    elif type == "zarr":
+        metadata = encode_zarr(filepath)
     elif type == "timeseries":
         if extension == ".csv":
             metadata = extract_metadata_csv(filepath)
@@ -137,8 +140,6 @@ async def list_and_extract(
 ):
     try:
         sorted_files, categorized_files = prepare_files(input_path, user_metadata_filename)
-        netcdf_files = categorized_files["netcdf"]
-        del categorized_files["netcdf"]
         tasks = []
 
         for category, files in categorized_files.items():
@@ -162,12 +163,6 @@ async def list_and_extract(
         results = []
         if tasks:
             results.extend(await asyncio.gather(*tasks))
-
-        # The netcdf library does not seem to be thread safe, running them in this thread
-        for file in netcdf_files:
-            results.append(
-                extract_metadata_with_file_path("netcdf", file, user_metadata_filename, output_path, output_base_url, input_path)
-            )
 
         metadata_manifest = [
             {file_path: f"{file_path}.json"}

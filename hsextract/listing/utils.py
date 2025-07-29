@@ -28,6 +28,8 @@ def categorize_files(files, user_metadata_filename):
 
         if f.endswith(".nc"):
             categorized_files["netcdf"].append(f)
+        if f.endswith(".zarr"):
+            categorized_files["zarr"].append(f)
 
         if f.endswith(".shp"):
             categorized_files["feature"].append(f)
