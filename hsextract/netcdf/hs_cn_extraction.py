@@ -2,6 +2,7 @@ import os
 import tempfile
 import xarray
 import mimetypes
+import s3fs
 import numpy as np
 from pyproj import CRS
 
@@ -222,8 +223,9 @@ def encode_zarr(filepath: str,
                 compute_statistics:bool = True) -> dataset.ScientificDataset:
 
 
-    zarr_url = filepath
-    ds = xarray.open_zarr(zarr_url, consolidated=False)#, chunks={"time":-1, "lat":"auto", "lon":"auto"})
+    fs = s3fs.S3FileSystem(client_kwargs={"endpoint_url": os.environ.get("AWS_S3_ENDPOINT=")}, key=os.environ.get("AWS_ACCESS_KEY_ID"), secret=os.environ.get("AWS_SECRET_ACCESS_KEY"))
+    s3_map = s3fs.S3Map(f"s3://filepath", s3=fs)
+    ds = xarray.open_zarr(s3_map, consolidated=False)#, chunks={"time":-1, "lat":"auto", "lon":"auto"})
         
     return encode_multidimensional_metadata(ds, filepath, validate_bbox, compute_statistics)
     

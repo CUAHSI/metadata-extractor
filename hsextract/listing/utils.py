@@ -7,7 +7,9 @@ from pathlib import Path
 
 
 def sort_files(input_path):
-    files = s3.find(input_path)
+    files = s3.find(input_path, withdirs=True)
+    # filter out all directories except .zarr directories
+    files = [f for f in files if not s3.isdir(f) or f.endswith(".zarr")]
     # temporary workaround until we begin writing these files in the resource
     if os.path.exists("/tmp/hs_user_meta.json"):
         files.append("/tmp/hs_user_meta.json")

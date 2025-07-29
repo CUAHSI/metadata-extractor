@@ -18,4 +18,5 @@ pydantic[email]
 s3fs
 typing-extensions
 xarray
+zarr
 rasterio

@@ -10,7 +10,10 @@ def file_metadata(path: str):
     if path == "/tmp/hs_user_meta.json":
         return file_metadata_local(path)
     checksum = s3.checksum(path)
-    size = f"{s3.info(path)['Size']/1000.00} KB"
+    if s3.isdir(path):
+        size = "0 KB"
+    else:
+        size = f"{s3.info(path)['Size']/1000.00} KB"
     mime_type = mimetypes.guess_type(path)[0]
     _, extension = os.path.splitext(path)
     mime_type = mime_type if mime_type else extension
