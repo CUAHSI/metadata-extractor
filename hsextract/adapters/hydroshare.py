@@ -182,7 +182,7 @@ class HydroshareMetadataAdapter:
             return hs_metadata_model.to_catalog_dataset()
         return hs_metadata_model.to_catalog_dataset()
 
-    def retrieve_user_metadata(self, record_id: str, input_path: str):
+    def retrieve_user_metadata(self, record_id: str):
         hs_meta_url = f"https://hydroshare.org/hsapi2/resource/{record_id}/json/"
         hs_sharing_status_url = f"https://www.hydroshare.org/hsapi2/resource/{record_id}/sharing_status/json/"
 

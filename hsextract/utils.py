@@ -57,7 +57,7 @@ def extract_metadata(type: str, input_path: str, user_metadata_filename: str, ba
 
     if type in ["raster", "feature", "netcdf", "zarr"]:
         # updated extaction functions do not need an adapter
-        return json.loads(extracted_metadata.json())
+        return json.loads(extracted_metadata.json(exclude_none=True))
 
     adapter = HydroshareMetadataAdapter()
     all_file_metadata = []
@@ -67,10 +67,10 @@ def extract_metadata(type: str, input_path: str, user_metadata_filename: str, ba
     del extracted_metadata["content_files"]
     if type == "user_meta":
         extracted_metadata["associatedMedia"] = all_file_metadata
-        return json.loads(ScientificDataset.construct(**extracted_metadata).json())
+        return json.loads(ScientificDataset.construct(**extracted_metadata).json(exclude_none=True))
     else:
         extracted_metadata["associatedMedia"] = all_file_metadata
-        catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
+        catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json(exclude_none=True))
 
         # check for user metadata attached content types
         user_meta_content_type_path = input_path + "." + user_metadata_filename
@@ -131,7 +131,7 @@ async def list_and_extract(
     input_path: str, output_path: str, user_metadata_filename: str
 ):
     # write output files to local temporary directory
-    local_output_path = os.path.join(tempfile.gettempdir(), output_path)
+    local_output_path = output_path
     output_base_url = os.environ.get("AWS_S3_ENDPOINT")
     input_base_url = os.environ.get("AWS_S3_ENDPOINT")
     try:
@@ -185,9 +185,7 @@ async def list_and_extract(
             has_part = []
             for has_part_file in has_part_files:
                 metadata_json = read_metadata(has_part_file)
-                name = metadata_json["name"]
-                if not name:
-                    name = "Not Found and name is required"
+                name = metadata_json["name"] if "name" in metadata_json else "Not Found and name is required"
                 has_part_url = urljoin(output_base_url, has_part_file)
                 has_part.append(
                     {
@@ -214,8 +212,8 @@ async def list_and_extract(
                     md["contentUrl"] = urljoin(input_base_url, md["contentUrl"])
                     associated_media.append(md)
                 metadata_json["associatedMedia"] = associated_media
-            metadata_json["url"] = urljoin(output_base_url, output_path, "dataset_metadata.json")
-            dataset_metadata_file = strip_temp_dir(dataset_metadata_file)
+            metadata_json["url"] = urljoin(output_base_url, local_output_path, "dataset_metadata.json")
+            dataset_metadata_file = dataset_metadata_file
             with s3.open(dataset_metadata_file, "w") as f:
                 f.write(json.dumps(metadata_json, indent=2))
 
@@ -231,17 +229,14 @@ async def list_and_extract(
                             md["contentUrl"] = urljoin(input_base_url, md["contentUrl"])
                         associated_media.append(md)
                     metadata["associatedMedia"] = associated_media
-                if "url" in metadata:
-                    metadata["url"] = urljoin(output_base_url, meta_manifest_file)
-            meta_manifest_file = strip_temp_dir(meta_manifest_file)
+
+                metadata["url"] = urljoin(output_base_url, meta_manifest_file)
+            meta_manifest_file = meta_manifest_file
             with s3.open(meta_manifest_file, "w") as f:
                 f.write(json.dumps(metadata, indent=2))
 
     finally:
         pass
-
-def strip_temp_dir(path: str):
-    return "/".join(path.split("/")[1:])
 
 def urljoin(base: str, *paths: str) -> str:
     """
