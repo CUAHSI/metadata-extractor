@@ -11,7 +11,10 @@ def sort_files(input_path):
     # filter out all directories except .zarr directories
     files = [f for f in files if not s3.isdir(f) or f.endswith(".zarr")]
     # temporary workaround until we begin writing these files in the resource
-    if os.path.exists("/tmp/hs_user_meta.json"):
+    if not s3.exists(os.path.join(input_path, "hs_user_meta.json")):
+        if not os.path.exists("/tmp/hs_user_meta.json"):
+            with open("/tmp/hs_user_meta.json", "w") as f:
+                f.write("{}")
         files.append("/tmp/hs_user_meta.json")
     sorted_files = sorted(files, key=lambda i: (i, len(i.split("/"))))
     return sorted_files
