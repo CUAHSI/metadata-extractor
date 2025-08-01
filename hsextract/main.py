@@ -25,7 +25,7 @@ def extract(
 ):
     if retrieve_metadata_resource_id:
         adapter = HydroshareMetadataAdapter()
-        adapter.retrieve_user_metadata(retrieve_metadata_resource_id, input_path)
+        adapter.retrieve_user_metadata(retrieve_metadata_resource_id)
 
     aiorun(_extract(input_path, output_path, user_metadata_filename, local_output))
 

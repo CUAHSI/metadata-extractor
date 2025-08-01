@@ -132,6 +132,8 @@ async def list_and_extract(
 ):
     # write output files to local temporary directory
     local_output_path = output_path
+    if local_output:
+        local_output_path = os.path.join(tempfile.gettempdir(), output_path)
     output_base_url = os.environ.get("AWS_S3_ENDPOINT")
     input_base_url = os.environ.get("AWS_S3_ENDPOINT")
     try:
@@ -213,8 +215,8 @@ async def list_and_extract(
                     associated_media.append(md)
                 metadata_json["associatedMedia"] = associated_media
             metadata_json["url"] = urljoin(output_base_url, local_output_path, "dataset_metadata.json")
-            dataset_metadata_file = dataset_metadata_file
             if local_output:
+                dataset_metadata_file = "/" + strip_temp_dir(dataset_metadata_file)
                 with open(dataset_metadata_file, "w") as f:
                     f.write(json.dumps(metadata_json, indent=2))
             else:
@@ -235,8 +237,8 @@ async def list_and_extract(
                     metadata["associatedMedia"] = associated_media
 
                 metadata["url"] = urljoin(output_base_url, meta_manifest_file)
-            meta_manifest_file = meta_manifest_file
             if local_output:
+                meta_manifest_file = "/" + strip_temp_dir(meta_manifest_file)
                 with open(meta_manifest_file, "w") as f:
                     f.write(json.dumps(metadata, indent=2))
             else:
@@ -252,3 +254,6 @@ def urljoin(base: str, *paths: str) -> str:
     """
     url = "/".join(map(lambda x: str(x).strip("/"), paths))
     return urllib_join(base, url)
+
+def strip_temp_dir(path: str):
+    return "/".join(path.split("/")[1:])
