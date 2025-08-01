@@ -128,7 +128,7 @@ def read_metadata(path: str):
 
 
 async def list_and_extract(
-    input_path: str, output_path: str, user_metadata_filename: str
+    input_path: str, output_path: str, user_metadata_filename: str, local_output: bool
 ):
     # write output files to local temporary directory
     local_output_path = output_path
@@ -214,8 +214,12 @@ async def list_and_extract(
                 metadata_json["associatedMedia"] = associated_media
             metadata_json["url"] = urljoin(output_base_url, local_output_path, "dataset_metadata.json")
             dataset_metadata_file = dataset_metadata_file
-            with s3.open(dataset_metadata_file, "w") as f:
-                f.write(json.dumps(metadata_json, indent=2))
+            if local_output:
+                with open(dataset_metadata_file, "w") as f:
+                    f.write(json.dumps(metadata_json, indent=2))
+            else:
+                with s3.open(dataset_metadata_file, "w") as f:
+                    f.write(json.dumps(metadata_json, indent=2))
 
         # add base_url to the contentUrl of the associatedMedia for the metadata_manifest files
         for meta_manifest_item in metadata_manifest:
@@ -232,8 +236,12 @@ async def list_and_extract(
 
                 metadata["url"] = urljoin(output_base_url, meta_manifest_file)
             meta_manifest_file = meta_manifest_file
-            with s3.open(meta_manifest_file, "w") as f:
-                f.write(json.dumps(metadata, indent=2))
+            if local_output:
+                with open(meta_manifest_file, "w") as f:
+                    f.write(json.dumps(metadata, indent=2))
+            else:
+                with s3.open(meta_manifest_file, "w") as f:
+                    f.write(json.dumps(metadata, indent=2))
 
     finally:
         pass
