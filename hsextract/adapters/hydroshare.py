@@ -1,24 +1,25 @@
 import json
 import os
+import tempfile
 
 from datetime import datetime
 from typing import Any, List, Optional, Union, Literal
 
 import requests
-from pydantic import BaseModel, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, HttpUrl, ConfigDict, model_validator
 
 from hsextract.adapters.utils import RepositoryType
 from hsextract.exceptions import RepositoryException
-from hsextract.models import schema
-from hsextract.models.schema import CoreMetadataDOC
+from hsextract.hs_cn_schemas.schema.src import base as schema
+from hsextract.hs_cn_schemas.schema.src.dataset import ScientificDataset
 
 
 class BasePerson(BaseModel):
-    name: Optional[str]
-    email: Optional[EmailStr]
-    organization: Optional[str]
-    homepage: Optional[HttpUrl]
-    address: Optional[str]
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    organization: Optional[str] = None
+    homepage: Optional[HttpUrl] = None
+    address: Optional[str] = None
     identifiers: Optional[dict] = {}
 
     def to_dataset_person(self, person_type):
@@ -59,9 +60,9 @@ class Contributor(BasePerson):
 
 class Award(BaseModel):
     funding_agency_name: str
-    title: Optional[str]
-    number: Optional[str]
-    funding_agency_url: Optional[HttpUrl]
+    title: Optional[str] = None
+    number: Optional[str] = None
+    funding_agency_url: Optional[HttpUrl] = None
 
     def to_dataset_grant(self):
         grant = schema.Grant.construct()
@@ -95,7 +96,7 @@ class TemporalCoverage(BaseModel):
 
 
 class SpatialCoverageBox(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
     northlimit: float
     eastlimit: float
     southlimit: float
@@ -112,7 +113,7 @@ class SpatialCoverageBox(BaseModel):
 
 
 class SpatialCoveragePoint(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
     north: float
     east: float
 
@@ -166,7 +167,7 @@ class Rights(BaseModel):
     url: HttpUrl
 
     def to_dataset_license(self):
-        _license = schema.License.construct()
+        _license = schema.CreativeWork.construct()
         _license.name = self.statement
         _license.url = self.url
         return _license
@@ -177,9 +178,11 @@ class HydroshareMetadataAdapter:
     def to_catalog_record(metadata: dict):
         """Converts hydroshare resource metadata to a catalog dataset record"""
         hs_metadata_model = _HydroshareResourceMetadata(**metadata)
+        if metadata["type"] == "CompositeResource":
+            return hs_metadata_model.to_catalog_dataset()
         return hs_metadata_model.to_catalog_dataset()
 
-    def retrieve_user_metadata(self, record_id: str, input_path: str):
+    def retrieve_user_metadata(self, record_id: str):
         hs_meta_url = f"https://hydroshare.org/hsapi2/resource/{record_id}/json/"
         hs_sharing_status_url = f"https://www.hydroshare.org/hsapi2/resource/{record_id}/sharing_status/json/"
 
@@ -193,31 +196,46 @@ class HydroshareMetadataAdapter:
         sharing_status = make_request(hs_sharing_status_url)["sharing_status"]
         metadata["sharing_status"] = sharing_status
         metadata = self.to_catalog_record(metadata).dict()
-        with open(os.path.join(input_path, "hs_user_meta.json"), "w") as f:
+        with open(os.path.join(tempfile.gettempdir(), "hs_user_meta.json"), "w") as f:
             json.dump(metadata, f, indent=4, default=str)
 
 
 class _HydroshareResourceMetadata(BaseModel):
-    type: Optional[str]
-    title: Optional[str]
-    abstract: Optional[str]
-    url: Optional[HttpUrl]
-    identifier: Optional[HttpUrl]
+    model_config = ConfigDict(extra='allow')
+
+    type: Optional[str] = None
+    title: Optional[str] = None
+    abstract: Optional[str] = None
+    url: Optional[HttpUrl] = None
+    identifier: Optional[HttpUrl] = None
     creators: List[Creator] = []
     contributors: List[Contributor] = []
-    created: Optional[datetime]
-    modified: Optional[datetime]
-    published: Optional[datetime]
-    subjects: Optional[List[str]]
-    language: Optional[str]
-    rights: Optional[Rights]
+    created: Optional[datetime] = None
+    modified: Optional[datetime] = None
+    published: Optional[datetime] = None
+    subjects: Optional[List[str]] = None
+    language: Optional[str] = None
+    rights: Optional[Rights] = None
     awards: List[Award] = []
-    spatial_coverage: Optional[Union[SpatialCoverageBox, SpatialCoveragePoint]]
-    period_coverage: Optional[TemporalCoverage]
+    spatial_coverage: Optional[Union[SpatialCoverageBox, SpatialCoveragePoint]] = None
+    period_coverage: Optional[TemporalCoverage] = None
     relations: List[Relation] = []
-    citation: Optional[str]
+    citation: Optional[str] = None
     associatedMedia: List[Any] = []
-    sharing_status: Literal["private", "public", "published", "discoverable"]
+    sharing_status: Optional[Literal["private", "public", "published", "discoverable"]] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def set_extra_columns(cls, data: Any):
+        if isinstance(data, dict):
+            extra_fields = data.keys() - cls.model_fields.keys()
+            if extra_fields:
+                if "extra_columns" not in data:
+                    data["extra_columns"] = {}
+                data["extra_columns"].update(
+                    {field_name: data[field_name] for field_name in extra_fields}
+                )
+        return data
 
     def to_dataset_creators(self):
         creators = []
@@ -280,7 +298,8 @@ class _HydroshareResourceMetadata(BaseModel):
             "discoverable": schema.Discoverable,
             "private": schema.Private,
         }
-        return status_defined_terms[self.sharing_status].construct()
+        if self.sharing_status:
+            return status_defined_terms[self.sharing_status].construct()
 
     @staticmethod
     def to_dataset_provider():
@@ -290,7 +309,7 @@ class _HydroshareResourceMetadata(BaseModel):
         return provider
 
     def to_catalog_dataset(self):
-        dataset = CoreMetadataDOC.construct()
+        dataset = ScientificDataset.model_construct(**self.extra_columns)
         dataset.additionalType = self.type
         dataset.provider = self.to_dataset_provider()
         dataset.name = self.title

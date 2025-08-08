@@ -2,31 +2,44 @@ import asyncio
 import json
 import logging
 import os
-from pathlib import Path
+import tempfile
 
+from urllib.parse import urljoin as urllib_join
 from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
-from hsextract.feature.utils import extract_metadata_and_files
+#from hsextract.feature.utils import extract_metadata_and_files
+from hsextract.feature.hs_cn_extraction import encode_vector_metadata
 from hsextract.file_utils import file_metadata
 from hsextract.listing.utils import prepare_files
-from hsextract.models.schema import CoreMetadataDOC
-from hsextract.netcdf.utils import get_nc_meta_dict
-from hsextract.raster.utils import extract_from_tif_file
+from hsextract.hs_cn_schemas.schema.src.dataset import ScientificDataset
+#from hsextract.netcdf.utils import get_nc_meta_dict
+from hsextract.netcdf.hs_cn_extraction import encode_netcdf
+from hsextract.netcdf.hs_cn_extraction import encode_zarr
+#from hsextract.raster.utils import extract_from_tif_file
+from hsextract.raster.hs_cn_extraction import encode_raster_metadata
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata_csv
+from hsextract import s3
 
 
 def _to_metadata_path(type: str, filepath: str, output_path: str):
+    # strip bucket and resource id from path
     if type != "user_meta":
-        return os.path.join(output_path, filepath + ".json")
-    dirname, _ = os.path.split(filepath)
-    return os.path.join(output_path, dirname, "dataset_metadata.json")
+        output_path = os.path.join(output_path, "/".join(filepath.strip("/").split('/')[4:]))
+        dirname, _ = os.path.split(output_path)
+        return os.path.join(dirname, os.path.basename(filepath) + ".json")
+    if filepath == "/tmp/hs_user_meta.json":
+        return os.path.join(output_path, "dataset_metadata.json")
+    output_path = os.path.join(output_path, "/".join(filepath.strip("/").split('/')[4:]))
+    dirname, _ = os.path.split(output_path)
+    dataset_metadata_path = os.path.join(dirname, "dataset_metadata.json")
+    return dataset_metadata_path
 
 
 def extract_metadata_with_file_path(
-    type: str, input_path: str, user_metadata_filename: str, output_path: str, output_base_url: str
+    type: str, input_path: str, user_metadata_filename: str, output_path: str, base_input_path: str
 ):
-    extracted_metadata = extract_metadata(type, input_path, output_base_url, user_metadata_filename)
+    extracted_metadata = extract_metadata(type, input_path, user_metadata_filename, base_input_path)
     if extracted_metadata:
         input_path = _to_metadata_path(type, input_path, output_path)
         os.makedirs(os.path.dirname(input_path), exist_ok=True)
@@ -35,17 +48,17 @@ def extract_metadata_with_file_path(
     return input_path, extracted_metadata is not None
 
 
-def extract_metadata(type: str, input_path: str, output_base_url: str, user_metadata_filename: str):
+def extract_metadata(type: str, input_path: str, user_metadata_filename: str, base_input_path: str):
     try:
-        extracted_metadata = _extract_metadata(type, input_path)
+        extracted_metadata = _extract_metadata(type, input_path, base_input_path)
     except Exception as e:
         logging.exception(f"Failed to extract {type} metadata from {input_path}.")
         return None
-    if os.path.basename(input_path) == user_metadata_filename:
-        path = os.path.dirname(input_path)
-        extracted_metadata["url"] = os.path.join(output_base_url, path, "dataset_metadata.json")
-    else:
-        extracted_metadata["url"] = os.path.join(output_base_url, input_path)
+
+    if type in ["raster", "feature", "netcdf", "zarr"]:
+        # updated extaction functions do not need an adapter
+        return json.loads(extracted_metadata.json(exclude_none=True))
+
     adapter = HydroshareMetadataAdapter()
     all_file_metadata = []
     for f in extracted_metadata["content_files"]:
@@ -54,32 +67,31 @@ def extract_metadata(type: str, input_path: str, output_base_url: str, user_meta
     del extracted_metadata["content_files"]
     if type == "user_meta":
         extracted_metadata["associatedMedia"] = all_file_metadata
-        return json.loads(CoreMetadataDOC.construct(**extracted_metadata).json())
+        return json.loads(ScientificDataset.construct(**extracted_metadata).json(exclude_none=True))
     else:
         extracted_metadata["associatedMedia"] = all_file_metadata
-        catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json())
+        catalog_record = json.loads(adapter.to_catalog_record(extracted_metadata).json(exclude_none=True))
 
         # check for user metadata attached content types
         user_meta_content_type_path = input_path + "." + user_metadata_filename
-        if os.path.exists(user_meta_content_type_path):
-            with open(user_meta_content_type_path, "r") as f:
+        if s3.exists(user_meta_content_type_path):
+            with s3.open(user_meta_content_type_path) as f:
                 user_metadata = json.loads(f.read())
             catalog_record.update(user_metadata)
         return catalog_record
 
 
-def _extract_metadata(type: str, filepath):
+def _extract_metadata(type: str, filepath, base_input_path):
     extension = os.path.splitext(filepath)[1]
     metadata = None
     if type == "raster":
-        metadata = extract_from_tif_file(filepath)
-        metadata["type"] = "GeographicRasterAggregation"
+        metadata = encode_raster_metadata(filepath)
     elif type == "feature":
-        metadata = extract_metadata_and_files(filepath)
-        metadata["type"] = "GeographicFeatureAggregation"
+        metadata = encode_vector_metadata(filepath)
     elif type == "netcdf":
-        metadata = get_nc_meta_dict(filepath)
-        metadata["type"] = "MultidimensionalAggregation"
+        metadata = encode_netcdf(filepath)
+    elif type == "zarr":
+        metadata = encode_zarr(filepath)
     elif type == "timeseries":
         if extension == ".csv":
             metadata = extract_metadata_csv(filepath)
@@ -91,14 +103,17 @@ def _extract_metadata(type: str, filepath):
         metadata["type"] = "ReferencedTimeSeriesAggregation"
     elif type == "user_meta":
         metadata = {}
-        if os.path.exists(filepath):
+        if s3.exists(filepath):
+            with s3.open(filepath) as f:
+                metadata = json.loads(f.read())
+        elif filepath == "/tmp/hs_user_meta.json":
             with open(filepath) as f:
                 metadata = json.loads(f.read())
+                filepath = os.path.join(base_input_path, "file.json")
         metadata_file_dir, filename = os.path.split(filepath)
         metadata["content_files"] = [
             str(f)
-            for f in Path(f'./{metadata_file_dir}').rglob('*')
-            if not str(f).endswith(filename) and os.path.isfile(str(f))
+            for f in s3.find(metadata_file_dir)
         ]
         if "type" not in metadata:
             # Check type to ensure ResourceType isn't overwritten if provided
@@ -108,23 +123,22 @@ def _extract_metadata(type: str, filepath):
 
 
 def read_metadata(path: str):
-    with open(path, "r") as f:
+    with open(path) as f:
         return json.loads(f.read())
 
 
 async def list_and_extract(
-    input_path: str, output_path: str, input_base_url: str, output_base_url: str, user_metadata_filename: str
+    input_path: str, output_path: str, user_metadata_filename: str, local_output: bool
 ):
-    current_directory = os.getcwd()
+    # write output files to local temporary directory
+    local_output_path = output_path
+    if local_output:
+        local_output_path = os.path.join(tempfile.gettempdir(), output_path)
+    output_base_url = os.environ.get("AWS_S3_ENDPOINT")
+    input_base_url = os.environ.get("AWS_S3_ENDPOINT")
     try:
-        os.chdir(input_path)
-        sorted_files, categorized_files = prepare_files(user_metadata_filename)
-        netcdf_files = categorized_files["netcdf"]
-        del categorized_files["netcdf"]
+        sorted_files, categorized_files = prepare_files(input_path, user_metadata_filename)
         tasks = []
-
-        if "user_meta" not in categorized_files or user_metadata_filename not in categorized_files["user_meta"]:
-            categorized_files["user_meta"].append(user_metadata_filename)
 
         for category, files in categorized_files.items():
             for file in files:
@@ -135,8 +149,8 @@ async def list_and_extract(
                         category,
                         file,
                         user_metadata_filename,
-                        output_path,
-                        output_base_url,
+                        local_output_path,
+                        input_path
                     )
                 )
 
@@ -146,12 +160,6 @@ async def list_and_extract(
         results = []
         if tasks:
             results.extend(await asyncio.gather(*tasks))
-
-        # The netcdf library does not seem to be thread safe, running them in this thread
-        for file in netcdf_files:
-            results.append(
-                extract_metadata_with_file_path("netcdf", file, user_metadata_filename, output_path, output_base_url)
-            )
 
         metadata_manifest = [
             {file_path: f"{file_path}.json"}
@@ -179,23 +187,21 @@ async def list_and_extract(
             has_part = []
             for has_part_file in has_part_files:
                 metadata_json = read_metadata(has_part_file)
-                name = metadata_json["name"]
-                if not name:
-                    name = "Not Found and name is required"
-                has_part_file = os.path.relpath(has_part_file, output_path)
+                name = metadata_json["name"] if "name" in metadata_json else "Not Found and name is required"
+                has_part_url = urljoin(output_base_url, has_part_file)
                 has_part.append(
                     {
                         "@type": "CreativeWork",
                         "name": name,
                         "description": metadata_json["description"] if "description" in metadata_json else None,
-                        "url": os.path.join(output_base_url, has_part_file),
+                        "url": has_part_url,
                     }
                 )
             for has_part_file in has_part_files:
                 metadata_json = read_metadata(has_part_file)
                 with open(has_part_file, "w") as f:
-                    is_part_of_file = os.path.relpath(dataset_metadata_file, output_path)
-                    metadata_json["isPartOf"] = [os.path.join(output_base_url, is_part_of_file)]
+                    is_part_of_file = os.path.relpath(dataset_metadata_file, local_output_path)
+                    metadata_json["isPartOf"] = [urljoin(output_base_url, local_output_path, is_part_of_file)]
                     f.write(json.dumps(metadata_json, indent=2))
             with open(dataset_metadata_file, "r") as f:
                 metadata_json = json.loads(f.read())
@@ -205,12 +211,17 @@ async def list_and_extract(
             if "associatedMedia" in metadata_json:
                 associated_media = []
                 for md in metadata_json["associatedMedia"]:
-                    md["contentUrl"] = os.path.join(input_base_url, md["contentUrl"])
+                    md["contentUrl"] = urljoin(input_base_url, md["contentUrl"])
                     associated_media.append(md)
                 metadata_json["associatedMedia"] = associated_media
-
-            with open(dataset_metadata_file, "w") as f:
-                f.write(json.dumps(metadata_json, indent=2))
+            metadata_json["url"] = urljoin(output_base_url, local_output_path, "dataset_metadata.json")
+            if local_output:
+                dataset_metadata_file = "/" + strip_temp_dir(dataset_metadata_file)
+                with open(dataset_metadata_file, "w") as f:
+                    f.write(json.dumps(metadata_json, indent=2))
+            else:
+                with s3.open(dataset_metadata_file, "w") as f:
+                    f.write(json.dumps(metadata_json, indent=2))
 
         # add base_url to the contentUrl of the associatedMedia for the metadata_manifest files
         for meta_manifest_item in metadata_manifest:
@@ -221,13 +232,28 @@ async def list_and_extract(
                     associated_media = []
                     for md in metadata["associatedMedia"]:
                         if not md["contentUrl"].startswith(input_base_url):
-                            md["contentUrl"] = os.path.join(input_base_url, md["contentUrl"])
+                            md["contentUrl"] = urljoin(input_base_url, md["contentUrl"])
                         associated_media.append(md)
                     metadata["associatedMedia"] = associated_media
-                if "url" in metadata:
-                    metadata["url"] = os.path.join(output_base_url, os.path.relpath(meta_manifest_file, output_path))
-            with open(meta_manifest_file, "w") as f:
-                f.write(json.dumps(metadata, indent=2))
+
+                metadata["url"] = urljoin(output_base_url, meta_manifest_file)
+            if local_output:
+                meta_manifest_file = "/" + strip_temp_dir(meta_manifest_file)
+                with open(meta_manifest_file, "w") as f:
+                    f.write(json.dumps(metadata, indent=2))
+            else:
+                with s3.open(meta_manifest_file, "w") as f:
+                    f.write(json.dumps(metadata, indent=2))
 
     finally:
-        os.chdir(current_directory)
+        pass
+
+def urljoin(base: str, *paths: str) -> str:
+    """
+    Joins the base URL with the provided paths, ensuring proper URL formatting.
+    """
+    url = "/".join(map(lambda x: str(x).strip("/"), paths))
+    return urllib_join(base, url)
+
+def strip_temp_dir(path: str):
+    return "/".join(path.split("/")[1:])

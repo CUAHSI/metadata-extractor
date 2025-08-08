@@ -1,25 +1,21 @@
 import os
 from collections import defaultdict
-from multiprocessing.sharedctypes import Value
+
+from hsextract.raster.utils import list_tif_files_s3
+from hsextract import s3
 from pathlib import Path
 
-from hsextract.raster.utils import list_tif_files
 
-
-def _is_not_hidden_file(path):
-    if path.is_dir():
-        return False
-
-    is_not_hidden_file = not any(part.startswith('.') for part in path.parts)
-    return is_not_hidden_file
-
-
-def sort_files(include_hidden: bool = False):
-    if include_hidden:
-        files = [str(p) for p in Path().rglob('*') if not p.is_dir()]
-    else:
-        files = [str(p) for p in Path().rglob('*') if _is_not_hidden_file(p)]
-
+def sort_files(input_path):
+    files = s3.find(input_path, withdirs=True)
+    # filter out all directories except .zarr directories
+    files = [f for f in files if not s3.isdir(f) or f.endswith(".zarr")]
+    # temporary workaround until we begin writing these files in the resource
+    if not s3.exists(os.path.join(input_path, "hs_user_meta.json")):
+        if not os.path.exists("/tmp/hs_user_meta.json"):
+            with open("/tmp/hs_user_meta.json", "w") as f:
+                f.write("{}")
+        files.append("/tmp/hs_user_meta.json")
     sorted_files = sorted(files, key=lambda i: (i, len(i.split("/"))))
     return sorted_files
 
@@ -37,6 +33,8 @@ def categorize_files(files, user_metadata_filename):
 
         if f.endswith(".nc"):
             categorized_files["netcdf"].append(f)
+        if f.endswith(".zarr"):
+            categorized_files["zarr"].append(f)
 
         if f.endswith(".shp"):
             categorized_files["feature"].append(f)
@@ -54,7 +52,7 @@ def categorize_files(files, user_metadata_filename):
 
     for vrt_file in categorized_files["raster"]:
         vrt_file_dir = os.path.dirname(vrt_file)
-        for tif_file in list_tif_files(vrt_file):
+        for tif_file in list_tif_files_s3(vrt_file):
             try:
                 full_tif_path = os.path.join(vrt_file_dir, tif_file)
                 categorized_files["raster-tif"].remove(full_tif_path)
@@ -66,8 +64,8 @@ def categorize_files(files, user_metadata_filename):
     return categorized_files
 
 
-def prepare_files(user_metadata_filename: str):
-    sorted_files = sort_files()
+def prepare_files(input_path, user_metadata_filename: str):
+    sorted_files = sort_files(input_path)
     categorized_files = categorize_files(sorted_files, user_metadata_filename)
 
     return sorted_files, categorized_files
