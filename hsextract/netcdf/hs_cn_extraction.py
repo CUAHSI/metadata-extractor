@@ -214,8 +214,10 @@ def encode_netcdf(filepath: str,
     local_copy = os.path.join(temp_dir, os.path.basename(filepath))
     s3.get_file(filepath, local_copy)
     ds = xarray.load_dataset(local_copy, engine='netcdf4')
-
-    return encode_multidimensional_metadata(ds, filepath, validate_bbox, compute_statistics)
+    md_metadata = encode_multidimensional_metadata(ds, filepath, validate_bbox, compute_statistics)
+    #ds.close()
+    #os.remove(local_copy)  # Clean up the local copy
+    return md_metadata
     
 def encode_zarr(filepath: str,
                 validate_bbox:bool = True,
@@ -226,8 +228,10 @@ def encode_zarr(filepath: str,
     local_copy = os.path.join(temp_dir, os.path.basename(filepath))
     s3.get(filepath, local_copy, recursive=True)
     ds = xarray.open_zarr(local_copy, consolidated=False)#, chunks={"time":-1, "lat":"auto", "lon":"auto"})
-        
-    return encode_multidimensional_metadata(ds, filepath, validate_bbox, compute_statistics)
+    md =  encode_multidimensional_metadata(ds, filepath, validate_bbox, compute_statistics)
+    #ds.close()
+    #os.remove(local_copy)
+    return md
     
 def encode_multidimensional_metadata(ds: xarray.Dataset,
                                      filepath: str,

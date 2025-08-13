@@ -13,7 +13,7 @@ def file_metadata(path: str):
     if s3.isdir(path):
         size = "0 KB"
     else:
-        size = f"{s3.info(path)['Size']/1000.00} KB"
+        size = f"{s3.info(path)['size']/1000.00} KB"
     mime_type = mimetypes.guess_type(path)[0]
     _, extension = os.path.splitext(path)
     mime_type = mime_type if mime_type else extension

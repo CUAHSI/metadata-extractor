@@ -1,4 +1,5 @@
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 import json
 import logging
 import os
@@ -39,12 +40,14 @@ def _to_metadata_path(type: str, filepath: str, output_path: str):
 def extract_metadata_with_file_path(
     type: str, input_path: str, user_metadata_filename: str, output_path: str, base_input_path: str
 ):
+    print(f"Extracting {type} metadata from {input_path} to {output_path}")
     extracted_metadata = extract_metadata(type, input_path, user_metadata_filename, base_input_path)
     if extracted_metadata:
         input_path = _to_metadata_path(type, input_path, output_path)
         os.makedirs(os.path.dirname(input_path), exist_ok=True)
         with open(input_path, "w") as f:
             f.write(json.dumps(extracted_metadata, indent=2))
+    print(f"Extracted metadata to {input_path}")
     return input_path, extracted_metadata is not None
 
 
@@ -139,12 +142,12 @@ async def list_and_extract(
     try:
         sorted_files, categorized_files = prepare_files(input_path, user_metadata_filename)
         tasks = []
-
+        executor = ThreadPoolExecutor(max_workers=1) 
         for category, files in categorized_files.items():
             for file in files:
                 tasks.append(
                     asyncio.get_running_loop().run_in_executor(
-                        None,
+                        executor,
                         extract_metadata_with_file_path,
                         category,
                         file,
@@ -155,7 +158,7 @@ async def list_and_extract(
                 )
 
         for file in sorted_files:
-            tasks.append(asyncio.get_running_loop().run_in_executor(None, file_metadata, file))
+            tasks.append(asyncio.get_running_loop().run_in_executor(executor, file_metadata, file))
 
         results = []
         if tasks:

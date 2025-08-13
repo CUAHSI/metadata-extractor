@@ -17,6 +17,6 @@ pydantic
 pydantic[email]
 s3fs
 typing-extensions
-xarray
+xarray==2025.6.0
 zarr
 rasterio

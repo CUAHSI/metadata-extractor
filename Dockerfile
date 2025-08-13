@@ -9,8 +9,8 @@ RUN apt-get -y install python3-pip
 RUN python3 -m pip config set global.break-system-packages true
 RUN pip3 install -U h5py
 RUN pip3 install -U setuptools
-RUN pip3 install -U hdf5plugin
-RUN pip3 install -U netCDF4
+RUN pip3 install -U h5netcdf==1.6.4
+RUN pip3 install -U netCDF4==1.7.2
 
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
