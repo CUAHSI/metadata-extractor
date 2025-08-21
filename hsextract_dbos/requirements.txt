@@ -1,0 +1,3 @@
+dbos==1.11.0
+hsextract:local
+s3fs==2023.6.0

@@ -11,13 +11,15 @@ RUN pip3 install -U h5py
 RUN pip3 install -U setuptools
 RUN pip3 install -U h5netcdf==1.6.4
 RUN pip3 install -U netCDF4==1.7.2
+RUN pip3 install -U dbos==1.11.0
 
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 RUN rm requirements.txt
 
 COPY hsextract hsextract
+COPY hsextract_dbos hsextract_dbos
 
 ENV PYTHONPATH "${PYTHONPATH}:/app/"
 
-ENTRYPOINT ["python", "hsextract/main.py"]
+ENTRYPOINT ["uvicorn", "hsextract_dbos.app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]

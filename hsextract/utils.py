@@ -7,15 +7,12 @@ import tempfile
 
 from urllib.parse import urljoin as urllib_join
 from hsextract.adapters.hydroshare import HydroshareMetadataAdapter
-#from hsextract.feature.utils import extract_metadata_and_files
 from hsextract.feature.hs_cn_extraction import encode_vector_metadata
 from hsextract.file_utils import file_metadata
 from hsextract.listing.utils import prepare_files
 from hsextract.hs_cn_schemas.schema.src.dataset import ScientificDataset
-#from hsextract.netcdf.utils import get_nc_meta_dict
 from hsextract.netcdf.hs_cn_extraction import encode_netcdf
 from hsextract.netcdf.hs_cn_extraction import encode_zarr
-#from hsextract.raster.utils import extract_from_tif_file
 from hsextract.raster.hs_cn_extraction import encode_raster_metadata
 from hsextract.reftimeseries.utils import extract_referenced_timeseries_metadata
 from hsextract.timeseries.utils import extract_metadata as extract_timeseries_metadata
@@ -130,7 +127,7 @@ def read_metadata(path: str):
         return json.loads(f.read())
 
 
-async def list_and_extract(
+def list_and_extract(
     input_path: str, output_path: str, user_metadata_filename: str, local_output: bool
 ):
     # write output files to local temporary directory
@@ -142,7 +139,6 @@ async def list_and_extract(
     try:
         sorted_files, categorized_files = prepare_files(input_path, user_metadata_filename)
         tasks = []
-        executor = ThreadPoolExecutor(max_workers=1) 
         for category, files in categorized_files.items():
             for file in files:
                 tasks.append(
