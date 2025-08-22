@@ -20,6 +20,7 @@ def write_metadata(metadata_path: str, metadata_json: dict) -> None:
     bucket_name = metadata_path.split('/')[0]
     key = '/'.join(metadata_path.split('/')[1:])
     try:
+        print(f"Writing metadata to bucket: {bucket_name}, key: {key}")
         s3_client.put_object(Bucket=bucket_name, Key=key, Body=json.dumps(metadata_json, indent=2))
     except Exception as e:
         print(f"Error writing metadata to {metadata_path}: {e}")
@@ -59,7 +60,7 @@ def retrieve_file_manifest(resource_root_path: str):
                 _, extension = os.path.splitext(key)
                 mime_type = mime_type if mime_type else extension
                 _, name = os.path.split(key)
-                content_url = f"{os.environ['AWS_S3_ENDPOINT']}/{key}"
+                content_url = f"{os.environ['AWS_S3_ENDPOINT']}/{bucket_name}/{key}"
                 media_object = MediaObject(
                     contentUrl=content_url,
                     name=name,
@@ -67,7 +68,7 @@ def retrieve_file_manifest(resource_root_path: str):
                     contentSize=size,
                     encodingFormat=mime_type
                 )
-                file_manifest.append(media_object.json())
+                file_manifest.append(media_object.model_dump(exclude_none=True))
     return file_manifest
 
 
