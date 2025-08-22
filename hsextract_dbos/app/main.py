@@ -49,9 +49,13 @@ class MetadataObject:
         # check single file
         file_object_path = self.file_object_path
         single_file_user_path = file_object_path + ".hs_user_meta.json"
+        resource_user_metadata_path = os.path.join(self.resource_root_path, "hs_user_meta.json")
 
         # Extract the relative path from file_object_path after resource_root_path
         relative_path = os.path.relpath(self.resource_root_path, file_object_path)
+        self.content_type_md_path = None
+        if self.file_object_path == resource_user_metadata_path:
+            return
         if exists(os.path.join(single_file_user_path)):
             self.content_type_md_path = os.path.join(self.resource_md_root_path, file_object_path + ".json")
             self.content_type = ContentType.SINGLE_FILE
@@ -107,12 +111,19 @@ class MetadataObject:
 
 
 @app.get("/metadata_extraction")
-def launch_durable_workflow(file_object_path: str = "sblack/40d20c1496544ad8b7bf6bfa46695890/data/contents/dataroot.csv",
+def launch_durable_workflow(file_object_path: str = "sblack/40d20c1496544ad8b7bf6bfa46695890/data/contents/.csv",
                             file_updated: bool = True,
-                            resource_root_path: str = "sblack/40d20c1496544ad8b7bf6bfa46695890/data/contents",
-                            resource_md_root_path: str = "sblack/md/40d20c1496544ad8b7bf6bfa46695890",
-                            resource_md_part_path: str = "sblack/.md/40d20c1496544ad8b7bf6bfa46695890") -> None:
-    #TODO: if resource paths are not provided, derive from the resource_id
+                            resource_root_path: str = None,
+                            resource_md_root_path: str = None,
+                            resource_md_part_path: str = None) -> None:
+    bucket_name = file_object_path.split('/')[0]
+    resource_id = file_object_path.split('/')[1]
+    if not resource_root_path:
+        resource_root_path = f"{bucket_name}/{resource_id}/data/contents"
+    if not resource_md_root_path:
+        resource_md_root_path = f"{bucket_name}/md/{resource_id}"
+    if not resource_md_part_path:
+        resource_md_part_path = f"{bucket_name}/.md/{resource_id}"
     handle = DBOS.start_workflow(workflow_metadata_extraction, file_object_path, file_updated, resource_root_path, resource_md_root_path, resource_md_part_path)
     # Wait for the background task to complete and retrieve its result.
     succeeded = handle.get_result()
@@ -162,7 +173,7 @@ def write_resource_metadata(md: MetadataObject) -> bool:
             description=content_type_metadata.get("description", None),
             url= f"{os.environ['AWS_S3_ENDPOINT']}/{file_prefix}",
         )
-        has_parts.append(has_part.json())
+        has_parts.append(has_part.model_dump(exclude_none=True))
     
     # Combine system metadata, user metadata, hasPart, and associatedMedia
     combined_metadata = {**system_json, **user_json} #TODO evaluate whether we need to merge list properties
