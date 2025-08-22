@@ -51,7 +51,7 @@ class MetadataObject:
         single_file_user_path = file_object_path + ".hs_user_meta.json"
 
         # Extract the relative path from file_object_path after resource_root_path
-        relative_path = os.path.relpath(file_object_path, self.resource_root_path)
+        relative_path = os.path.relpath(self.resource_root_path, file_object_path)
         if exists(os.path.join(single_file_user_path)):
             self.content_type_md_path = os.path.join(self.resource_md_root_path, file_object_path + ".json")
             self.content_type = ContentType.SINGLE_FILE
@@ -60,12 +60,16 @@ class MetadataObject:
             file_object_directory_full_path = os.path.dirname(file_object_path)
             parent_directory = file_object_directory_full_path
             while parent_directory:
+                print(f"parent directory : {parent_directory}")
                 file_set_user_path = os.path.join(parent_directory, "hs_user_meta.json")
                 if exists(file_set_user_path):
+                    print(f"resource_root_path {self.resource_root_path}")
                     relative_path = os.path.relpath(parent_directory, self.resource_root_path)
+                    print(f"relative path : {relative_path}")
                     self.content_type_md_path = os.path.join(self.resource_md_root_path, relative_path, "dataset_metadata.json")
                     self.content_type_root_path = os.path.join(self.resource_root_path, relative_path)
                     self.content_type = ContentType.FILE_SET
+                    break
                 parent_directory = os.path.dirname(parent_directory)
         # TODO: other content types        
         
@@ -98,7 +102,7 @@ class MetadataObject:
             
             return [m for m in self.resource_associated_media if m["contentUrl"].endswith(self.file_object_path)]
         elif self.content_type in [ContentType.FILE_SET, ContentType.ZARR]:
-            return [m for m in self.resource_associated_media if m["contentUrl"].startswith(self.content_type_root_path)]
+            return [m for m in self.resource_associated_media if m["contentUrl"].split(os.environ['AWS_S3_ENDPOINT'])[1].strip("/").startswith(self.content_type_root_path)]
         return media_objects
 
 
