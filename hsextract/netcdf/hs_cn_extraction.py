@@ -1,7 +1,6 @@
 import os
 import tempfile
 import xarray
-import mimetypes
 import numpy as np
 from pyproj import CRS
 
@@ -9,10 +8,6 @@ from hsextract.hs_cn_schemas.schema.src import base
 from hsextract.hs_cn_schemas.schema.src import dataset
 from hsextract.hs_cn_schemas.schema.src import datavariable
 from hsextract import s3_client
-
-
-mimetypes.add_type("application/netcdf", ".nc")
-mimetypes.add_type("application/vnd+zarr", ".zarr")
 
 
 def inspect_dimensions(ds: xarray.Dataset) -> None:

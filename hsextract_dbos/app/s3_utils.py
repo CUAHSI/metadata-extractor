@@ -20,7 +20,6 @@ def write_metadata(metadata_path: str, metadata_json: dict) -> None:
     bucket_name = metadata_path.split('/')[0]
     key = '/'.join(metadata_path.split('/')[1:])
     try:
-        print(f"Writing metadata to bucket: {bucket_name}, key: {key}")
         s3_client.put_object(Bucket=bucket_name, Key=key, Body=json.dumps(metadata_json, indent=2, default=str))
     except Exception as e:
         print(f"Error writing metadata to {metadata_path}: {e}")
@@ -29,7 +28,6 @@ def write_metadata(metadata_path: str, metadata_json: dict) -> None:
 def load_metadata(metadata_path):
     bucket, key = metadata_path.split('/', 1)
     metadata_json = {}
-    print(f"Loading metadata from bucket: {bucket}, key: {key}")
     try:
         response = s3_client.get_object(Bucket=bucket, Key=key)
         with response["Body"] as stream:

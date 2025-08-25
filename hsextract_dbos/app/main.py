@@ -178,6 +178,7 @@ def write_resource_metadata(md: MetadataObject) -> bool:
     combined_metadata["associatedMedia"] = md.resource_associated_media
 
     # Write the combined metadata to the resource metadata file
+    print(f"Writing resource metadata to: {md.resource_md_path}")
     write_metadata(md.resource_md_path, combined_metadata)
 
 @DBOS.step()
@@ -220,16 +221,16 @@ def workflow_metadata_extraction(file_object_path: str, file_updated: bool = Tru
         resource_part_root_path = f"{bucket_name}/.md/{resource_id}"
     DBOS.set_event(steps_event, 1)
     md = MetadataObject(file_object_path, file_updated, resource_root_path, resource_md_root_path, resource_part_root_path)
-    content_type_md_path = md.content_type_md_path
     DBOS.set_event(steps_event, 2)
-    if content_type_md_path and content_type_md_path != os.path.join(resource_md_root_path, "dataset_metadata.json"): # is not resource metadata
-        # fileset and single file do not have anything to extract
-        if md.content_type in [ContentType.NETCDF]: # supported content type extraction
-            if file_updated:
-                md.extract_metadata()
-            else:
-                pass
+    # fileset and single file do not have anything to extract
+
+    if md.content_type in [ContentType.NETCDF]: # supported content type extraction
+        if file_updated:
+            md.extract_metadata()
+        else:
+            pass
         write_content_type_metadata(md)
+
     DBOS.set_event(steps_event, 3)
     write_resource_metadata(md)
 

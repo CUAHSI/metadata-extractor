@@ -119,12 +119,23 @@ def test_netcdf_extraction(reset_dbos):
 
     #_assert_from_file("../outputs/netcdf.json", all_metadata_json)
 
-'''
+
 def test_resource_extraction(reset_dbos):
+    delete_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
+    # Stage system metadata to test
+    write_s3_metadata_json("sblack/.md/21a44ea2b87e4f0c930c9eefb1078b00/system_metadata.json", {"system_metadata": "this is system metadata"})
+
     workflow_metadata_extraction("sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/hs_user_meta.json")
 
-    #assert_from_file("../outputs/netcdf.json", all_metadata_json)
+    # read in the resulting resource metadata file
+    result_resource_metadata = read_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
 
+    #write_metadata_to_file(f"test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json", result_resource_metadata)
+    expected_resource_metadata = read_metadata_json("test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
+    assert result_resource_metadata == expected_resource_metadata
+    
+
+'''
 def test_feature_states_extraction(test_file_dir):
     all_metadata_json = workflow_metadata_extraction("sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/states/states.shp")
 
