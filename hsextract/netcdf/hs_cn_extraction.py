@@ -8,8 +8,7 @@ from pyproj import CRS
 from hsextract.hs_cn_schemas.schema.src import base
 from hsextract.hs_cn_schemas.schema.src import dataset
 from hsextract.hs_cn_schemas.schema.src import datavariable
-from hsextract.file_utils import file_metadata
-from hsextract import s3
+from hsextract import s3_client
 
 
 mimetypes.add_type("application/netcdf", ".nc")
@@ -212,11 +211,11 @@ def encode_netcdf(filepath: str,
 
     temp_dir = tempfile.gettempdir()
     local_copy = os.path.join(temp_dir, os.path.basename(filepath))
-    s3.get_file(filepath, local_copy)
+    bucket, key = filepath.split("/", 1)
+    s3_client.download_file(bucket, key, local_copy)
     ds = xarray.load_dataset(local_copy, engine='netcdf4')
     md_metadata = encode_multidimensional_metadata(ds, filepath, validate_bbox, compute_statistics)
-    #ds.close()
-    #os.remove(local_copy)  # Clean up the local copy
+    os.remove(local_copy)  # Clean up the local copy
     return md_metadata
     
 def encode_zarr(filepath: str,
@@ -226,11 +225,11 @@ def encode_zarr(filepath: str,
 
     temp_dir = tempfile.gettempdir()
     local_copy = os.path.join(temp_dir, os.path.basename(filepath))
-    s3.get(filepath, local_copy, recursive=True)
+    bucket, key = filepath.split("/", 1)
+    s3_client.download_file(bucket, key, local_copy)
     ds = xarray.open_zarr(local_copy, consolidated=False)#, chunks={"time":-1, "lat":"auto", "lon":"auto"})
     md =  encode_multidimensional_metadata(ds, filepath, validate_bbox, compute_statistics)
-    #ds.close()
-    #os.remove(local_copy)
+    os.remove(local_copy)
     return md
     
 def encode_multidimensional_metadata(ds: xarray.Dataset,
@@ -258,10 +257,6 @@ def encode_multidimensional_metadata(ds: xarray.Dataset,
         srs=srs
     )
 
-
-    file_md, _ = file_metadata(filepath)
-    files = [file_md]
-
     dims = build_dimensions(ds)
 
     # return dims
@@ -272,7 +267,6 @@ def encode_multidimensional_metadata(ds: xarray.Dataset,
     meta = dataset.ScientificDataset(variableMeasured=variables,
                                      coordinates=coordinates,
                                      dimensions=list(dims.values()),
-                                     associatedMedia=files,
                                      spatialCoverage=place,
                                      additionalType=dataset.AdditionalType.MULTIDIMENSIONAL)
     

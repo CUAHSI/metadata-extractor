@@ -14,7 +14,7 @@ s3_client = boto3.client('s3', **s3_config)
 
         
 def write_metadata(metadata_path: str, metadata_json: dict) -> None:
-    """
+    """=
     Asynchronously write metadata to the specified S3 path.
     """
     bucket_name = metadata_path.split('/')[0]
@@ -27,12 +27,11 @@ def write_metadata(metadata_path: str, metadata_json: dict) -> None:
         raise
 
 def load_metadata(metadata_path):
-    bucket_name = metadata_path.split('/')[0]
-    key = '/'.join(metadata_path.split('/')[1:])
+    bucket, key = metadata_path.split('/', 1)
     metadata_json = {}
-    print(f"Loading metadata from bucket: {bucket_name}, key: {key}")
+    print(f"Loading metadata from bucket: {bucket}, key: {key}")
     try:
-        response = s3_client.get_object(Bucket=bucket_name, Key=key)
+        response = s3_client.get_object(Bucket=bucket, Key=key)
         with response["Body"] as stream:
             content = stream.read()
             metadata_json = json.loads(content.decode("utf-8"))
@@ -46,10 +45,9 @@ def retrieve_file_manifest(resource_root_path: str):
     Asynchronously list files from the S3 bucket.
     """
     paginator = s3_client.get_paginator('list_objects_v2')
-    bucket_name = resource_root_path.split('/')[0]
-    resource_path = '/'.join(resource_root_path.split('/')[1:])
+    bucket, resource_path = resource_root_path.split('/', 1)
     file_manifest = []
-    for page in paginator.paginate(Bucket=bucket_name, Prefix=resource_path):
+    for page in paginator.paginate(Bucket=bucket, Prefix=resource_path):
         if 'Contents' in page:
             for obj in page['Contents']:
                 key = obj['Key']
@@ -60,7 +58,7 @@ def retrieve_file_manifest(resource_root_path: str):
                 _, extension = os.path.splitext(key)
                 mime_type = mime_type if mime_type else extension
                 _, name = os.path.split(key)
-                content_url = f"{os.environ['AWS_S3_ENDPOINT']}/{bucket_name}/{key}"
+                content_url = f"{os.environ['AWS_S3_ENDPOINT']}/{bucket}/{key}"
                 media_object = MediaObject(
                     contentUrl=content_url,
                     name=name,
@@ -74,14 +72,13 @@ def retrieve_file_manifest(resource_root_path: str):
 
 def find(path: str) -> list[str]:
     paginator = s3_client.get_paginator('list_objects_v2')
-    bucket_name = path.split('/')[0]
-    resource_path = '/'.join(path.split('/')[1:])
+    bucket, resource_path = path.split('/', 1)
     keys = []
-    for page in paginator.paginate(Bucket=bucket_name, Prefix=resource_path):
+    for page in paginator.paginate(Bucket=bucket, Prefix=resource_path):
         if 'Contents' in page:
             for obj in page['Contents']:
                 key = obj['Key']
-                key = f"{bucket_name}/{key}"
+                key = f"{bucket}/{key}"
                 keys.append(key)
     return keys
 
@@ -89,10 +86,9 @@ def exists(path: str) -> bool:
     """
     Check if a file exists in the S3 bucket.
     """
-    bucket_name = path.split('/')[0]
-    key = '/'.join(path.split('/')[1:])
+    bucket, key = path.split('/', 1)
     try:
-        s3_client.head_object(Bucket=bucket_name, Key=key)
+        s3_client.head_object(Bucket=bucket, Key=key)
         return True
     except Exception as e:
         print(f"Error checking existence of {path}: {e}")

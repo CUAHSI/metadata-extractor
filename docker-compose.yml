@@ -12,8 +12,8 @@ services:
       - AWS_ACCESS_KEY_ID=cuahsi
       - AWS_SECRET_ACCESS_KEY=YXBzamR2IHBhc29q
       - AWS_S3_ENDPOINT=https://s3.beta.hydroshare.org
-      - DBOS_DATABASE_URL=postgresql://user:password@postgres:5432/dbos
-      - TESTING_DATABASE_URL=postgresql://user:password@dbtest:5431/testdb
+      - DBOS_DATABASE_URL=postgresql://user:password@postgres:5431/dbos
+      - TESTING_DATABASE_URL=postgresql://user:password@dbtest:5432/testdb
       - DBOS_CONDUCTOR_KEY=dbos_cd53171a-28c3-4e9e-b165-d85252f426d5_2488266e-dad0-4b05-b243-487e16b2abac
     volumes:
       - ./hsextract:/app/hsextract
@@ -25,10 +25,11 @@ services:
       - dbtest:dbtest
     depends_on:
       - postgres
+      - dbtest
   postgres:
     image: postgres:latest
     ports:
-      - "5432:5432"
+      - "5431:5432"
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -37,12 +38,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
   dbtest:
     image: postgres:latest
-    environment: 
-      POSTGRES_DB: user
-      POSTGRES_USER: password
-      POSTGRES_PASSWORD: testdb
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: testdb
     ports:
-      - 5431:5432
+      - 5432:5432
     volumes:
       - dbtest_data:/var/lib/postgresql/data
 volumes:
