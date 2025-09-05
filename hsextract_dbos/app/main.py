@@ -2,7 +2,6 @@ import json
 import os
 
 import uvicorn
-from dbos import DBOS, DBOSConfig
 from fastapi import FastAPI
 from hsextract.hs_cn_schemas.schema.src.base import MediaObject, HasPart
 from enum import Enum
@@ -10,11 +9,6 @@ from .s3_utils import exists, find, retrieve_file_manifest, write_metadata, load
 
 
 app = FastAPI()
-config: DBOSConfig = {
-    "name": "hydroshare_metadata_extraction",
-    "database_url": os.environ.get("DBOS_DATABASE_URL"),
-}
-DBOS(fastapi=app, config=config, conductor_key=os.environ.get("DBOS_CONDUCTOR_KEY"))
 
 steps_event = "steps_event"
 delete_event = "delete_event"
@@ -30,18 +24,19 @@ class ContentType(Enum):
     UNKNOWN = "unknown"
     SINGLE_FILE = "single_file"
     FILE_SET = "file_set"
+    USER_META = "user_meta"
 
 class MetadataObject:
-    def __init__(self, file_object_path: str, file_updated: bool, resource_root_path: str, resource_md_root_path: str, resource_part_root_path: str):
+    def __init__(self, file_object_path: str, file_updated: bool, resource_root_path: str, resource_md_root_path: str, resource_md_cache_root_path: str):
         self.file_object_path = file_object_path
         self.file_updated = file_updated
         self.resource_root_path = resource_root_path # bucket/resource_id/data/contents
         self.resource_md_root_path = resource_md_root_path # bucket/md/resource_id
-        self.resource_part_root_path = resource_part_root_path # bucket/.md/resource_id
+        self.resource_md_cache_root_path = resource_md_cache_root_path # bucket/.md/resource_id
         self.content_type_md_path = None # content type metadata path, e.g. bucket/.md/resource_id/content_type.json
         self.content_type = self.determine_content_type()
         self._determine_paths()
-        self.resource_associated_media = retrieve_file_manifest(self.resource_root_path)
+        self._resource_associated_media = None
 
     def _determine_paths(self):
         # content_type_md_path
@@ -49,17 +44,23 @@ class MetadataObject:
         relative_path = os.path.relpath(parent_directory, self.resource_root_path)
         if self.content_type == ContentType.FILE_SET:
             self.content_type_md_path = os.path.join(self.resource_md_root_path, relative_path, "dataset_metadata.json")
-            self.content_type_part_md_path = os.path.join(self.resource_part_root_path, relative_path, "dataset_metadata.json")
+            self.content_type_md_cache_path = os.path.join(self.resource_md_cache_root_path, relative_path, "dataset_metadata.json")
             self.content_type_root_path = os.path.join(self.resource_root_path, relative_path)
             self.content_type_main_file_path = os.path.join(self.resource_root_path, relative_path)
-            self.content_type_user_md_path = os.path.join(self.resource_root_path, relative_path, "hs_user_meta.json")
+            self.content_type_md_user_path = os.path.join(self.resource_root_path, relative_path, "hs_user_meta.json")
         elif self.content_type != ContentType.UNKNOWN:
             relative_path = os.path.relpath(self.file_object_path, self.resource_root_path)
             self.content_type_md_path = os.path.join(self.resource_md_root_path, relative_path + ".json")
-            self.content_type_part_md_path = os.path.join(self.resource_part_root_path, relative_path + ".json")
+            self.content_type_md_cache_path = os.path.join(self.resource_md_cache_root_path, relative_path + ".json")
             self.content_type_root_path = None # os.path.join(self.resource_root_path, relative_path)
             self.content_type_main_file_path = os.path.join(self.resource_root_path, relative_path)
-            self.content_type_user_md_path = os.path.join(self.resource_root_path, relative_path + ".hs_user_meta.json")
+            self.content_type_md_user_path = os.path.join(self.resource_root_path, relative_path + ".hs_user_meta.json")
+    
+    @property
+    def resource_associated_media(self):
+        if not self._resource_associated_media:
+            self._resource_associated_media = retrieve_file_manifest(self.resource_root_path)
+        return self._resource_associated_media
 
     @property
     def resource_md_path(self) -> str:
@@ -80,7 +81,7 @@ class MetadataObject:
         if self.content_type == ContentType.NETCDF:
             from hsextract.netcdf.hs_cn_extraction import encode_netcdf
             metadata = encode_netcdf(self.file_object_path).model_dump(exclude_none=True)
-            write_metadata(self.content_type_part_md_path, metadata)
+            write_metadata(self.content_type_md_cache_path, metadata)
     
     _extension_mapping = {
         ".tif": ContentType.RASTER,
@@ -103,6 +104,9 @@ class MetadataObject:
         content_type = self._extension_mapping.get(extension, ContentType.UNKNOWN)
 
         if content_type == ContentType.UNKNOWN:
+            # check user meta
+            if self.file_object_path.endswith("hs_user_meta.json"):
+                return ContentType.USER_META
             # check fileset
             parent_directory = os.path.dirname(self.file_object_path)
             while parent_directory:
@@ -110,6 +114,11 @@ class MetadataObject:
                 if exists(file_set_user_path):
                     return ContentType.FILE_SET
                 parent_directory = os.path.dirname(parent_directory)
+
+            # check singlefile
+            single_file_user_path = self.file_object_path + ".hs_user_meta.json"
+            if exists(single_file_user_path):
+                return ContentType.SINGLE_FILE
 
         if content_type == ContentType.UNKNOWN:
             # TODO: implement logic for multi file content types
@@ -119,18 +128,14 @@ class MetadataObject:
 
 
 @app.get("/metadata_extraction")
-def launch_durable_workflow(file_object_path: str = "sblack/40d20c1496544ad8b7bf6bfa46695890/data/contents/.csv",
+def launch_durable_workflow(file_object_path: str = "sblack/40d20c1496544ad8b7bf6bfa46695890/data/contents/dataset.csv",
                             file_updated: bool = True,
                             resource_root_path: str = None,
                             resource_md_root_path: str = None,
-                            resource_md_part_path: str = None) -> None:
-    handle = DBOS.start_workflow(workflow_metadata_extraction, file_object_path, file_updated, resource_root_path, resource_md_root_path, resource_md_part_path)
-    # Wait for the background task to complete and retrieve its result.
-    succeeded = handle.get_result()
-    return succeeded
+                            resource_md_cache_path: str = None) -> None:
+    return workflow_metadata_extraction(file_object_path, file_updated, resource_root_path, resource_md_root_path, resource_md_cache_path)
 
 
-@DBOS.step()
 def determine_required_for_content_type(file_object_path: str, content_type: ContentType) -> bool:
     # For fileset and single file, it only matters if it is the hs_user_meta.json file
     if file_object_path.endswith("hs_user_meta.json"):
@@ -147,11 +152,10 @@ def determine_required_for_content_type(file_object_path: str, content_type: Con
     return False
 
 
-@DBOS.step()
 def write_resource_metadata(md: MetadataObject) -> bool:
     # TODO; do all the reads asynchronously
     # read the system metadata file
-    system_metadata_path = f"{md.resource_part_root_path}/system_metadata.json"
+    system_metadata_path = f"{md.resource_md_cache_root_path}/system_metadata.json"
     system_json = load_metadata(system_metadata_path)
 
     # read the resource metadata hs_user_meta.json file
@@ -181,19 +185,17 @@ def write_resource_metadata(md: MetadataObject) -> bool:
     print(f"Writing resource metadata to: {md.resource_md_path}")
     write_metadata(md.resource_md_path, combined_metadata)
 
-@DBOS.step()
 def write_content_type_metadata(md: MetadataObject) -> bool:
     # read the part metadata file
     part_json = {}
-    content_type_part_metadata_path = md.content_type_part_md_path
-    if content_type_part_metadata_path:
-        part_json = load_metadata(content_type_part_metadata_path)
+    content_type_md_cache_metadata_path = md.content_type_md_cache_path
+    if content_type_md_cache_metadata_path:
+        part_json = load_metadata(content_type_md_cache_metadata_path)
 
     # read the content type user metadata file
     user_json = {}
-    content_type_user_metadata_path = md.content_type_user_md_path
-    if content_type_user_metadata_path:
-        user_json = load_metadata(content_type_user_metadata_path)
+    if md.content_type_md_user_path:
+        user_json = load_metadata(md.content_type_md_user_path)
 
     # generate content type isPartOf relationships
     resource_md_prefix = '/'.join(md.resource_md_path.split('/')[1:])
@@ -209,31 +211,27 @@ def write_content_type_metadata(md: MetadataObject) -> bool:
     # Write the combined metadata to the resource metadata file
     write_metadata(md.content_type_md_path, combined_metadata)
 
-@DBOS.workflow()
-def workflow_metadata_extraction(file_object_path: str, file_updated: bool = True, resource_root_path: str = None, resource_md_root_path: str = None, resource_part_root_path: str = None) -> None: # if a file is not updated, it is deleted
+def workflow_metadata_extraction(file_object_path: str, file_updated: bool = True, resource_root_path: str = None, resource_md_root_path: str = None, resource_md_cache_root_path: str = None) -> None: # if a file is not updated, it is deleted
     bucket_name = file_object_path.split('/')[0]
     resource_id = file_object_path.split('/')[1]
     if not resource_root_path:
         resource_root_path = f"{bucket_name}/{resource_id}/data/contents"
     if not resource_md_root_path:
         resource_md_root_path = f"{bucket_name}/md/{resource_id}"
-    if not resource_part_root_path:
-        resource_part_root_path = f"{bucket_name}/.md/{resource_id}"
-    DBOS.set_event(steps_event, 1)
-    md = MetadataObject(file_object_path, file_updated, resource_root_path, resource_md_root_path, resource_part_root_path)
-    DBOS.set_event(steps_event, 2)
+    if not resource_md_cache_root_path:
+        resource_md_cache_root_path = f"{bucket_name}/.md/{resource_id}"
+    md = MetadataObject(file_object_path, file_updated, resource_root_path, resource_md_root_path, resource_md_cache_root_path)
     # fileset and single file do not have anything to extract
 
-    if md.content_type in [ContentType.NETCDF]: # supported content type extraction
-        if file_updated:
-            md.extract_metadata()
-        else:
-            pass
+    if md.content_type != ContentType.UNKNOWN:
+        if md.content_type in [ContentType.NETCDF]: # supported content type extraction
+            if file_updated:
+                md.extract_metadata()
+            else:
+                pass
         write_content_type_metadata(md)
 
-    DBOS.set_event(steps_event, 3)
     write_resource_metadata(md)
 
 if __name__ == "__main__":
-    DBOS.launch()
     uvicorn.run(app, host="0.0.0.0", port=8000)

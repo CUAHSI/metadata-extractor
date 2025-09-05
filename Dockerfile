@@ -11,11 +11,12 @@ RUN pip3 install -U h5py
 RUN pip3 install -U setuptools
 RUN pip3 install -U h5netcdf==1.6.4
 RUN pip3 install -U netCDF4==1.7.2
-RUN pip3 install -U dbos==1.11.0
 
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 RUN rm requirements.txt
+RUN pip3 install uvicorn
+RUN pip3 install fastapi
 
 COPY hsextract hsextract
 COPY hsextract_dbos hsextract_dbos

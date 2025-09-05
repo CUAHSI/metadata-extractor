@@ -93,7 +93,7 @@ def test_timeseries_csv_extraction(test_file_dir):
     _assert_from_file("../outputs/timeseries-csv.json", timeseries_json)
 '''
 
-def test_netcdf_extraction(reset_dbos):
+def test_netcdf_extraction():
     # TODO: push to fixture that resets the environment
     delete_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
     delete_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/netcdf/netcdf_valid.nc")
@@ -120,7 +120,7 @@ def test_netcdf_extraction(reset_dbos):
     #_assert_from_file("../outputs/netcdf.json", all_metadata_json)
 
 
-def test_resource_extraction(reset_dbos):
+def test_resource_extraction():
     delete_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
     # Stage system metadata to test
     write_s3_metadata_json("sblack/.md/21a44ea2b87e4f0c930c9eefb1078b00/system_metadata.json", {"system_metadata": "this is system metadata"})
