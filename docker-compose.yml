@@ -8,9 +8,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - AWS_ACCESS_KEY_ID=cuahsi
-      - AWS_SECRET_ACCESS_KEY=YXBzamR2IHBhc29q
-      - AWS_S3_ENDPOINT=https://s3.beta.hydroshare.org
+      - AWS_ACCESS_KEY_ID=key
+      - AWS_SECRET_ACCESS_KEY=secret
+      - AWS_S3_ENDPOINT=endpoint
     volumes:
       - ./hsextract:/app/hsextract
       - ./hsextract_dbos:/app/hsextract_dbos
