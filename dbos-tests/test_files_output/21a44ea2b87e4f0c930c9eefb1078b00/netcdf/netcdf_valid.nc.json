@@ -1,0 +1,109 @@
+{
+  "context": "https://hydroshare.org/schema",
+  "type": "ScientificDataset",
+  "additionalType": "MultiDimensional",
+  "spatialCoverage": {
+    "type": "Place",
+    "geo": {
+      "type": "GeoShape",
+      "box": "4634790.0 457560.0 4635150.0 458010.0"
+    }
+  },
+  "associatedMedia": [
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/netcdf/netcdf_valid.nc",
+      "encodingFormat": "application/x-netcdf",
+      "contentSize": "4869.898 KB",
+      "name": "netcdf_valid.nc",
+      "sha256": "3b0c76c83b13f5209cf227f5610550a3-1"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "context": "https://hydroshare.org/schema",
+      "type": "DataVariable",
+      "name": "SWE",
+      "dimensions": [
+        "y",
+        "x",
+        "time"
+      ],
+      "description": "Snow water equivalent",
+      "dataType": "float32",
+      "unit": "m",
+      "maxValue": 0.5177158117294312
+    },
+    {
+      "context": "https://hydroshare.org/schema",
+      "type": "DataVariable",
+      "name": "transverse_mercator",
+      "dimensions": [
+        "Dimensionless"
+      ],
+      "dataType": "int32",
+      "unit": "Unitless",
+      "minValue": -2147483647.0,
+      "maxValue": -2147483647.0
+    }
+  ],
+  "dimensions": [
+    {
+      "context": "https://hydroshare.org/schema",
+      "type": "Dimension",
+      "name": "y",
+      "shape": 13,
+      "description": "y coordinate of projection"
+    },
+    {
+      "context": "https://hydroshare.org/schema",
+      "type": "Dimension",
+      "name": "x",
+      "shape": 16,
+      "description": "x coordinate of projection"
+    },
+    {
+      "context": "https://hydroshare.org/schema",
+      "type": "Dimension",
+      "name": "time",
+      "shape": 5808,
+      "description": "time"
+    }
+  ],
+  "coordinates": [
+    {
+      "context": "https://hydroshare.org/schema",
+      "type": "DataVariable",
+      "name": "time",
+      "dimensions": [
+        "time"
+      ],
+      "description": "time"
+    },
+    {
+      "context": "https://hydroshare.org/schema",
+      "type": "DataVariable",
+      "name": "y",
+      "dimensions": [
+        "y"
+      ],
+      "description": "y coordinate of projection",
+      "unit": "Meter"
+    },
+    {
+      "context": "https://hydroshare.org/schema",
+      "type": "DataVariable",
+      "name": "x",
+      "dimensions": [
+        "x"
+      ],
+      "description": "x coordinate of projection",
+      "unit": "Meter"
+    }
+  ],
+  "woot": "wooted",
+  "name": "overwrited",
+  "isPartOf": [
+    "https://s3.beta.hydroshare.org/md/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json"
+  ]
+}

@@ -8,11 +8,25 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - AWS_ACCESS_KEY_ID=key
-      - AWS_SECRET_ACCESS_KEY=secret
-      - AWS_S3_ENDPOINT=endpoint
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=password
+      - AWS_S3_ENDPOINT=http://minio:9000
     volumes:
       - ./hsextract:/app/hsextract
       - ./hsextract_dbos:/app/hsextract_dbos
       - ./tests:/app/tests
       - ./dbos-tests:/app/dbos-tests
+  minio:
+    image: minio/minio
+    platform: linux/amd64
+    ports:
+      - "9000:9000"
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password
+    command: server /data
+    volumes:
+      - minio_data:/data
+volumes:
+  minio_data:
+    driver: local

@@ -15,7 +15,7 @@ s3_client = boto3.client('s3', **s3_config)
         
 def write_metadata(metadata_path: str, metadata_json: dict) -> None:
     """=
-    Asynchronously write metadata to the specified S3 path.
+    write metadata to the specified S3 path.
     """
     bucket_name = metadata_path.split('/')[0]
     key = '/'.join(metadata_path.split('/')[1:])
@@ -24,6 +24,20 @@ def write_metadata(metadata_path: str, metadata_json: dict) -> None:
     except Exception as e:
         print(f"Error writing metadata to {metadata_path}: {e}")
         raise
+
+
+def delete_metadata(metadata_path: str) -> None:
+    """
+    delete metadata from the specified S3 path.
+    """
+    bucket_name = metadata_path.split('/')[0]
+    key = '/'.join(metadata_path.split('/')[1:])
+    try:
+        s3_client.delete_object(Bucket=bucket_name, Key=key)
+    except Exception as e:
+        print(f"Error deleting metadata from {metadata_path}: {e}")
+        raise
+
 
 def load_metadata(metadata_path):
     bucket, key = metadata_path.split('/', 1)
@@ -34,13 +48,13 @@ def load_metadata(metadata_path):
             content = stream.read()
             metadata_json = json.loads(content.decode("utf-8"))
     except Exception as e:
-        print(f"Error loading metadata from {metadata_path}: {e}")
+        print(f"Metadata file not found {metadata_path}: {e}")
     return metadata_json
 
 
 def retrieve_file_manifest(resource_root_path: str):
     """
-    Asynchronously list files from the S3 bucket.
+    list files from the S3 bucket.
     """
     paginator = s3_client.get_paginator('list_objects_v2')
     bucket, resource_path = resource_root_path.split('/', 1)

@@ -10,7 +10,7 @@ from hsextract.hs_cn_schemas.schema.src import base
 from hsextract.hs_cn_schemas.schema.src import dataset
 from hsextract.hs_cn_schemas.schema.src import datavariable
 from hsextract.file_utils import file_metadata
-from hsextract import s3
+from hsextract import s3_client as s3
 
 
 mimetypes.add_type("application/x-esri-shapefile", ".shp")
@@ -33,14 +33,16 @@ def list_tif_files(vrt_file):
 def encode_raster_metadata(filepath, multiband=False, validate_bbox=True):
     temp_dir = tempfile.gettempdir()
     local_copy = os.path.join(temp_dir, os.path.basename(filepath))
-    s3.get_file(filepath, local_copy)
+    bucket, key = filepath.split("/", 1)
+    s3.download_file(bucket, key, local_copy)
     if filepath.endswith('.vrt'):
         # If the file is a VRT, we need to extract the TIF files it references
         tif_files = list_tif_files(local_copy)
         for tif_file in tif_files:
             local_copy_tif_file = os.path.join(temp_dir, os.path.basename(tif_file))
-            tif_s3_file = os.path.join(os.path.dirname(filepath), tif_file)
-            s3.get_file(tif_s3_file, local_copy_tif_file)
+            bucket, key = tif_file.split("/", 1)
+            s3.download_file(bucket, key, local_copy)
+            s3.get_file(bucket, key, local_copy_tif_file)
     
     src = rasterio.open(local_copy)
 

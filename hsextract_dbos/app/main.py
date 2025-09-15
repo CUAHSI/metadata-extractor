@@ -5,14 +5,11 @@ import uvicorn
 from fastapi import FastAPI
 from hsextract.hs_cn_schemas.schema.src.base import MediaObject, HasPart
 from enum import Enum
-from .s3_utils import exists, find, retrieve_file_manifest, write_metadata, load_metadata, s3_client
+from .s3_utils import exists, find, retrieve_file_manifest, write_metadata, load_metadata, delete_metadata
 
 
 app = FastAPI()
 
-steps_event = "steps_event"
-delete_event = "delete_event"
-update_event = "update_event"
 
 class ContentType(Enum):
     RASTER = "raster"
@@ -24,47 +21,59 @@ class ContentType(Enum):
     UNKNOWN = "unknown"
     SINGLE_FILE = "single_file"
     FILE_SET = "file_set"
-    USER_META = "user_meta"
 
 class MetadataObject:
-    def __init__(self, file_object_path: str, file_updated: bool, resource_root_path: str, resource_md_root_path: str, resource_md_cache_root_path: str):
+    def __init__(self, file_object_path: str, file_updated: bool, resource_contents_path: str = None, resource_md_path: str = None, resource_md_jsonld_path: str = None):
         self.file_object_path = file_object_path
         self.file_updated = file_updated
-        self.resource_root_path = resource_root_path # bucket/resource_id/data/contents
-        self.resource_md_root_path = resource_md_root_path # bucket/md/resource_id
-        self.resource_md_cache_root_path = resource_md_cache_root_path # bucket/.md/resource_id
-        self.content_type_md_path = None # content type metadata path, e.g. bucket/.md/resource_id/content_type.json
+        
+        bucket_name = file_object_path.split('/')[0]
+        resource_id = file_object_path.split('/')[1]
+        if not resource_contents_path:
+            resource_contents_path = f"{bucket_name}/{resource_id}/data/contents"
+        if not resource_md_jsonld_path:
+            resource_md_jsonld_path = f"{bucket_name}/{resource_id}/.hsjsonld"
+        if not resource_md_path:
+            resource_md_path = f"{bucket_name}/{resource_id}/.hs"
+
+        self.resource_contents_path = resource_contents_path # bucket/resource_id/data/contents
+        self.resource_md_path = resource_md_path # bucket/resource_id/.hs
+        self.resource_md_jsonld_path = resource_md_jsonld_path # bucket/resource_id/.hs/jsonld
+        self.content_type_md_jsonld_path = None # content type metadata path, e.g. bucket/.md/resource_id/content_type.json
+        self._resource_associated_media = None
+        self.system_metadata_path = os.path.join(self.resource_md_path, "system_metadata.json")
+        self.user_metadata_path = os.path.join(self.resource_contents_path, "hs_user_meta.json")
+        self.resource_metadata_path = os.path.join(self.resource_md_jsonld_path, "dataset_metadata.json")
         self.content_type = self.determine_content_type()
         self._determine_paths()
-        self._resource_associated_media = None
 
     def _determine_paths(self):
         # content_type_md_path
         parent_directory = os.path.dirname(self.file_object_path)
-        relative_path = os.path.relpath(parent_directory, self.resource_root_path)
+        relative_path = os.path.relpath(parent_directory, self.resource_contents_path)
+        # TODO check directory content types (e.g. fileset, zarr)
         if self.content_type == ContentType.FILE_SET:
-            self.content_type_md_path = os.path.join(self.resource_md_root_path, relative_path, "dataset_metadata.json")
-            self.content_type_md_cache_path = os.path.join(self.resource_md_cache_root_path, relative_path, "dataset_metadata.json")
-            self.content_type_root_path = os.path.join(self.resource_root_path, relative_path)
-            self.content_type_main_file_path = os.path.join(self.resource_root_path, relative_path)
-            self.content_type_md_user_path = os.path.join(self.resource_root_path, relative_path, "hs_user_meta.json")
+            self.content_type_md_jsonld_path = os.path.join(self.resource_md_jsonld_path, relative_path, "dataset_metadata.json")
+            self.content_type_md_path = os.path.join(self.resource_md_path, relative_path, "dataset_metadata.json")
+            self.content_type_contents_path = os.path.join(self.resource_contents_path, relative_path)
+            self.content_type_main_file_path = os.path.join(self.resource_contents_path, relative_path)
+            # TODO make this a file in the .hs metadata directory
+            self.content_type_md_user_path = os.path.join(self.resource_contents_path, relative_path, "hs_user_meta.json")
+        # check all other content types
         elif self.content_type != ContentType.UNKNOWN:
-            relative_path = os.path.relpath(self.file_object_path, self.resource_root_path)
-            self.content_type_md_path = os.path.join(self.resource_md_root_path, relative_path + ".json")
-            self.content_type_md_cache_path = os.path.join(self.resource_md_cache_root_path, relative_path + ".json")
-            self.content_type_root_path = None # os.path.join(self.resource_root_path, relative_path)
-            self.content_type_main_file_path = os.path.join(self.resource_root_path, relative_path)
-            self.content_type_md_user_path = os.path.join(self.resource_root_path, relative_path + ".hs_user_meta.json")
+            relative_path = os.path.relpath(self.file_object_path, self.resource_contents_path)
+            self.content_type_md_jsonld_path = os.path.join(self.resource_md_jsonld_path, relative_path + ".json")
+            self.content_type_md_path = os.path.join(self.resource_md_path, relative_path + ".json")
+            self.content_type_contents_path = None # os.path.join(self.resource_root_path, relative_path)
+            # assuming all are main files for now
+            self.content_type_main_file_path = os.path.join(self.resource_contents_path, relative_path)
+            self.content_type_md_user_path = os.path.join(self.resource_contents_path, relative_path + ".hs_user_meta.json")
     
     @property
     def resource_associated_media(self):
         if not self._resource_associated_media:
-            self._resource_associated_media = retrieve_file_manifest(self.resource_root_path)
+            self._resource_associated_media = retrieve_file_manifest(self.resource_contents_path)
         return self._resource_associated_media
-
-    @property
-    def resource_md_path(self) -> str:
-        return os.path.join(self.resource_md_root_path, "dataset_metadata.json")
 
     def content_type_associated_media(self) -> list[MediaObject]:
         """
@@ -74,26 +83,36 @@ class MetadataObject:
         if self.content_type in [ContentType.SINGLE_FILE, ContentType.NETCDF, ContentType.REFTIMESERIES, ContentType.TIMESERIES]:
             return [m for m in self.resource_associated_media if m["contentUrl"].endswith(self.file_object_path)]
         elif self.content_type in [ContentType.FILE_SET, ContentType.ZARR]:
-            return [m for m in self.resource_associated_media if m["contentUrl"].split(os.environ['AWS_S3_ENDPOINT'])[1].strip("/").startswith(self.content_type_root_path)]
+            return [m for m in self.resource_associated_media if m["contentUrl"].split(os.environ['AWS_S3_ENDPOINT'])[1].strip("/").startswith(self.content_type_contents_path)]
         return media_objects
 
     def extract_metadata(self) -> dict:
         if self.content_type == ContentType.NETCDF:
             from hsextract.netcdf.hs_cn_extraction import encode_netcdf
             metadata = encode_netcdf(self.file_object_path).model_dump(exclude_none=True)
-            write_metadata(self.content_type_md_cache_path, metadata)
+        elif self.content_type == ContentType.RASTER:
+            from hsextract.raster.hs_cn_extraction import encode_raster_metadata
+            metadata = encode_raster_metadata(self.file_object_path).model_dump(exclude_none=True)
+        elif self.content_type == ContentType.FEATURE:
+            from hsextract.feature.hs_cn_extraction import encode_vector_metadata
+            metadata = encode_vector_metadata(self.file_object_path).model_dump(exclude_none=True)
+        if self.content_type == ContentType.TIMESERIES:
+            from hsextract.timeseries.utils import extract_metadata
+            metadata = extract_metadata(self.file_object_path).model_dump(exclude_none=True)
+        else:
+            return
+        write_metadata(self.content_type_md_path, metadata)
     
     _extension_mapping = {
         ".tif": ContentType.RASTER,
         ".tiff": ContentType.RASTER,
         ".vrt": ContentType.RASTER,
         ".nc": ContentType.NETCDF,
-        ".zarr": ContentType.ZARR,
+        #".zarr": ContentType.ZARR,
         ".shp": ContentType.FEATURE,
         #".reftst.json": ContentType.REFTIMESERIES,
         ".csv": ContentType.TIMESERIES,
         ".sqlite": ContentType.TIMESERIES,
-        #".hs_user_meta.json": ContentType.USER_META,
     }
     
     def determine_content_type(self) -> ContentType:
@@ -104,24 +123,22 @@ class MetadataObject:
         content_type = self._extension_mapping.get(extension, ContentType.UNKNOWN)
 
         if content_type == ContentType.UNKNOWN:
-            # check user meta
-            if self.file_object_path.endswith("hs_user_meta.json"):
-                return ContentType.USER_META
-            # check fileset
-            parent_directory = os.path.dirname(self.file_object_path)
-            while parent_directory:
-                file_set_user_path = os.path.join(parent_directory, "hs_user_meta.json")
-                if exists(file_set_user_path):
-                    return ContentType.FILE_SET
-                parent_directory = os.path.dirname(parent_directory)
-
             # check singlefile
             single_file_user_path = self.file_object_path + ".hs_user_meta.json"
             if exists(single_file_user_path):
                 return ContentType.SINGLE_FILE
+            # check fileset
+            parent_directory = os.path.dirname(self.file_object_path)
+            while parent_directory:
+                file_set_user_path = os.path.join(parent_directory, "hs_user_meta.json")
+                if file_set_user_path == self.user_metadata_path:
+                    break
+                if exists(file_set_user_path):
+                    return ContentType.FILE_SET
+                parent_directory = os.path.dirname(parent_directory)
 
         if content_type == ContentType.UNKNOWN:
-            # TODO: implement logic for multi file content types
+            # TODO: determine if other steps are necessary
             pass
 
         return content_type
@@ -155,17 +172,17 @@ def determine_required_for_content_type(file_object_path: str, content_type: Con
 def write_resource_metadata(md: MetadataObject) -> bool:
     # TODO; do all the reads asynchronously
     # read the system metadata file
-    system_metadata_path = f"{md.resource_md_cache_root_path}/system_metadata.json"
-    system_json = load_metadata(system_metadata_path)
+    system_json = load_metadata(md.system_metadata_path)
 
     # read the resource metadata hs_user_meta.json file
-    user_metadata_path = f"{md.resource_root_path}/hs_user_meta.json"
-    user_json = load_metadata(user_metadata_path)
+    user_json = load_metadata(md.user_metadata_path)
 
     # generate content type hasPart relationships
-    content_type_metadata_paths: list[str] = [file for file in find(md.resource_md_root_path) if file != f"{md.resource_md_root_path}/dataset_metadata.json"]
+    content_type_metadata_paths: list[str] = [file for file in find(md.resource_md_path) if file != f"{md.resource_md_path}/dataset_metadata.json"]
     has_parts = []
+
     for file in content_type_metadata_paths:
+        print(f"Processing content type metadata file: {file}")
         content_type_metadata = load_metadata(file)
         
         file_prefix = '/'.join(file.split('/')[1:])  # Remove the bucket name from the path
@@ -175,22 +192,21 @@ def write_resource_metadata(md: MetadataObject) -> bool:
             url= f"{os.environ['AWS_S3_ENDPOINT']}/{file_prefix}",
         )
         has_parts.append(has_part.model_dump(exclude_none=True))
-    
+
     # Combine system metadata, user metadata, hasPart, and associatedMedia
     combined_metadata = {**system_json, **user_json} #TODO evaluate whether we need to merge list properties
     combined_metadata["hasPart"] = has_parts
     combined_metadata["associatedMedia"] = md.resource_associated_media
 
     # Write the combined metadata to the resource metadata file
-    print(f"Writing resource metadata to: {md.resource_md_path}")
-    write_metadata(md.resource_md_path, combined_metadata)
+    print(f"Writing resource metadata to: {md.resource_metadata_path}")
+    write_metadata(md.resource_metadata_path, combined_metadata)
 
 def write_content_type_metadata(md: MetadataObject) -> bool:
     # read the part metadata file
     part_json = {}
-    content_type_md_cache_metadata_path = md.content_type_md_cache_path
-    if content_type_md_cache_metadata_path:
-        part_json = load_metadata(content_type_md_cache_metadata_path)
+    if md.content_type_md_path:
+        part_json = load_metadata(md.content_type_md_path)
 
     # read the content type user metadata file
     user_json = {}
@@ -209,29 +225,20 @@ def write_content_type_metadata(md: MetadataObject) -> bool:
     combined_metadata["associatedMedia"] = content_type_associated_media
 
     # Write the combined metadata to the resource metadata file
-    write_metadata(md.content_type_md_path, combined_metadata)
+    write_metadata(md.content_type_md_jsonld_path, combined_metadata)
 
-def workflow_metadata_extraction(file_object_path: str, file_updated: bool = True, resource_root_path: str = None, resource_md_root_path: str = None, resource_md_cache_root_path: str = None) -> None: # if a file is not updated, it is deleted
-    bucket_name = file_object_path.split('/')[0]
-    resource_id = file_object_path.split('/')[1]
-    if not resource_root_path:
-        resource_root_path = f"{bucket_name}/{resource_id}/data/contents"
-    if not resource_md_root_path:
-        resource_md_root_path = f"{bucket_name}/md/{resource_id}"
-    if not resource_md_cache_root_path:
-        resource_md_cache_root_path = f"{bucket_name}/.md/{resource_id}"
-    md = MetadataObject(file_object_path, file_updated, resource_root_path, resource_md_root_path, resource_md_cache_root_path)
+def workflow_metadata_extraction(file_object_path: str, file_updated: bool = True, resource_contents_path: str = None, resource_md_path: str = None, resource_md_jsonld_path: str = None) -> None: # if a file is not updated, it is deleted
+    md = MetadataObject(file_object_path, file_updated)
+    print(f"content type determined: {md.content_type}")
     # fileset and single file do not have anything to extract
-
     if md.content_type != ContentType.UNKNOWN:
-        if md.content_type in [ContentType.NETCDF]: # supported content type extraction
-            if file_updated:
-                md.extract_metadata()
-            else:
-                pass
-        write_content_type_metadata(md)
+        if file_updated:
+            md.extract_metadata()
+            write_content_type_metadata(md)
+        else:
+            delete_metadata(md.content_type_md_path)
 
+    print("Writing resource metadata")
     write_resource_metadata(md)
-
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8001)

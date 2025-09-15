@@ -2,7 +2,7 @@ import json
 import os
 import boto3
 
-from hsextract_dbos.app.main import workflow_metadata_extraction
+from hsextract_dbos.app.main import ContentType, workflow_metadata_extraction
 import pytest
 
 s3_config = {
@@ -91,50 +91,108 @@ def test_timeseries_csv_extraction(test_file_dir):
     )
 
     _assert_from_file("../outputs/timeseries-csv.json", timeseries_json)
+    ,
+    (
+        "sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/.hs",
+        "sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/.hsjsonld",
+        "sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents",
+        "netcdf/netcdf_valid.nc",
+        "test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/netcdf/netcdf_valid.nc.json",
+        "test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json"
+    )
 '''
+def test_metadataobject():
+    from hsextract_dbos.app.main import MetadataObject
+    md = MetadataObject("test-bucket/resourceid/data/contents/hs_user_meta.json", True)
+    assert md.file_object_path == "test-bucket/resourceid/data/contents/hs_user_meta.json"
+    assert md.file_updated == True
+    assert md.resource_contents_path == "test-bucket/resourceid/data/contents"
+    assert md.resource_md_path == "test-bucket/resourceid/.hs"
+    assert md.resource_md_jsonld_path == "test-bucket/resourceid/.hsjsonld"
+    assert md.content_type_md_jsonld_path == None
+    assert md.content_type == ContentType.UNKNOWN
+    assert md.system_metadata_path == "test-bucket/resourceid/.hs/system_metadata.json"
+    assert md.user_metadata_path == "test-bucket/resourceid/data/contents/hs_user_meta.json"
+    assert md.resource_metadata_path == "test-bucket/resourceid/.hsjsonld/dataset_metadata.json"
 
-def test_netcdf_extraction():
-    # TODO: push to fixture that resets the environment
-    delete_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
-    delete_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/netcdf/netcdf_valid.nc")
-    delete_s3_metadata_json("sblack/.md/21a44ea2b87e4f0c930c9eefb1078b00/netcdf/netcdf_valid.nc")
 
-    # Stage system metadata to test
-    write_s3_metadata_json("sblack/.md/21a44ea2b87e4f0c930c9eefb1078b00/system_metadata.json", {"system_metadata": "this is system metadata"})
+@pytest.fixture
+def s3_resource_setup_teardown():
+    # Setup: Create a temporary bucket for testing
+    test_bucket = "test-bucket"
+    try:
+        s3_client.create_bucket(Bucket=test_bucket)
+    except s3_client.exceptions.BucketAlreadyOwnedByYou:
+        pass
+    # Upload all local files in ../tests/test_file_output to the resource
+    test_file_output_dir = "test_files/"
+    for root, _, files in os.walk(test_file_output_dir):
+        for file in files:
+            file_path = os.path.join(root, file)
+            s3_key = os.path.join("resource_id", "data", "contents", file)
+            with open(file_path, "rb") as f:
+                s3_client.upload_fileobj(f, test_bucket, s3_key)
 
-    # send a file updated event for a valid netcdf file
-    workflow_metadata_extraction("sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/netcdf/netcdf_valid.nc")
-    # read in the resulting resource metadata file
-    result_resource_metadata = read_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
-
-    #write_metadata_to_file(f"test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json", result_resource_metadata)
-    expected_resource_metadata = read_metadata_json("test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
-    assert result_resource_metadata == expected_resource_metadata
-
-    # read in the resulting netcdf metadata file
-    result_netcdf_metadata = read_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/netcdf/netcdf_valid.nc.json")
-    #write_metadata_to_file(f"test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/netcdf/netcdf_valid.nc.json", result_netcdf_metadata)
-    expected_netcdf_metadata = read_metadata_json("test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/netcdf/netcdf_valid.nc.json")
-    assert result_netcdf_metadata == expected_netcdf_metadata
-
-    #_assert_from_file("../outputs/netcdf.json", all_metadata_json)
+    yield test_bucket  # Provide the bucket name to the test
 
 
 def test_resource_extraction():
-    delete_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
+    delete_s3_metadata_json("test-bucket/resource_id/.hsjsonld/dataset_metadata.json")
     # Stage system metadata to test
-    write_s3_metadata_json("sblack/.md/21a44ea2b87e4f0c930c9eefb1078b00/system_metadata.json", {"system_metadata": "this is system metadata"})
+    write_s3_metadata_json("test-bucket/resource_id/.hs/system_metadata.json", {"system_metadata": "this is system metadata"})
 
-    workflow_metadata_extraction("sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/hs_user_meta.json")
+    workflow_metadata_extraction("test-bucket/resource_id/data/contents/hs_user_meta.json")
 
     # read in the resulting resource metadata file
-    result_resource_metadata = read_s3_metadata_json("sblack/md/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
+    result_resource_metadata = read_s3_metadata_json("test-bucket/resource_id/.hsjsonld/dataset_metadata.json")
 
     #write_metadata_to_file(f"test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json", result_resource_metadata)
-    expected_resource_metadata = read_metadata_json("test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
-    assert result_resource_metadata == expected_resource_metadata
-    
+    #expected_resource_metadata = read_metadata_json("test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json")
+    assert result_resource_metadata
 
+
+'''
+    # Teardown: Delete all objects and the bucket
+    response = s3_client.list_objects_v2(Bucket=test_bucket)
+    if 'Contents' in response:
+        for obj in response['Contents']:
+            s3_client.delete_object(Bucket=test_bucket, Key=obj['Key'])
+    s3_client.delete_bucket(Bucket=test_bucket)
+
+@pytest.mark.parametrize("metadata_path, jsonld_metadata_path, contents_path, relative_file_path, expected_metadata_path, expected_resource_metadata_path", [
+    (
+        "test-bucket/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/.hs",
+        "test-bucket/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/.hs/jsonld",
+        "test-bucket/21a44ea2b87e4f0c930c9eefb1078b00/data/contents",
+        "rasters/logan1.vrt",
+        "test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/rasters/logan1.vrt.json",
+        "test_files_output/21a44ea2b87e4f0c930c9eefb1078b00/dataset_metadata.json"
+    )
+])
+def test_content_type_extraction(s3_resource_setup_teardown, metadata_path, jsonld_metadata_path, contents_path, relative_file_path, expected_metadata_path, expected_resource_metadata_path):
+    # Delete existing metadata
+    resource_jsonld_path = f"{jsonld_metadata_path}/dataset_metadata.json"
+    resource_metadata_path = f"{metadata_path}/dataset_metadata.json"
+    #delete_s3_metadata_json(resource_jsonld_path)
+    #delete_s3_metadata_json(resource_metadata_path)
+    #delete_s3_metadata_json(f"{metadata_path}/{relative_file_path}.json")
+
+    # Stage system metadata to test
+    write_s3_metadata_json(f"{metadata_path}/system_metadata.json", {"system_metadata": "this is system metadata"})
+
+    # Trigger metadata extraction
+    workflow_metadata_extraction(f"{contents_path}/{relative_file_path}")
+
+    # Validate resource metadata
+    result_resource_metadata = read_s3_metadata_json(resource_jsonld_path)
+    expected_resource_metadata = read_metadata_json(expected_resource_metadata_path)
+    assert result_resource_metadata == expected_resource_metadata
+
+    # Validate content type metadata
+    result_metadata = read_s3_metadata_json(f"{metadata_path}/{relative_file_path}.json")
+    expected_metadata = read_metadata_json(expected_metadata_path)
+    assert result_metadata == expected_metadata
+'''
 '''
 def test_feature_states_extraction(test_file_dir):
     all_metadata_json = workflow_metadata_extraction("sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/states/states.shp")

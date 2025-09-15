@@ -1,6 +1,6 @@
 import mimetypes
 import os
-from hsextract import s3
+from hsextract import s3_client as s3
 import hashlib
 from functools import partial
 from hsextract.hs_cn_schemas.schema.src.base import MediaObject

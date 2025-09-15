@@ -1,0 +1,326 @@
+{
+  "system_metadata": "this is system metadata",
+  "name": "a title",
+  "description": "an abstract",
+  "hasPart": [
+    {
+      "type": "CreativeWork",
+      "name": "overwrited",
+      "url": "https://s3.beta.hydroshare.org/md/21a44ea2b87e4f0c930c9eefb1078b00/netcdf/netcdf_valid.nc.json"
+    }
+  ],
+  "associatedMedia": [
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/folder_aggregation/hs_user_meta.json",
+      "encodingFormat": "application/json",
+      "contentSize": "0.075 KB",
+      "name": "hs_user_meta.json",
+      "sha256": "cb805f776763955838726c3157df3133-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/folder_aggregation/testfile.txt",
+      "encodingFormat": "text/plain",
+      "contentSize": "0.011 KB",
+      "name": "testfile.txt",
+      "sha256": "241d8a27c836427bd7f04461b60e7359-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/hs_user_meta.json",
+      "encodingFormat": "application/json",
+      "contentSize": "0.059 KB",
+      "name": "hs_user_meta.json",
+      "sha256": "7d65420ea9aca73089b70d13f6f064dd-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/netcdf/netcdf_valid.nc",
+      "encodingFormat": "application/x-netcdf",
+      "contentSize": "4869.898 KB",
+      "name": "netcdf_valid.nc",
+      "sha256": "3b0c76c83b13f5209cf227f5610550a3-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/netcdf/netcdf_valid.nc.hs_user_meta.json",
+      "encodingFormat": "application/json",
+      "contentSize": "0.05 KB",
+      "name": "netcdf_valid.nc.hs_user_meta.json",
+      "sha256": "2538d648f7f8b25388a8c01c0e0b284c-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/netcdf/netcdf_valid.nc.json",
+      "encodingFormat": "application/json",
+      "contentSize": "0.488 KB",
+      "name": "netcdf_valid.nc.json",
+      "sha256": "eb0961387da20f82ac123ba7933381f3"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/netcdf/netcdf_valid_header_info.txt",
+      "encodingFormat": "text/plain",
+      "contentSize": "2.014 KB",
+      "name": "netcdf_valid_header_info.txt",
+      "sha256": "50d54ab7ec6b218763928eb5e9c6f237"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/netcdf/netcdf_valid_meta.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "4.14 KB",
+      "name": "netcdf_valid_meta.xml",
+      "sha256": "5de38a433ec4da0251aae1348b4e31a3"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/netcdf/netcdf_valid_resmap.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "4.528 KB",
+      "name": "netcdf_valid_resmap.xml",
+      "sha256": "0634be8e0ba50de0ac6a0aebc60978d6"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/rasters/logan.vrt",
+      "encodingFormat": ".vrt",
+      "contentSize": "2.175 KB",
+      "name": "logan.vrt",
+      "sha256": "77832fc72b0899f59909e34a19183ded-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/rasters/logan1.tif",
+      "encodingFormat": "image/tiff",
+      "contentSize": "100.749 KB",
+      "name": "logan1.tif",
+      "sha256": "c54a7bc67158e39455fe09a5278f08f7-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/rasters/logan2.tif",
+      "encodingFormat": "image/tiff",
+      "contentSize": "98.943 KB",
+      "name": "logan2.tif",
+      "sha256": "90fea3edd2e2bf90ca8e88e1b34c1b91-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/rasters/logan_meta.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "3.674 KB",
+      "name": "logan_meta.xml",
+      "sha256": "bb3281b32a29bf4f03c09c93debd64c8"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/rasters/logan_resmap.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "4.841 KB",
+      "name": "logan_resmap.xml",
+      "sha256": "04e90bf25f650bf91585d29c5080fe6c"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/rasters/single/logan1.tif",
+      "encodingFormat": "image/tiff",
+      "contentSize": "100.749 KB",
+      "name": "logan1.tif",
+      "sha256": "c54a7bc67158e39455fe09a5278f08f7-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/rasters/single/logan1.vrt",
+      "encodingFormat": ".vrt",
+      "contentSize": "2.002 KB",
+      "name": "logan1.vrt",
+      "sha256": "ebf2ac77a8b566cb9fe5cacc453a5d14"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/rasters/single/logan1_meta.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "3.71 KB",
+      "name": "logan1_meta.xml",
+      "sha256": "3ab3c8907f0fc717dba00b9e30bcfb60"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/rasters/single/logan1_resmap.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "4.465 KB",
+      "name": "logan1_resmap.xml",
+      "sha256": "d0f28191d751c77146bfe61041255a8b"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/readme.txt",
+      "encodingFormat": "text/plain",
+      "contentSize": "0.244 KB",
+      "name": "readme.txt",
+      "sha256": "4e1c72336e164359e417837e38ba646e-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/states/states.dbf",
+      "encodingFormat": "application/vnd.dbf",
+      "contentSize": "2.846 KB",
+      "name": "states.dbf",
+      "sha256": "6f02dc25887da96725844cfbc932ed64-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/states/states.prj",
+      "encodingFormat": ".prj",
+      "contentSize": "0.167 KB",
+      "name": "states.prj",
+      "sha256": "ad35349a2598ebe094aeddc7a444a25d-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/states/states.shp",
+      "encodingFormat": "application/x-qgis",
+      "contentSize": "222.392 KB",
+      "name": "states.shp",
+      "sha256": "7ccfbaa5eaabd7d3811023dc890f2633-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/states/states.shp.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "0.0 KB",
+      "name": "states.shp.xml",
+      "sha256": "59adb24ef3cdbe0297f05b395827453f-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/states/states.shx",
+      "encodingFormat": "application/x-qgis",
+      "contentSize": "0.508 KB",
+      "name": "states.shx",
+      "sha256": "579e487dc6c3bc547d43c3891618a64d-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/timeseries/ODM2_Multi_Site_One_Variable.sqlite",
+      "encodingFormat": "application/vnd.sqlite3",
+      "contentSize": "1894.4 KB",
+      "name": "ODM2_Multi_Site_One_Variable.sqlite",
+      "sha256": "6897e90fd40c4bfdea435da2bf30d0cb-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/timeseries/ODM2_Multi_Site_One_Variable_Test.csv",
+      "encodingFormat": "text/csv",
+      "contentSize": "0.737 KB",
+      "name": "ODM2_Multi_Site_One_Variable_Test.csv",
+      "sha256": "8962eb1328f12dab14b0d81757612c3b-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/timeseries/ODM2_Multi_Site_One_Variable_Test_meta.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "2.672 KB",
+      "name": "ODM2_Multi_Site_One_Variable_Test_meta.xml",
+      "sha256": "e8426b589ab5701c6e62f9f00245a285"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/timeseries/ODM2_Multi_Site_One_Variable_Test_resmap.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "4.218 KB",
+      "name": "ODM2_Multi_Site_One_Variable_Test_resmap.xml",
+      "sha256": "a06c2bd33b7a27feae5c3fbfb37f0744"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/timeseries/ODM2_Multi_Site_One_Variable_meta.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "24.841 KB",
+      "name": "ODM2_Multi_Site_One_Variable_meta.xml",
+      "sha256": "a3bc4be31893de55baa759cb69cfef65"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/timeseries/ODM2_Multi_Site_One_Variable_resmap.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "4.208 KB",
+      "name": "ODM2_Multi_Site_One_Variable_resmap.xml",
+      "sha256": "b2a2a5574bd18702a6c843dc3156fadf"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/timeseries/ODM2_invalid.sqlite",
+      "encodingFormat": "application/vnd.sqlite3",
+      "contentSize": "185.344 KB",
+      "name": "ODM2_invalid.sqlite",
+      "sha256": "77a140adff217f9c52cfb29925cc817e-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/watersheds/watersheds.cpg",
+      "encodingFormat": ".cpg",
+      "contentSize": "0.005 KB",
+      "name": "watersheds.cpg",
+      "sha256": "148686d3688108c3ad1022e955c31036-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/watersheds/watersheds.dbf",
+      "encodingFormat": "application/vnd.dbf",
+      "contentSize": "0.666 KB",
+      "name": "watersheds.dbf",
+      "sha256": "0a3d81f99210053c8d9cfe6d53ac35eb-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/watersheds/watersheds.prj",
+      "encodingFormat": ".prj",
+      "contentSize": "0.425 KB",
+      "name": "watersheds.prj",
+      "sha256": "5ae6ca9dd16ddb101d2a6284f9916ad7-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/watersheds/watersheds.sbn",
+      "encodingFormat": ".sbn",
+      "contentSize": "0.18 KB",
+      "name": "watersheds.sbn",
+      "sha256": "4d5aed2b5e5c803e697796c770d652f7-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/watersheds/watersheds.sbx",
+      "encodingFormat": ".sbx",
+      "contentSize": "0.124 KB",
+      "name": "watersheds.sbx",
+      "sha256": "5938b9e84abecb5f5160889b1003588f-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/watersheds/watersheds.shp",
+      "encodingFormat": "application/x-qgis",
+      "contentSize": "29.228 KB",
+      "name": "watersheds.shp",
+      "sha256": "3a83a877f159579e507c8eff439b45d6-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/watersheds/watersheds.shp.xml",
+      "encodingFormat": "application/xml",
+      "contentSize": "0.0 KB",
+      "name": "watersheds.shp.xml",
+      "sha256": "59adb24ef3cdbe0297f05b395827453f-1"
+    },
+    {
+      "type": "MediaObject",
+      "contentUrl": "https://s3.beta.hydroshare.org/sblack/21a44ea2b87e4f0c930c9eefb1078b00/data/contents/watersheds/watersheds.shx",
+      "encodingFormat": "application/x-qgis",
+      "contentSize": "0.14 KB",
+      "name": "watersheds.shx",
+      "sha256": "aae8299e9e4bdb3602df54a5e2d91ebd-1"
+    }
+  ]
+}
