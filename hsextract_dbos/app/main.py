@@ -152,6 +152,15 @@ def launch_durable_workflow(file_object_path: str = "sblack/40d20c1496544ad8b7bf
                             resource_md_cache_path: str = None) -> None:
     return workflow_metadata_extraction(file_object_path, file_updated, resource_root_path, resource_md_root_path, resource_md_cache_path)
 
+from pydantic import BaseModel
+
+class MinIOEvent(BaseModel):
+    EventName: str
+    Key: str
+
+@app.post("/minio_event")
+def handle_minio_event(event: MinIOEvent) -> None:
+    workflow_metadata_extraction(event.Key, event.EventName == "s3:ObjectCreated:Put")
 
 def determine_required_for_content_type(file_object_path: str, content_type: ContentType) -> bool:
     # For fileset and single file, it only matters if it is the hs_user_meta.json file

@@ -21,10 +21,15 @@ services:
     platform: linux/amd64
     ports:
       - "9000:9000"
+      - "9001:9001"
     environment:
       - MINIO_ROOT_USER=admin
       - MINIO_ROOT_PASSWORD=password
-    command: server /data
+      - MINIO_NOTIFY_WEBHOOK_ENABLE_HSEXTRACT=on
+      - MINIO_NOTIFY_WEBHOOK_ENDPOINT_HSEXTRACT=http://hsextract:8000/minio_event
+      - MINIO_NOTIFY_WEBHOOK_AUTH_TYPE_HSEXTRACT=none
+      # mc event add hsextract/test-bucket "arn:minio:sqs::HSEXTRACT:webhook" --event put,delete
+    command: server --address ":9000" --console-address ":9001" /data
     volumes:
       - minio_data:/data
 volumes:

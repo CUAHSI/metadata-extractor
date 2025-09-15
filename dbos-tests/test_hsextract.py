@@ -1,5 +1,6 @@
 import json
 import os
+from time import sleep
 import boto3
 
 from hsextract_dbos.app.main import ContentType, workflow_metadata_extraction
@@ -138,11 +139,13 @@ def s3_resource_setup_teardown():
 
 def test_resource_extraction():
     delete_s3_metadata_json("test-bucket/resource_id/.hsjsonld/dataset_metadata.json")
+    delete_s3_metadata_json("test-bucket/resource_id/.hs/system_metadata.json")
     # Stage system metadata to test
     write_s3_metadata_json("test-bucket/resource_id/.hs/system_metadata.json", {"system_metadata": "this is system metadata"})
 
-    workflow_metadata_extraction("test-bucket/resource_id/data/contents/hs_user_meta.json")
+    #workflow_metadata_extraction("test-bucket/resource_id/data/contents/hs_user_meta.json")
 
+    sleep(2)
     # read in the resulting resource metadata file
     result_resource_metadata = read_s3_metadata_json("test-bucket/resource_id/.hsjsonld/dataset_metadata.json")
 
