@@ -18,9 +18,15 @@ RUN rm requirements.txt
 RUN pip3 install uvicorn
 RUN pip3 install fastapi
 
+RUN apt-get update
+RUN apt-get -y upgrade
+RUN curl -1sLf 'https://dl.redpanda.com/nzc4ZYQK3WRGd9sy/redpanda/cfg/setup/bash.deb.sh' | bash
+RUN apt install -y redpanda-rpk-fips redpanda-connect-fips
+
 COPY hsextract hsextract
 COPY hsextract_dbos hsextract_dbos
+COPY pipelines pipelines
 
 ENV PYTHONPATH "${PYTHONPATH}:/app/"
 
-ENTRYPOINT ["uvicorn", "hsextract_dbos.app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["rpk", "connect", "run", "pipelines/extract_metadata.yaml"]

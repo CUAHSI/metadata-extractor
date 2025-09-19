@@ -1,0 +1,81 @@
+http:
+  enabled: true
+  address: 0.0.0.0:4195
+  root_path: /benthos
+  debug_endpoints: false
+  cert_file: ""
+  key_file: ""
+  cors:
+    enabled: false
+    allowed_origins: []
+  basic_auth:
+    enabled: false
+    realm: restricted
+    username: ""
+    password_hash: ""
+    algorithm: sha256
+    salt: ""
+input:
+  kafka_franz:
+    seed_brokers:
+      - "redpanda:9092" # Or your Redpanda broker addresses
+    topics:
+      - "resource_file"
+    consumer_group: "metadata_extractor"
+buffer:
+  none: {}
+pipeline:
+  threads: -1
+  processors: []
+output:
+  stdout: {}
+input_resources: []
+processor_resources: []
+output_resources: []
+cache_resources: []
+rate_limit_resources: []
+logger:
+  level: INFO
+  format: logfmt
+  add_timestamp: false
+  level_name: level
+  timestamp_name: time
+  message_name: msg
+  static_fields:
+    '@service': redpanda-connect
+  file:
+    path: ""
+    rotate: false
+    rotate_max_age_days: 0
+metrics:
+  prometheus: {}
+  mapping: ""
+tracer:
+  none: {}
+shutdown_delay: 0s
+shutdown_timeout: 20s
+tests: []
+redpanda:
+  seed_brokers: []
+  client_id: benthos
+  tls:
+    enabled: false
+    skip_cert_verify: false
+    enable_renegotiation: false
+    root_cas: ""
+    root_cas_file: ""
+    client_certs: []
+  sasl: []
+  metadata_max_age: 5m
+  request_timeout_overhead: 10s
+  conn_idle_timeout: 20s
+  pipeline_id: ""
+  logs_topic: ""
+  logs_level: info
+  status_topic: ""
+  idempotent_write: true
+  allow_auto_topic_creation: true
+  timeout: 10s
+  max_message_bytes: 1MiB
+  broker_write_max_bytes: 100MiB
+
