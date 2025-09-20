@@ -1,4 +1,4 @@
-FROM ghcr.io/osgeo/gdal:ubuntu-small-latest
+FROM ghcr.io/osgeo/gdal:ubuntu-small-3.11.4
 
 WORKDIR /app
 
@@ -21,12 +21,13 @@ RUN pip3 install fastapi
 RUN apt-get update
 RUN apt-get -y upgrade
 RUN curl -1sLf 'https://dl.redpanda.com/nzc4ZYQK3WRGd9sy/redpanda/cfg/setup/bash.deb.sh' | bash
-RUN apt install -y redpanda-rpk-fips redpanda-connect-fips
+RUN apt install -y redpanda-rpk redpanda-connect
+RUN pip3 install redpanda-connect
 
 COPY hsextract hsextract
 COPY hsextract_dbos hsextract_dbos
-COPY pipelines pipelines
+#COPY pipelines pipelines
 
 ENV PYTHONPATH "${PYTHONPATH}:/app/"
 
-ENTRYPOINT ["rpk", "connect", "run", "pipelines/extract_metadata.yaml"]
+ENTRYPOINT ["rpk", "connect", "run", "--rpc-plugins=/app/hsextract_dbos/app/extract_metadata_processor.yaml", "/app/hsextract_dbos/app/extract_metadata.yaml"]
